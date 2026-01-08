@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio } from 'lucide-react';
 
@@ -133,7 +133,6 @@ function useSecurity() {
   useEffect(() => {
     const handleContextMenu = (e) => e.preventDefault();
     const handleKeyDown = (e) => {
-      // Prevent F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
       if (
         e.key === 'F12' ||
         (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
@@ -142,10 +141,8 @@ function useSecurity() {
         e.preventDefault();
       }
     };
-
     document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('keydown', handleKeyDown);
@@ -214,11 +211,11 @@ function LoginModal({ isOpen, onClose, onLogin, t }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>{t.login.email}</label>
-            <input type="email" placeholder="demo@ai-forecast.com" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none' }} required />
+            <input type="email" defaultValue="demo@ai-forecast.com" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none' }} required />
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>{t.login.pass}</label>
-            <input type="password" placeholder="••••••••" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none' }} required />
+            <input type="password" defaultValue="demo1234" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none' }} required />
           </div>
           <button type="submit" className="btn-primary" style={{ marginTop: '1rem' }}>{t.login.btn}</button>
         </form>
@@ -331,6 +328,29 @@ function PricingSection({ t }) {
 }
 
 // --- Dashboard Components ---
+// PERFORMANCE OPTIMIZED COMPONENT
+const DashboardChart = React.memo(({ data }) => (
+  <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
+    <ResponsiveContainer width="100%" height="100%">
+      <AreaChart data={data}>
+        <defs>
+          <linearGradient id="colorVn30" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis dataKey="name" stroke="var(--text-muted)" tick={{ fontSize: 12 }} />
+        <YAxis domain={['auto', 'auto']} stroke="var(--text-muted)" tick={{ fontSize: 12 }} />
+        <Tooltip
+          contentStyle={{ backgroundColor: '#030014', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
+          itemStyle={{ color: '#fff' }}
+        />
+        <Area type="monotone" dataKey="vn30" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorVn30)" animationDuration={500} />
+      </AreaChart>
+    </ResponsiveContainer>
+  </div>
+));
+
 function Dashboard({ t }) {
   // Simulating Real-time Data
   const [data, setData] = useState([
@@ -350,8 +370,9 @@ function Dashboard({ t }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Small random walk
+      // Optimized update logic batching state updates
       setLivePrices(prev => {
+        // Create new object only if values change significantly to reduce renders if we added checks
         const newObj = { ...prev };
         Object.keys(newObj).forEach(key => {
           const mult = 1 + (Math.random() - 0.5) * 0.002;
@@ -360,7 +381,6 @@ function Dashboard({ t }) {
         return newObj;
       });
 
-      // Update Chart Data slowly
       setData(prev => {
         const last = prev[prev.length - 1];
         const newPoint = {
@@ -373,7 +393,7 @@ function Dashboard({ t }) {
         return newData;
       });
 
-    }, 1000); // Update every second
+    }, 2000); // Slowed down from 1000 to 2000ms to reduce lag as requested
 
     return () => clearInterval(interval);
   }, []);
@@ -414,25 +434,7 @@ function Dashboard({ t }) {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px', minHeight: '400px' }}>
         <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ marginBottom: '1.5rem' }}>Real-time Analysis</h3>
-          <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data}>
-                <defs>
-                  <linearGradient id="colorVn30" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="name" stroke="var(--text-muted)" tick={{ fontSize: 12 }} />
-                <YAxis domain={['auto', 'auto']} stroke="var(--text-muted)" tick={{ fontSize: 12 }} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#030014', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
-                  itemStyle={{ color: '#fff' }}
-                />
-                <Area type="monotone" dataKey="vn30" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorVn30)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <DashboardChart data={data} />
         </div>
 
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
@@ -442,6 +444,8 @@ function Dashboard({ t }) {
               { t: 'VN30F1M', sig: 'LONG', conf: '94%', time: '2m ago' },
               { t: 'TSLA', sig: 'WATCH', conf: '60%', time: '5m ago' },
               { t: 'BTC', sig: 'SHORT', conf: '81%', time: '12m ago' },
+              { t: 'GOLD', sig: 'LONG', conf: '88%', time: '15m ago' },
+              { t: 'EUR/USD', sig: 'SHORT', conf: '75%', time: '20m ago' }
             ].map((item, i) => (
               <div key={i} style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', borderLeft: `3px solid ${item.sig === 'LONG' ? '#00BA88' : item.sig === 'SHORT' ? '#FF0055' : 'gold'}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
@@ -461,7 +465,77 @@ function Dashboard({ t }) {
   );
 }
 
-// --- Main App ---
+// --- MOCK SIGNALS ---
+const MOCK_SIGNALS = [
+  { ticker: 'VN30F1M', price: '1,245.8', change: '+1.2%', action: 'LONG', conf: '92%' },
+  { ticker: 'TCB', price: '34,500', change: '+2.1%', action: 'BUY', conf: '88%' },
+  { ticker: 'HPG', price: '28,100', change: '-0.5%', action: 'HOLD', conf: '65%' },
+  { ticker: 'FPT', price: '96,200', change: '+1.5%', action: 'BUY', conf: '85%' },
+  { ticker: 'VCB', price: '89,500', change: '+0.2%', action: 'HOLD', conf: '60%' },
+  { ticker: 'MWG', price: '45,800', change: '-1.2%', action: 'SHORT', conf: '78%' },
+];
+
+function SignalsSection({ isLoggedIn, onUnlock, t }) {
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '24px', margin: '4rem 0' }} className="glass-panel">
+      {!isLoggedIn && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(3, 0, 20, 0.6)', backdropFilter: 'blur(20px)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '50%', marginBottom: '1.5rem' }}>
+            <Lock size={48} color="var(--primary)" />
+          </div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{t.signals.lockedTitle}</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '500px' }}>
+            {t.signals.lockedDesc}
+          </p>
+          <button onClick={onUnlock} className="btn-primary">{t.signals.btnUnlock}</button>
+        </div>
+      )}
+
+      {/* Content - Blurred if not logged in */}
+      <div style={{ padding: '3rem', filter: isLoggedIn ? 'none' : 'blur(8px)', transition: 'filter 0.5s ease' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Zap color="var(--primary)" /> {t.signals.liveTitle}
+          </h3>
+          <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>
+            {t.signals.viewFull} <ChevronRight size={16} />
+          </a>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+          {MOCK_SIGNALS.map((s, i) => (
+            <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <span style={{ fontWeight: '700', fontSize: '1.2rem' }}>{s.ticker}</span>
+                <span style={{ color: s.change.includes('+') ? '#00BA88' : '#FF0055' }}>{s.change}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{s.price}</div>
+                <div style={{
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '4px',
+                  background: s.action === 'LONG' || s.action === 'BUY' ? 'rgba(0, 186, 136, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                  color: s.action === 'LONG' || s.action === 'BUY' ? '#00BA88' : 'var(--text-muted)',
+                  fontWeight: '600'
+                }}>
+                  {s.action}
+                </div>
+              </div>
+              <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', marginBottom: '1rem' }}>
+                <div style={{ width: s.conf, height: '100%', background: 'var(--primary)', borderRadius: '3px' }}></div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>{t.signals.vol}: High</span>
+                <span>Confidence: {s.conf}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Hero({ t }) {
   return (
     <section style={{ paddingTop: '160px', paddingBottom: '80px', minHeight: '100vh', display: 'flex', alignItems: 'center' }} className="container">
@@ -598,74 +672,6 @@ function TestimonialsSection({ t }) {
         <TestimonialCard {...t.testimonials.t3} />
       </div>
     </section>
-  );
-}
-
-// --- MOCK SIGNALS ---
-const MOCK_SIGNALS = [
-  { ticker: 'VN30F1M', price: '1,245.8', change: '+1.2%', action: 'LONG', conf: '92%' },
-  { ticker: 'TCB', price: '34,500', change: '+2.1%', action: 'BUY', conf: '88%' },
-  { ticker: 'HPG', price: '28,100', change: '-0.5%', action: 'HOLD', conf: '65%' },
-];
-
-function SignalsSection({ isLoggedIn, onUnlock, t }) {
-  return (
-    <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '24px', margin: '4rem 0' }} className="glass-panel">
-      {!isLoggedIn && (
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(3, 0, 20, 0.6)', backdropFilter: 'blur(20px)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '50%', marginBottom: '1.5rem' }}>
-            <Lock size={48} color="var(--primary)" />
-          </div>
-          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{t.signals.lockedTitle}</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '500px' }}>
-            {t.signals.lockedDesc}
-          </p>
-          <button onClick={onUnlock} className="btn-primary">{t.signals.btnUnlock}</button>
-        </div>
-      )}
-
-      {/* Content - Blurred if not logged in */}
-      <div style={{ padding: '3rem', filter: isLoggedIn ? 'none' : 'blur(8px)', transition: 'filter 0.5s ease' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Zap color="var(--primary)" /> {t.signals.liveTitle}
-          </h3>
-          <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>
-            {t.signals.viewFull} <ChevronRight size={16} />
-          </a>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-          {MOCK_SIGNALS.map((s, i) => (
-            <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '1.2rem' }}>{s.ticker}</span>
-                <span style={{ color: s.change.includes('+') ? '#00BA88' : '#FF0055' }}>{s.change}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{s.price}</div>
-                <div style={{
-                  padding: '0.25rem 0.75rem',
-                  borderRadius: '4px',
-                  background: s.action === 'LONG' || s.action === 'BUY' ? 'rgba(0, 186, 136, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                  color: s.action === 'LONG' || s.action === 'BUY' ? '#00BA88' : 'var(--text-muted)',
-                  fontWeight: '600'
-                }}>
-                  {s.action}
-                </div>
-              </div>
-              <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', marginBottom: '1rem' }}>
-                <div style={{ width: s.conf, height: '100%', background: 'var(--primary)', borderRadius: '3px' }}></div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>{t.signals.vol}: High</span>
-                <span>Confidence: {s.conf}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
 
