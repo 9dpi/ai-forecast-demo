@@ -3,7 +3,7 @@ import { LineChart, Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp
 
 const TRANSLATIONS = {
   en: {
-    nav: { features: 'Features', signals: 'Live Signals', pricing: 'Pricing', login: 'Login', logout: 'Logout' },
+    nav: { features: 'Features', signals: 'Live Signals', pricing: 'Pricing', login: 'Login', logout: 'Logout', vn30: 'VN30 App' },
     hero: {
       badge: '✨ V1.0 Stable on VN30',
       title1: 'Predict the Future of',
@@ -24,9 +24,10 @@ const TRANSLATIONS = {
       lockedTitle: 'Member Access Only',
       lockedDesc: 'Real-time signals and advanced analytics are protected. Login to unlock the full potential of AI Smart Forecast.',
       btnUnlock: 'Login to Unlock',
-      liveTitle: 'Live Trading Signals - VN30',
+      liveTitle: 'Live Signals - VN30',
       vol: 'Vol',
-      target: 'Target'
+      target: 'Target',
+      viewFull: 'View Full Dashboard'
     },
     login: {
       title: 'Welcome Back',
@@ -34,10 +35,17 @@ const TRANSLATIONS = {
       pass: 'Password',
       btn: 'Access Dashboard',
       footer: 'Don\'t have an account? Join Waitlist'
+    },
+    testimonials: {
+      title: 'Trusted by Traders',
+      subtitle: 'See what our community has to say about AI Forecast.',
+      t1: { name: 'Alex Nguyen', role: 'Day Trader', content: 'The accuracy is frighteningly good. I recovered my subscription fee in the first trade.' },
+      t2: { name: 'Sarah Le', role: 'Office Worker', content: 'I don\'t have time to watch the screen. The automated signals let me trade while I work. Game changer.' },
+      t3: { name: 'Michael Tran', role: 'Crypto Investor', content: 'The dark mode UI is beautiful, but the AI algorithms are the real deal. High win rate on VN30.' }
     }
   },
   vi: {
-    nav: { features: 'Tính năng', signals: 'Tín hiệu Live', pricing: 'Bảng giá', login: 'Đăng nhập', logout: 'Đăng xuất' },
+    nav: { features: 'Tính năng', signals: 'Tín hiệu Live', pricing: 'Bảng giá', login: 'Đăng nhập', logout: 'Đăng xuất', vn30: 'VN30 App' },
     hero: {
       badge: '✨ Phiên bản V1.0 Ổn định trên VN30',
       title1: 'Dự báo Tương lai',
@@ -58,9 +66,10 @@ const TRANSLATIONS = {
       lockedTitle: 'Dành riêng cho Thành viên',
       lockedDesc: 'Tín hiệu thời gian thực và phân tích nâng cao được bảo vệ. Hãy đăng nhập để mở khóa sức mạnh của AI Smart Forecast.',
       btnUnlock: 'Đăng nhập để Mở khóa',
-      liveTitle: 'Tín hiệu Giao dịch Trực tiếp - VN30',
+      liveTitle: 'Tín hiệu Giao dịch - VN30',
       vol: 'KL',
-      target: 'Mục tiêu'
+      target: 'Mục tiêu',
+      viewFull: 'Xem Dashboard VN30'
     },
     login: {
       title: 'Chào mừng trở lại',
@@ -68,6 +77,13 @@ const TRANSLATIONS = {
       pass: 'Mật khẩu',
       btn: 'Truy cập Dashboard',
       footer: 'Chưa có tài khoản? Đăng ký chờ'
+    },
+    testimonials: {
+      title: 'Nhà đầu tư tin dùng',
+      subtitle: 'Cộng đồng nói gì về AI Smart Forecast.',
+      t1: { name: 'Alex Nguyễn', role: 'Day Trader', content: 'Độ chính xác thực sự đáng sợ. Tôi đã thu hồi vốn phí đăng ký ngay trong lệnh đầu tiên.' },
+      t2: { name: 'Sarah Lê', role: 'Nhân viên VP', content: 'Tôi không có thời gian canh bảng. Tín hiệu tự động giúp tôi giao dịch ngay cả khi đang làm việc. Quá đỉnh.' },
+      t3: { name: 'Michael Trần', role: 'Nhà đầu tư Crypto', content: 'Giao diện Dark mode rất đẹp, nhưng thuật toán AI mới là thứ đáng tiền. Tỷ lệ thắng cao trên VN30.' }
     }
   }
 };
@@ -117,7 +133,7 @@ function Navbar({ lang, setLang, t, onLoginClick, isLoggedIn, onLogout }) {
 
         <a href="#features" className="nav-link">{t.nav.features}</a>
         <a href="#signals" className="nav-link">{t.nav.signals}</a>
-        <a href="#pricing" className="nav-link">{t.nav.pricing}</a>
+        <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{t.nav.vn30}</a>
 
         {isLoggedIn ? (
           <button onClick={onLogout} className="btn-primary" style={{ padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -194,9 +210,15 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
 
       {/* Content - Blurred if not logged in */}
       <div style={{ padding: '3rem', filter: isLoggedIn ? 'none' : 'blur(8px)', transition: 'filter 0.5s ease' }}>
-        <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Zap color="var(--primary)" /> {t.signals.liveTitle}
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Zap color="var(--primary)" /> {t.signals.liveTitle}
+          </h3>
+          <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>
+            {t.signals.viewFull} <ChevronRight size={16} />
+          </a>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
           {MOCK_SIGNALS.map((s, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -335,6 +357,41 @@ function FeatureCard({ icon: Icon, title, desc }) {
   );
 }
 
+function TestimonialCard({ name, role, content }) {
+  return (
+    <div className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', gap: '5px', color: 'gold' }}>
+        {'★★★★★'}
+      </div>
+      <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontStyle: 'italic', flex: 1 }}>
+        "{content}"
+      </p>
+      <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <p style={{ fontWeight: '600', color: 'white' }}>{name}</p>
+        <p style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>{role}</p>
+      </div>
+    </div>
+  );
+}
+
+function TestimonialsSection({ t }) {
+  return (
+    <section id="testimonials" className="container" style={{ padding: '4rem 2rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+          {t.testimonials.title}
+        </h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>{t.testimonials.subtitle}</p>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+        <TestimonialCard {...t.testimonials.t1} />
+        <TestimonialCard {...t.testimonials.t2} />
+        <TestimonialCard {...t.testimonials.t3} />
+      </div>
+    </section>
+  );
+}
+
 function App() {
   useSecurity(); // Activate Client-side Protection
   const [lang, setLang] = useState('en');
@@ -401,6 +458,8 @@ function App() {
             t={t}
           />
         </section>
+
+        <TestimonialsSection t={t} />
       </main>
 
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '4rem 2rem', marginTop: '4rem' }}>
