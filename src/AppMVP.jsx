@@ -33,10 +33,11 @@ function SignalRow({ s }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span style={{ fontWeight: '700', fontSize: '1.2rem' }}>{s.pair}</span>
                     <span style={{
-                        padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold',
+                        padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center',
                         background: s.status === 'ACTIVE' ? 'rgba(0,186,136,0.2)' : s.status === 'LOSS' ? 'rgba(255,0,85,0.2)' : 'rgba(255,255,255,0.1)',
                         color: s.status === 'ACTIVE' || s.status === 'PROFIT' ? '#00BA88' : s.status === 'LOSS' ? '#FF0055' : 'white'
                     }}>
+                        {s.status === 'ACTIVE' && <span className="animate-pulse" style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor', marginRight: '6px' }}></span>}
                         {s.status}
                     </span>
                 </div>
@@ -52,7 +53,9 @@ function SignalRow({ s }) {
                 </div>
                 <div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Entry</p>
-                    <p style={{ fontWeight: 'bold' }}>{s.entry}</p>
+                    <p style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => navigator.clipboard.writeText(s.entry)}>
+                        {s.entry} <Clipboard size={12} color="var(--text-muted)" />
+                    </p>
                 </div>
                 <div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Confidence</p>
@@ -63,11 +66,15 @@ function SignalRow({ s }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Stop Loss</p>
-                    <p style={{ color: '#FF0055', fontWeight: 'bold' }}>{s.sl}</p>
+                    <p style={{ color: '#FF0055', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => navigator.clipboard.writeText(s.sl)}>
+                        {s.sl} <Clipboard size={12} color="rgba(255,255,255,0.3)" />
+                    </p>
                 </div>
                 <div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Take Profit</p>
-                    <p style={{ color: '#00BA88', fontWeight: 'bold' }}>{s.tp}</p>
+                    <p style={{ color: '#00BA88', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => navigator.clipboard.writeText(s.tp)}>
+                        {s.tp} <Clipboard size={12} color="rgba(255,255,255,0.3)" />
+                    </p>
                 </div>
                 <div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Risk:Reward</p>
@@ -177,7 +184,7 @@ export default function AppMVP() {
                 <footer style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
                     <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                         <AlertTriangle size={16} color="orange" />
-                        Educational purposes only - Not financial advice.
+                        Educational purposes only. Past performance does not guarantee future results.
                     </p>
                     <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', marginTop: '0.5rem' }}>
                         &copy; 2024 AI Smart Forecast. UK/Global Edition.
