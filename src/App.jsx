@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio } from 'lucide-react';
+import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio, Menu } from 'lucide-react';
 
 const TRANSLATIONS = {
   en: {
@@ -151,43 +151,87 @@ function useSecurity() {
 }
 
 function Navbar({ lang, setLang, t, onLoginClick, isLoggedIn, onLogout }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <nav className="glass-panel" style={{ position: 'sticky', top: '20px', margin: '0 2rem', zIndex: 100, padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => window.location.reload()}>
-        <Activity color="var(--primary)" size={28} />
-        <span style={{ fontSize: '1.5rem', fontWeight: '700', fontFamily: 'var(--font-heading)' }}>
-          AI <span className="text-gradient">Forecast</span>
-        </span>
-      </div>
+    <>
+      <nav className="glass-panel nav-container">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => window.location.reload()}>
+          <Activity color="var(--primary)" size={28} />
+          <span style={{ fontSize: '1.5rem', fontWeight: '700', fontFamily: 'var(--font-heading)' }}>
+            AI <span className="text-gradient">Forecast</span>
+          </span>
+        </div>
 
-      <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }} className="nav-links">
-        <button
-          onClick={() => setLang(lang === 'en' ? 'vi' : 'en')}
-          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.9rem' }}
-        >
-          <Globe size={16} /> {lang.toUpperCase()}
+        {/* Desktop Menu */}
+        <div className="nav-links-desktop">
+          <button
+            onClick={() => setLang(lang === 'en' ? 'vi' : 'en')}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.9rem' }}
+          >
+            <Globe size={16} /> {lang.toUpperCase()}
+          </button>
+
+          {!isLoggedIn && (
+            <>
+              <a href="#features" className="nav-link">{t.nav.features}</a>
+              <a href="#signals" className="nav-link">{t.nav.signals}</a>
+              <a href="#pricing" className="nav-link">{t.nav.pricing}</a>
+            </>
+          )}
+          <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{t.nav.vn30}</a>
+
+          {isLoggedIn ? (
+            <button onClick={onLogout} className="btn-primary" style={{ padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <LogOut size={16} /> {t.nav.logout}
+            </button>
+          ) : (
+            <button onClick={onLoginClick} className="btn-primary" style={{ padding: '0.5rem 1.5rem' }}>
+              {t.nav.login}
+            </button>
+          )}
+        </div>
+
+        {/* Mobile Toggle */}
+        <button className="nav-mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
+      </nav>
 
-        {!isLoggedIn && (
-          <>
-            <a href="#features" className="nav-link">{t.nav.features}</a>
-            <a href="#signals" className="nav-link">{t.nav.signals}</a>
-            <a href="#pricing" className="nav-link">{t.nav.pricing}</a>
-          </>
-        )}
-        <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{t.nav.vn30}</a>
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div style={{
+          position: 'fixed', inset: '80px 0 0 0', background: 'rgba(3,0,20,0.95)', backdropFilter: 'blur(10px)',
+          zIndex: 99, padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center'
+        }}>
+          <button
+            onClick={() => { setLang(lang === 'en' ? 'vi' : 'en'); setMobileMenuOpen(false); }}
+            style={{ background: 'transparent', border: '1px solid var(--text-muted)', color: 'white', padding: '0.5rem 2rem', borderRadius: '50px' }}
+          >
+            Switch Language: {lang.toUpperCase()}
+          </button>
 
-        {isLoggedIn ? (
-          <button onClick={onLogout} className="btn-primary" style={{ padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <LogOut size={16} /> {t.nav.logout}
-          </button>
-        ) : (
-          <button onClick={onLoginClick} className="btn-primary" style={{ padding: '0.5rem 1.5rem' }}>
-            {t.nav.login}
-          </button>
-        )}
-      </div>
-    </nav>
+          {!isLoggedIn && (
+            <>
+              <a href="#features" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.features}</a>
+              <a href="#signals" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.signals}</a>
+              <a href="#pricing" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.pricing}</a>
+            </>
+          )}
+          <a href="https://9dpi.github.io/vn30/" target="_blank" className="nav-link" style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.2rem' }}>{t.nav.vn30}</a>
+
+          {isLoggedIn ? (
+            <button onClick={() => { onLogout(); setMobileMenuOpen(false); }} className="btn-primary" style={{ width: '100%', maxWidth: '300px' }}>
+              {t.nav.logout}
+            </button>
+          ) : (
+            <button onClick={() => { onLoginClick(); setMobileMenuOpen(false); }} className="btn-primary" style={{ width: '100%', maxWidth: '300px' }}>
+              {t.nav.login}
+            </button>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -200,8 +244,8 @@ function LoginModal({ isOpen, onClose, onLogin, t }) {
   };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(3, 0, 20, 0.8)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="glass-panel" style={{ width: '400px', padding: '2rem', position: 'relative' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(3, 0, 20, 0.8)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <div className="glass-panel" style={{ width: '100%', maxWidth: '400px', padding: '2rem', position: 'relative' }}>
         <button onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
           <X size={24} />
         </button>
@@ -283,7 +327,7 @@ function PricingSection({ t }) {
         <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>{t.pricing.subtitle}</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', alignItems: 'center' }}>
+      <div className="grid-cols-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', alignItems: 'center' }}>
         <PricingCard
           title={t.pricing.starter.title}
           price={t.pricing.starter.price}
@@ -328,7 +372,6 @@ function PricingSection({ t }) {
 }
 
 // --- Dashboard Components ---
-// PERFORMANCE OPTIMIZED COMPONENT
 const DashboardChart = React.memo(({ data }) => (
   <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
     <ResponsiveContainer width="100%" height="100%">
@@ -370,9 +413,7 @@ function Dashboard({ t }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Optimized update logic batching state updates
       setLivePrices(prev => {
-        // Create new object only if values change significantly to reduce renders if we added checks
         const newObj = { ...prev };
         Object.keys(newObj).forEach(key => {
           const mult = 1 + (Math.random() - 0.5) * 0.002;
@@ -393,7 +434,7 @@ function Dashboard({ t }) {
         return newData;
       });
 
-    }, 2000); // Slowed down from 1000 to 2000ms to reduce lag as requested
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -431,7 +472,7 @@ function Dashboard({ t }) {
       </div>
 
       {/* Analytics Area */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px', minHeight: '400px' }}>
+      <div className="dashboard-layout">
         <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ marginBottom: '1.5rem' }}>Real-time Analysis</h3>
           <DashboardChart data={data} />
@@ -538,7 +579,7 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
 
 function Hero({ t }) {
   return (
-    <section style={{ paddingTop: '160px', paddingBottom: '80px', minHeight: '100vh', display: 'flex', alignItems: 'center' }} className="container">
+    <section className="container hero-wrapper">
       <div style={{ flex: 1 }}>
         <div style={{ display: 'inline-block', padding: '0.5rem 1rem', background: 'rgba(0, 240, 255, 0.1)', borderRadius: '50px', marginBottom: '1.5rem', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
           <span style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '0.9rem' }}>{t.hero.badge}</span>
@@ -549,11 +590,11 @@ function Hero({ t }) {
           <span className="text-gradient">{t.hero.title2}</span>
         </h1>
 
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '2.5rem', maxWidth: '500px' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '2.5rem', maxWidth: '500px' }} className="hero-text">
           {t.hero.desc}
         </p>
 
-        <div style={{ display: 'flex', gap: '20px' }}>
+        <div className="hero-cta-row">
           <button className="btn-primary">
             {t.hero.ctaPrimary}
           </button>
@@ -562,7 +603,7 @@ function Hero({ t }) {
           </button>
         </div>
 
-        <div style={{ marginTop: '4rem', display: 'flex', gap: '40px' }}>
+        <div className="hero-stats-row">
           <div>
             <h3 style={{ fontSize: '2rem', fontWeight: '700' }}>94%</h3>
             <p style={{ color: 'var(--text-muted)' }}>{t.hero.stats.accuracy}</p>
