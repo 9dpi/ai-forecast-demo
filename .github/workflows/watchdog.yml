@@ -1,14 +1,12 @@
-name: AI Price Watchdog (Real-time)
+name: AI Price Watchdog (Manual Control)
 
 on:
-  workflow_dispatch: # Cho phép bấm nút "Run" thủ công
-  schedule:
-    - cron: '0 */6 * * *' # Tự động chạy lại mỗi 6 tiếng (nếu muốn auto 24/7, nhưng sẽ tốn phút)
+  workflow_dispatch: # Chỉ chạy khi anh bấm nút "Run workflow" thủ công
 
 jobs:
   watchdog:
     runs-on: ubuntu-latest
-    timeout-minutes: 350 # Chạy tối đa 350 phút (gần 6 tiếng) rồi restart
+    timeout-minutes: 360 # Chạy tối đa 6 tiếng, sau đó tự dừng (anh phải bấm Run lại nếu muốn tiếp)
     
     steps:
       - name: Checkout code
@@ -33,3 +31,4 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: node backend/price_watchdog.js
+
