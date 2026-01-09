@@ -59,7 +59,7 @@ const TRANSLATIONS = {
     },
     testimonials: {
       title: 'Trusted by Traders',
-      subtitle: 'See what our community has to say about Signal Genius AI.',
+      subtitle: 'See what our community has to say about Quantix AI Forecast.',
       t1: { name: 'Alex Nguyen', role: 'Day Trader', content: 'The accuracy is frighteningly good. I recovered my subscription fee in the first trade.' },
       t2: { name: 'Sarah Le', role: 'Office Worker', content: 'I don\'t have time to watch the screen. The automated signals let me trade while I work. Game changer.' },
       t3: { name: 'Michael Tran', role: 'Crypto Investor', content: 'The dark mode UI is beautiful, but the AI algorithms are the real deal. High win rate on VN30.' }
@@ -121,7 +121,7 @@ const TRANSLATIONS = {
     },
     testimonials: {
       title: 'Nhà đầu tư tin dùng',
-      subtitle: 'Cộng đồng nói gì về Signal Genius AI.',
+      subtitle: 'Cộng đồng nói gì về Quantix AI Forecast.',
       t1: { name: 'Alex Nguyễn', role: 'Day Trader', content: 'Độ chính xác thực sự đáng sợ. Tôi đã thu hồi vốn phí đăng ký ngay trong lệnh đầu tiên.' },
       t2: { name: 'Sarah Lê', role: 'Nhân viên VP', content: 'Tôi không có thời gian canh bảng. Tín hiệu tự động giúp tôi giao dịch ngay cả khi đang làm việc. Quá đỉnh.' },
       t3: { name: 'Michael Trần', role: 'Nhà đầu tư Crypto', content: 'Giao diện Dark mode rất đẹp, nhưng thuật toán AI mới là thứ đáng tiền. Tỷ lệ thắng cao trên VN30.' }
@@ -159,7 +159,7 @@ function Navbar({ lang, setLang, t, onLoginClick, isLoggedIn, onLogout }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => window.location.reload()}>
           <Activity color="var(--primary)" size={28} />
           <span style={{ fontSize: '1.5rem', fontWeight: '700', fontFamily: 'var(--font-heading)' }}>
-            Signal <span className="text-gradient">Genius</span> AI
+            Quantix <span className="text-gradient">AI</span> Forecast
           </span>
         </div>
 
@@ -179,6 +179,14 @@ function Navbar({ lang, setLang, t, onLoginClick, isLoggedIn, onLogout }) {
               <a href="#pricing" className="nav-link">{t.nav.pricing}</a>
             </>
           )}
+          <a href="#/investment" className="nav-link" style={{
+            background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 'bold',
+            fontSize: '0.95rem'
+          }}>💎 Investment Thesis</a>
           <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{t.nav.vn30}</a>
 
           {isLoggedIn ? (
@@ -218,6 +226,7 @@ function Navbar({ lang, setLang, t, onLoginClick, isLoggedIn, onLogout }) {
               <a href="#pricing" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.pricing}</a>
             </>
           )}
+          <a href="#/investment" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ color: '#FFD700', fontWeight: 'bold', fontSize: '1.2rem' }}>💎 Investment Thesis</a>
           <a href="https://9dpi.github.io/vn30/" target="_blank" className="nav-link" style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.2rem' }}>{t.nav.vn30}</a>
 
           {isLoggedIn ? (
@@ -719,6 +728,10 @@ function TestimonialsSection({ t }) {
 function App() {
   useSecurity();
   const [lang, setLang] = useState('en');
+
+  useEffect(() => {
+    document.title = "Quantix AI Forecast";
+  }, []);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -755,7 +768,7 @@ function App() {
             <section id="features" className="container" style={{ padding: '4rem 2rem' }}>
               <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
                 <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-                  {t.features.title} <span className="text-gradient">Signal Genius AI?</span>
+                  {t.features.title} <span className="text-gradient">Quantix AI Forecast?</span>
                 </h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>{t.features.subtitle}</p>
               </div>
@@ -786,11 +799,11 @@ function App() {
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Activity color="var(--primary)" size={24} />
-            <span style={{ fontWeight: '700', fontFamily: 'var(--font-heading)' }}>Signal Genius AI</span>
+            <span style={{ fontWeight: '700', fontFamily: 'var(--font-heading)' }}>Quantix AI Forecast</span>
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-              © 2026 Signal Genius AI. All rights reserved.
+              © 2026 Quantix AI Forecast. All rights reserved.
             </p>
             <p style={{ color: 'var(--primary)', fontSize: '0.75rem', marginTop: '4px', fontWeight: '500', opacity: 0.8 }}>
               Powered by Quantix AI Core v1.5

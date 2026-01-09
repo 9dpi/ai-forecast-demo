@@ -374,9 +374,16 @@ export default function AppMVP() {
     const [loadingState, setLoadingState] = useState('CONNECTING'); // CONNECTING -> CONNECTED -> READY
     const [currentPrice, setCurrentPrice] = useState(null);
 
+    useEffect(() => {
+        document.title = "Signal Genius AI";
+    }, []);
+
     // FETCH REAL DATA
     useEffect(() => {
-        if (!supabase) return;
+        if (!supabase) {
+            console.error("Supabase client is not initialized.");
+            return;
+        }
 
         console.log("🔌 Connected to Supabase, fetching EUR/USD signals...");
 
