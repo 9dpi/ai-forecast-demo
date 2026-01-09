@@ -135,7 +135,8 @@ function SignalTableRow({ signal }) {
 }
 
 export default function AppMVP() {
-    const [signals, setSignals] = useState(MOCK_SIGNALS);
+    const [signals, setSignals] = useState([]); // Start empty to avoid flash
+    const [loading, setLoading] = useState(true);
     const [liveData, setLiveData] = useState(EURUSD_LIVE);
 
     // FETCH REAL DATA
@@ -170,6 +171,7 @@ export default function AppMVP() {
                 }));
                 setSignals(realSignals);
             }
+            setLoading(false);
         };
 
         fetchSignals();
@@ -273,9 +275,31 @@ export default function AppMVP() {
                                 </tr>
                             </thead>
                             <tbody style={{ color: 'white' }}>
-                                {signals.map(s => (
-                                    <SignalTableRow key={s.id} signal={s} />
-                                ))}
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
+                                            <div style={{ display: 'inline-block', marginBottom: '15px' }} className="animate-spin">
+                                                <Activity size={30} color="#00F0FF" />
+                                            </div>
+                                            <div style={{ fontSize: '1.2rem', color: 'white' }}>Connecting to Live Server...</div>
+                                            <div style={{ fontSize: '0.9rem', color: '#666' }}>Fetching AI Signals</div>
+                                        </td>
+                                    </tr>
+                                ) : signals.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
+                                            <div style={{ marginBottom: '15px' }}>
+                                                <AlertTriangle size={30} color="#FFD700" />
+                                            </div>
+                                            <div style={{ fontSize: '1.2rem', color: 'white' }}>Waiting for New Signals</div>
+                                            <div style={{ fontSize: '0.9rem', color: '#666' }}>Creating setup... Please wait.</div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    signals.map(s => (
+                                        <SignalTableRow key={s.id} signal={s} />
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
