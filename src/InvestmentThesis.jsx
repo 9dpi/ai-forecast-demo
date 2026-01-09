@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Users, Zap, DollarSign, Calendar, FileText, Mail, Phone, Building2, ArrowRight, CheckCircle, Target, Briefcase, Activity } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import InvestorConcierge from './components/InvestorConcierge';
 
 // Mock data for growth projections
 const growthData = [
@@ -536,6 +537,9 @@ function InvestmentThesis() {
                     </div>
                 </div>
             </footer>
+
+            {/* AI Concierge Chatbot */}
+            <InvestorConcierge />
         </div>
     );
 }

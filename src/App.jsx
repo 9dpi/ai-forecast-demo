@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio, Menu } from 'lucide-react';
+import InvestorConcierge from './components/InvestorConcierge';
 
 const TRANSLATIONS = {
   en: {
@@ -754,6 +755,9 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* AI Concierge Chatbot */}
+      <InvestorConcierge />
     </div>
   );
 }
