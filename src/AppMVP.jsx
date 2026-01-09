@@ -100,60 +100,51 @@ const SignalTableRow = memo(({ signal }) => {
 });
 
 // 2. Live Ticker Component: Handles high-frequency updates independently
-const LiveTicker = (() => {
+const LiveTicker = memo(({ initialPrice }) => {
     // Initial static data
-    const INITIAL_DATA = {
-        price: 1.0542,
+    const [data, setData] = useState({
+        price: initialPrice || 1.1650, // Updated default to match 2026 expected range if no signal
         trend1H: 'BULLISH',
         trend15M: 'BULLISH',
         aiConfidence: 87
-    };
+    });
 
-    return () => {
-        const [data, setData] = useState(INITIAL_DATA);
+    // Update internal state when initialPrice changes (from parent fetch)
+    useEffect(() => {
+        if (initialPrice) {
+            setData(prev => ({ ...prev, price: initialPrice }));
+        }
+    }, [initialPrice]);
 
-        // Simulate high-frequency updates (Throttled to 500ms instead of continuous)
-        useEffect(() => {
-            const interval = setInterval(() => {
-                setData(prev => ({
-                    ...prev,
-                    price: parseFloat((prev.price + (Math.random() - 0.5) * 0.0005).toFixed(5)),
-                    // Randomly flip trends rarely
-                    trend1H: Math.random() > 0.95 ? (prev.trend1H === 'BULLISH' ? 'BEARISH' : 'BULLISH') : prev.trend1H
-                }));
-            }, 1000); // Update every 1s (User suggestion: Debouncing/Throttling)
-
-            return () => clearInterval(interval);
-        }, []);
-
-        return (
-            <section className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(0,186,136,0.05) 100%)' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', alignItems: 'center' }}>
-                    <div>
-                        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '5px' }}>EUR/USD</h1>
-                        <p style={{ fontSize: '2.5rem', color: '#00F0FF', fontWeight: 'bold', fontFamily: 'monospace' }}>{data.price.toFixed(4)}</p>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>1H Trend</p>
-                        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: data.trend1H === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
-                            {data.trend1H === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
-                        </p>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>15M Trend</p>
-                        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: data.trend15M === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
-                            {data.trend15M === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
-                        </p>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>AI Confidence</p>
-                        <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FFD700' }}>{data.aiConfidence}%</p>
-                    </div>
+    return (
+        <section className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(0,186,136,0.05) 100%)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', alignItems: 'center' }}>
+                <div>
+                    <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '5px' }}>EUR/USD</h1>
+                    <p style={{ fontSize: '2.5rem', color: '#00F0FF', fontWeight: 'bold', fontFamily: 'monospace' }}>
+                        {data.price ? data.price.toFixed(4) : "---"}
+                    </p>
                 </div>
-            </section>
-        );
-    };
-})();
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>1H Trend</p>
+                    <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: data.trend1H === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
+                        {data.trend1H === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
+                    </p>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>15M Trend</p>
+                    <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: data.trend15M === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
+                        {data.trend15M === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
+                    </p>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>AI Confidence</p>
+                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FFD700' }}>{data.aiConfidence}%</p>
+                </div>
+            </div>
+        </section>
+    );
+});
 
 // 3. Signal List Container
 const SignalList = memo(({ signals, loadingState }) => {
@@ -224,6 +215,7 @@ const SignalList = memo(({ signals, loadingState }) => {
 export default function AppMVP() {
     const [signals, setSignals] = useState([]);
     const [loadingState, setLoadingState] = useState('CONNECTING'); // CONNECTING -> CONNECTED -> READY
+    const [currentPrice, setCurrentPrice] = useState(null);
 
     // FETCH REAL DATA
     useEffect(() => {
@@ -240,6 +232,14 @@ export default function AppMVP() {
                 .limit(10);
 
             if (data && !error && data.length > 0) {
+                // Set the current price from the LATEST signal
+                const latestSignal = data[0];
+                if (latestSignal.current_price) {
+                    setCurrentPrice(latestSignal.current_price);
+                } else if (latestSignal.predicted_close) {
+                    setCurrentPrice(latestSignal.predicted_close);
+                }
+
                 const realSignals = data.map(d => ({
                     id: d.id,
                     pair: 'EUR/USD',
@@ -281,6 +281,10 @@ export default function AppMVP() {
                 },
                 (payload) => {
                     const d = payload.new;
+
+                    // Update price immediately when new signal arrives
+                    if (d.current_price) setCurrentPrice(d.current_price);
+
                     const newSignal = {
                         id: d.id,
                         pair: 'EUR/USD',
@@ -318,7 +322,7 @@ export default function AppMVP() {
             </nav>
 
             <main className="container" style={{ padding: '2rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
-                <LiveTicker />
+                <LiveTicker initialPrice={currentPrice} />
                 <SignalList signals={signals} loadingState={loadingState} />
 
                 {/* FOOTER */}
