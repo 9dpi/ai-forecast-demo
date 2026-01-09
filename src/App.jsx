@@ -91,6 +91,24 @@ function useSecurity() {
 function Navbar({ t, onLoginClick, isLoggedIn, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // height of fixed header
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setMobileMenuOpen(false);
+  };
+
   return (
     <>
       <nav className="glass-panel nav-container">
@@ -105,9 +123,9 @@ function Navbar({ t, onLoginClick, isLoggedIn, onLogout }) {
         <div className="nav-links-desktop">
           {!isLoggedIn && (
             <>
-              <a href="#features" className="nav-link">{t.nav.features}</a>
-              <a href="#signals" className="nav-link">{t.nav.signals}</a>
-              <a href="#pricing" className="nav-link">{t.nav.pricing}</a>
+              <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="nav-link">{t.nav.features}</a>
+              <a href="#signals" onClick={(e) => scrollToSection(e, 'signals')} className="nav-link">{t.nav.signals}</a>
+              <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="nav-link">{t.nav.pricing}</a>
             </>
           )}
           <a href="#/investment" className="nav-link" style={{
@@ -145,9 +163,9 @@ function Navbar({ t, onLoginClick, isLoggedIn, onLogout }) {
         }}>
           {!isLoggedIn && (
             <>
-              <a href="#features" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.features}</a>
-              <a href="#signals" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.signals}</a>
-              <a href="#pricing" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem' }}>{t.nav.pricing}</a>
+              <a href="#features" className="nav-link" onClick={(e) => scrollToSection(e, 'features')} style={{ fontSize: '1.2rem' }}>{t.nav.features}</a>
+              <a href="#signals" className="nav-link" onClick={(e) => scrollToSection(e, 'signals')} style={{ fontSize: '1.2rem' }}>{t.nav.signals}</a>
+              <a href="#pricing" className="nav-link" onClick={(e) => scrollToSection(e, 'pricing')} style={{ fontSize: '1.2rem' }}>{t.nav.pricing}</a>
             </>
           )}
           <a href="#/investment" className="nav-link" onClick={() => setMobileMenuOpen(false)} style={{ color: '#FFD700', fontWeight: 'bold', fontSize: '1.2rem' }}>💎 Investment Thesis</a>
