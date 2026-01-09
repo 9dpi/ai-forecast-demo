@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import { TrendingUp, TrendingDown, Clipboard, Check, Radio, Activity, AlertTriangle, Target, XCircle, CheckCircle } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -13,54 +13,18 @@ try {
     console.error("Supabase Init Error:", e);
 }
 
-// --- MOCK DATA (Fallback) ---
-const MOCK_SIGNALS = [
-    {
-        id: 1,
-        pair: 'EUR/USD',
-        action: 'BUY',
-        entry: 1.0520,
-        sl: 1.0490,
-        tp1: 1.0560,
-        tp2: 1.0600,
-        rr: '1:2.6',
-        conf: 92,
-        status: 'ENTRY_HIT',
-        currentPrice: 1.0545,
-        time: '5m ago'
-    },
-    {
-        id: 2,
-        pair: 'EUR/USD',
-        action: 'SELL',
-        entry: 1.0750,
-        sl: 1.0800,
-        tp1: 1.0700,
-        tp2: 1.0650,
-        rr: '1:2',
-        conf: 85,
-        status: 'TP1_HIT',
-        currentPrice: 1.0695,
-        time: '2h ago'
-    },
-];
+// --- OPTIMIZED COMPONENTS ---
 
-const EURUSD_LIVE = {
-    price: 1.0542,
-    trend1H: 'BULLISH',
-    trend15M: 'BULLISH',
-    aiConfidence: 87
-};
-
-function SignalTableRow({ signal }) {
+// 1. Memoized Table Row: Only re-renders if the specific signal prop changes
+const SignalTableRow = memo(({ signal }) => {
     const [copied, setCopied] = useState(false);
 
-    const handleCopy = () => {
+    const handleCopy = useCallback(() => {
         const text = `${signal.action} ${signal.pair} @ ${signal.entry}\nSL: ${signal.sl} | TP1: ${signal.tp1} | TP2: ${signal.tp2}`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-    };
+    }, [signal]);
 
     const getStatusBadge = (status) => {
         const badges = {
@@ -82,7 +46,8 @@ function SignalTableRow({ signal }) {
                 fontWeight: 'bold',
                 background: `${badge.color}20`,
                 color: badge.color,
-                border: `1px solid ${badge.color}40`
+                border: `1px solid ${badge.color}40`,
+                whiteSpace: 'nowrap'
             }}>
                 {badge.icon} {badge.text}
             </span>
@@ -132,12 +97,133 @@ function SignalTableRow({ signal }) {
             </td>
         </tr>
     );
-}
+});
+
+// 2. Live Ticker Component: Handles high-frequency updates independently
+const LiveTicker = (() => {
+    // Initial static data
+    const INITIAL_DATA = {
+        price: 1.0542,
+        trend1H: 'BULLISH',
+        trend15M: 'BULLISH',
+        aiConfidence: 87
+    };
+
+    return () => {
+        const [data, setData] = useState(INITIAL_DATA);
+
+        // Simulate high-frequency updates (Throttled to 500ms instead of continuous)
+        useEffect(() => {
+            const interval = setInterval(() => {
+                setData(prev => ({
+                    ...prev,
+                    price: parseFloat((prev.price + (Math.random() - 0.5) * 0.0005).toFixed(5)),
+                    // Randomly flip trends rarely
+                    trend1H: Math.random() > 0.95 ? (prev.trend1H === 'BULLISH' ? 'BEARISH' : 'BULLISH') : prev.trend1H
+                }));
+            }, 1000); // Update every 1s (User suggestion: Debouncing/Throttling)
+
+            return () => clearInterval(interval);
+        }, []);
+
+        return (
+            <section className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(0,186,136,0.05) 100%)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', alignItems: 'center' }}>
+                    <div>
+                        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '5px' }}>EUR/USD</h1>
+                        <p style={{ fontSize: '2.5rem', color: '#00F0FF', fontWeight: 'bold', fontFamily: 'monospace' }}>{data.price.toFixed(4)}</p>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>1H Trend</p>
+                        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: data.trend1H === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
+                            {data.trend1H === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
+                        </p>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>15M Trend</p>
+                        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: data.trend15M === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
+                            {data.trend15M === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
+                        </p>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>AI Confidence</p>
+                        <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FFD700' }}>{data.aiConfidence}%</p>
+                    </div>
+                </div>
+            </section>
+        );
+    };
+})();
+
+// 3. Signal List Container
+const SignalList = memo(({ signals, loadingState }) => {
+    return (
+        <section>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'white', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Target color="#00F0FF" size={28} />
+                Active Trading Signals
+            </h2>
+
+            <div className="glass-panel" style={{ padding: '0', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+                    <thead>
+                        <tr style={{ background: 'rgba(0,240,255,0.1)', borderBottom: '2px solid rgba(0,240,255,0.3)' }}>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>ACTION</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>ENTRY</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>SL</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>TP1</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>TP2</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>R:R</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>STATUS</th>
+                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>COPY</th>
+                        </tr>
+                    </thead>
+                    <tbody style={{ color: 'white' }}>
+                        {loadingState === 'CONNECTING' ? (
+                            <tr>
+                                <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
+                                    <div style={{ display: 'inline-block', marginBottom: '15px' }} className="animate-spin">
+                                        <Activity size={30} color="#00F0FF" />
+                                    </div>
+                                    <div style={{ fontSize: '1.2rem', color: 'white' }}>Connecting to Live Server...</div>
+                                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Fetching AI Signals</div>
+                                </td>
+                            </tr>
+                        ) : loadingState === 'CONNECTED' ? (
+                            <tr>
+                                <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#00BA88' }}>
+                                    <div style={{ display: 'inline-block', marginBottom: '15px' }}>
+                                        <CheckCircle size={40} color="#00BA88" />
+                                    </div>
+                                    <div style={{ fontSize: '1.2rem', color: '#00BA88', fontWeight: 'bold' }}>Connected Successfully ✅</div>
+                                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Syncing Real-time Data...</div>
+                                </td>
+                            </tr>
+                        ) : signals.length === 0 ? (
+                            <tr>
+                                <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
+                                    <div style={{ marginBottom: '15px' }}>
+                                        <AlertTriangle size={30} color="#FFD700" />
+                                    </div>
+                                    <div style={{ fontSize: '1.2rem', color: 'white' }}>Waiting for New Signals</div>
+                                    <div style={{ fontSize: '0.9rem', color: '#666' }}>System is scanning for high-probability setups...</div>
+                                </td>
+                            </tr>
+                        ) : (
+                            signals.map(s => (
+                                <SignalTableRow key={s.id} signal={s} />
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    );
+});
 
 export default function AppMVP() {
     const [signals, setSignals] = useState([]);
     const [loadingState, setLoadingState] = useState('CONNECTING'); // CONNECTING -> CONNECTED -> READY
-    const [liveData, setLiveData] = useState(EURUSD_LIVE);
 
     // FETCH REAL DATA
     useEffect(() => {
@@ -154,7 +240,6 @@ export default function AppMVP() {
                 .limit(10);
 
             if (data && !error && data.length > 0) {
-                console.log("✅ Got EUR/USD Signals:", data.length);
                 const realSignals = data.map(d => ({
                     id: d.id,
                     pair: 'EUR/USD',
@@ -172,17 +257,18 @@ export default function AppMVP() {
                 setSignals(realSignals);
             }
 
-            // Artificial delay for UX: Show "Connected" success state
+            // Artificial delay for UX
             setTimeout(() => {
                 setLoadingState('CONNECTED');
                 setTimeout(() => {
                     setLoadingState('READY');
-                }, 800); // Show "Connected" for 0.8s
-            }, 1000); // Minimum spinning time 1s
+                }, 800);
+            }, 1000);
         };
 
         fetchSignals();
 
+        // Subscribing to new signals
         const channel = supabase
             .channel('eurusd-signals')
             .on(
@@ -194,7 +280,6 @@ export default function AppMVP() {
                     filter: 'symbol=eq.EURUSD=X'
                 },
                 (payload) => {
-                    console.log("🔔 New EUR/USD Signal:", payload);
                     const d = payload.new;
                     const newSignal = {
                         id: d.id,
@@ -233,94 +318,8 @@ export default function AppMVP() {
             </nav>
 
             <main className="container" style={{ padding: '2rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
-
-                {/* EUR/USD LIVE CARD */}
-                <section className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(0,186,136,0.05) 100%)' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '20px', alignItems: 'center' }}>
-                        <div>
-                            <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '5px' }}>EUR/USD</h1>
-                            <p style={{ fontSize: '2.5rem', color: '#00F0FF', fontWeight: 'bold', fontFamily: 'monospace' }}>{liveData.price}</p>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>1H Trend</p>
-                            <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: liveData.trend1H === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
-                                {liveData.trend1H === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
-                            </p>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>15M Trend</p>
-                            <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: liveData.trend15M === 'BULLISH' ? '#00BA88' : '#FF0055' }}>
-                                {liveData.trend15M === 'BULLISH' ? '↗ BULLISH' : '↘ BEARISH'}
-                            </p>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: '5px' }}>AI Confidence</p>
-                            <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FFD700' }}>{liveData.aiConfidence}%</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* SIGNAL TABLE */}
-                <section>
-                    <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'white', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <Target color="#00F0FF" size={28} />
-                        Active Trading Signals
-                    </h2>
-
-                    <div className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ background: 'rgba(0,240,255,0.1)', borderBottom: '2px solid rgba(0,240,255,0.3)' }}>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>ACTION</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>ENTRY</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>SL</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>TP1</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>TP2</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>R:R</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>STATUS</th>
-                                    <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>COPY</th>
-                                </tr>
-                            </thead>
-                            <tbody style={{ color: 'white' }}>
-                                {loadingState === 'CONNECTING' ? (
-                                    <tr>
-                                        <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
-                                            <div style={{ display: 'inline-block', marginBottom: '15px' }} className="animate-spin">
-                                                <Activity size={30} color="#00F0FF" />
-                                            </div>
-                                            <div style={{ fontSize: '1.2rem', color: 'white' }}>Connecting to Live Server...</div>
-                                            <div style={{ fontSize: '0.9rem', color: '#666' }}>Fetching AI Signals</div>
-                                        </td>
-                                    </tr>
-                                ) : loadingState === 'CONNECTED' ? (
-                                    <tr>
-                                        <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#00BA88' }}>
-                                            <div style={{ display: 'inline-block', marginBottom: '15px' }}>
-                                                <CheckCircle size={40} color="#00BA88" />
-                                            </div>
-                                            <div style={{ fontSize: '1.2rem', color: '#00BA88', fontWeight: 'bold' }}>Connected Successfully ✅</div>
-                                            <div style={{ fontSize: '0.9rem', color: '#666' }}>Syncing Real-time Data...</div>
-                                        </td>
-                                    </tr>
-                                ) : signals.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
-                                            <div style={{ marginBottom: '15px' }}>
-                                                <AlertTriangle size={30} color="#FFD700" />
-                                            </div>
-                                            <div style={{ fontSize: '1.2rem', color: 'white' }}>Waiting for New Signals</div>
-                                            <div style={{ fontSize: '0.9rem', color: '#666' }}>System is scanning for high-probability setups...</div>
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    signals.map(s => (
-                                        <SignalTableRow key={s.id} signal={s} />
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+                <LiveTicker />
+                <SignalList signals={signals} loadingState={loadingState} />
 
                 {/* FOOTER */}
                 <footer style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
@@ -332,7 +331,6 @@ export default function AppMVP() {
                         &copy; 2024 AI Smart Forecast. Forex Edition for Professional Traders.
                     </p>
                 </footer>
-
             </main>
         </div>
     );

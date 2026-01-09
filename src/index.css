@@ -53,6 +53,7 @@ body {
 
 .animate-pulse {
   animation: pulse-glow 2s infinite;
+  will-change: box-shadow, opacity;
 }
 
 @keyframes spin {
@@ -67,6 +68,7 @@ body {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+  will-change: transform;
 }
 
 /* Scrollbar */
