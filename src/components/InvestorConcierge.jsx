@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Sparkles, TrendingUp, Mail, User, Briefcase, Loader2 } from 'lucide-react';
 
 // ===== QUANTIX AI BOT v1.5 - INVESTOR-FOCUSED FAQ DATABASE =====
+// ===== QUANTIX AI BOT v1.5 - INVESTOR-FOCUSED FAQ DATABASE =====
 const FAQ_DATABASE = {
+    // ... (Old FAQs remain) ...
     'technical_inquiry': {
         question: "⚙️ Technical Inquiry",
         answer: "Quantix Core v1.5 uses **Semantic Caching** to reduce LLM overhead by 70%. We process real-time market data through a hybrid routing system, ensuring high-speed delivery with minimal API costs.\n\nWould you like to see our Architecture Diagram?",
@@ -24,24 +26,21 @@ const FAQ_DATABASE = {
         answer: "Version 1.5 has expanded from VN30 to the **full market**, maintaining an 85%+ Confidence Score on trend signals.\n\nWe focus on 'Micro-Personalization'—analyzing exactly what's in YOUR portfolio, not generic market noise.",
         followUp: "Want to see live performance metrics? Leave your email below."
     },
-    'pricing': {
-        question: "💰 Pricing Model",
-        answer: "We offer tiered pricing:\n\n• **Free**: Basic signals for individuals\n• **Pro ($49/mo)**: Advanced analytics + alerts\n• **Enterprise**: Custom API licensing\n\nOur cost-per-user is 70% lower than traditional platforms.",
-        followUp: "Interested in a custom quote? Share your email."
+    // NEW BUSINESS CASE KNOWLEDGE
+    'vision': {
+        question: "👁️ Vision & Strategy",
+        answer: "Our vision is to solve the **'Mass-Personalization'** challenge. While others offer generic signals, Quantix delivers institutional-grade insights tailored to millions of individual portfolios at a fraction of the cost."
     },
-    'technology': {
-        question: "🔬 Technology Stack",
-        answer: "We leverage:\n\n• Advanced LLM with proprietary semantic caching\n• Real-time market data via Yahoo Finance & OANDA\n• Scalable Supabase backend\n• Edge computing for sub-100ms latency\n\nOur tech stack is built for institutional-grade reliability.",
-        followUp: "Want the full tech spec sheet? Drop your email."
+    'market_size': {
+        question: "🌏 Market Opportunity",
+        answer: "We are targeting the **50 million+ retail investors** in SE Asia. By 2026, Quantix aims to be the standard AI infrastructure for personal wealth management in the region."
     },
-    'roadmap': {
-        question: "🗺️ 2026 Roadmap",
-        answer: "Our expansion plan:\n\n**Q1**: Full market coverage (VN30 → All stocks)\n**Q2**: Automated payment gateway integration\n**Q3**: B2B API licensing launch\n**Q4**: International expansion (Thailand, Indonesia)\n\nWe're scaling fast.",
-        followUp: "Want quarterly updates? Leave your email."
+    'kpis': {
+        question: "📉 Key Metrics",
+        answer: "We've achieved a **70% reduction in operational costs** via Semantic Caching and hold a consistent **85% forecast accuracy** rate. We are built for efficiency and scale."
     }
 };
 
-// ===== QUICK REPLY BUTTONS (Investor-Focused) =====
 const QUICK_REPLIES = [
     { id: 'technical_inquiry', text: "⚙️ Technical Inquiry" },
     { id: 'be_a_partner', text: "🤝 I want to be a Partner" },
@@ -54,9 +53,9 @@ export default function InvestorConcierge() {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [userProfile, setUserProfile] = useState({ name: '', email: '', role: '' });
-    const [stage, setStage] = useState('greeting'); // greeting, profiling, consulting, capture
+    const [stage, setStage] = useState('greeting'); // greeting, profiling, consulting, capture, capture_doc
     const [hasGreeted, setHasGreeted] = useState(false);
-    const [isTyping, setIsTyping] = useState(false); // NEW: Typing indicator
+    const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -66,6 +65,45 @@ export default function InvestorConcierge() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    // LISTENER FOR WEBSITE BUTTONS
+    useEffect(() => {
+        const handleDocRequest = (event) => {
+            const { docType } = event.detail;
+            setIsOpen(true);
+
+            let message = "";
+            let newStage = 'capture_doc';
+
+            if (docType === 'BusinessCase') {
+                message = "📄 I see you're interested in our **Business Case**. I'd be happy to share that secure document with you.\n\nMay I have your email address to send the download link?";
+            } else if (docType === 'TechnicalDeepDive') {
+                message = "🛠️ Ready for a **Technical Deep-Dive**? Our CTO conducts these sessions personally.\n\nPlease leave your email to schedule a slot or receive the Technical Brief.";
+            } else if (docType === 'OnePager') {
+                message = "📋 You want the **Executive One-Pager**? Great choice for a quick overview.\n\nDrop your email below and I'll send it instantly.";
+            } else if (docType === 'FreeTrial') {
+                message = "🚀 Excellent choice! To start your **14-day Free Trial** of Quantix AI Core, I just need your email to set up your secure workspace.";
+            } else if (docType === 'ViewDemo') {
+                message = "👀 Want to see Quantix in action? I can schedule a live 1-on-1 demo or send you a recorded walkthrough.\n\nPlease provide your email to proceed.";
+            } else if (docType === 'Upgrade') {
+                message = "💎 Ready to scale? Our **Pro & Institutional** plans offer real-time global signals.\n\nPlease provide your email so our Sales team can activate your premium access.";
+            } else {
+                message = "👋 How can I help you with that resource today? Please provide your email for more information.";
+            }
+
+            // If already open, just push the message, else open and greet
+            setTimeout(() => {
+                addBotMessage(message, null);
+                setStage(newStage);
+                // Store docType in userProfile temporarily or handle in state if needed, 
+                // but for now we rely on the stage execution.
+                setUserProfile(prev => ({ ...prev, role: docType || 'interested_party' }));
+            }, isOpen ? 500 : 1000);
+        };
+
+        window.addEventListener('open-quantix-doc', handleDocRequest);
+        return () => window.removeEventListener('open-quantix-doc', handleDocRequest);
+    }, [isOpen]);
 
     // Auto-greeting after 5 seconds
     useEffect(() => {
@@ -204,7 +242,44 @@ export default function InvestorConcierge() {
         addUserMessage(message);
         setInputValue('');
 
-        if (stage === 'capture') {
+        // ===== NEW: DOCUMENT CAPTURE FLOW =====
+        if (stage === 'capture_doc') {
+            // Email Validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(message)) {
+                setIsTyping(true);
+                setTimeout(() => {
+                    setIsTyping(false);
+                    addBotMessage("⚠️ That doesn't look like a valid email. Please enter a valid email address.");
+                }, 600);
+                return;
+            }
+
+            setUserProfile(prev => ({ ...prev, email: message }));
+
+            // Determine specific document based on previous role set in handleDocRequest
+            const docType = userProfile.role || 'BusinessCase';
+
+            // Send notification email
+            await sendLeadNotification({
+                ...userProfile,
+                email: message,
+                role: docType,
+                conversationSummary: messages.map(m => `${m.type}: ${m.text}`).join('\n'),
+                isVIP: false
+            });
+
+            setIsTyping(true);
+            setTimeout(() => {
+                setIsTyping(false);
+                addBotMessage(
+                    `Thank you! I've sent the **${docType}** link to ${message}.\n\nYou can also download it directly here:\n📥 [Download PDF Now](https://drive.google.com/file/d/1Pqt_aCRvgG4eUmwDl5c2UGA9-Yz3dkrI/view?usp=sharing)\n\nI've also unlocked the 'Strategic Partner' menu for you below.`,
+                    ['🤝 I want to be a Partner', '⚙️ Technical Inquiry']
+                );
+                setStage('consulting');
+            }, 1200);
+
+        } else if (stage === 'capture') {
             // Capture user details
             if (!userProfile.name) {
                 setUserProfile(prev => ({ ...prev, name: message }));
@@ -256,10 +331,28 @@ export default function InvestorConcierge() {
 
     const sendLeadNotification = async (leadData) => {
         try {
-            // ===== VIP PARTNER ALERT SYSTEM =====
             const emailSubject = leadData.isVIP
                 ? "🔥 [VIP PARTNER] - Quantix Strategic Partnership Inquiry"
-                : "🚀 [HOT LEAD] - Quantix Investor Inquiry";
+                : (leadData.role === 'DOC_DOWNLOAD' || leadData.role === 'BusinessCase' || leadData.role === 'OnePager'
+                    ? `📄 [DOC REQUEST] - ${leadData.role}`
+                    : "🚀 [HOT LEAD] - Quantix Investor Inquiry");
+
+            // Document Link for Email Body
+            const docLink = "https://drive.google.com/file/d/1Pqt_aCRvgG4eUmwDl5c2UGA9-Yz3dkrI/view?usp=sharing";
+
+            const messageBody = {
+                _subject: emailSubject,
+                name: leadData.name || 'Anonymous Investor',
+                email: leadData.email,
+                role: leadData.role,
+                priority: leadData.isVIP ? 'HIGH - PARTNER LEAD' : 'NORMAL',
+                // Add link to the email content for Admin convenience and Auto-response context
+                requested_document: docLink,
+                conversation: leadData.conversationSummary,
+                timestamp: new Date().toISOString(),
+                // FormSubmit AutoResponse Configuration (Optional support)
+                _autoresponse: `Thank you for your interest in Quantix AI. Here is the link to the requested document: ${docLink}`
+            };
 
             await fetch("https://formsubmit.co/ajax/vuquangcuong@gmail.com", {
                 method: "POST",
@@ -267,15 +360,7 @@ export default function InvestorConcierge() {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    _subject: emailSubject,
-                    name: leadData.name,
-                    email: leadData.email,
-                    role: leadData.role,
-                    priority: leadData.isVIP ? 'HIGH - PARTNER LEAD' : 'NORMAL',
-                    conversation: leadData.conversationSummary,
-                    timestamp: new Date().toISOString()
-                })
+                body: JSON.stringify(messageBody)
             });
             console.log(`✅ Lead notification sent: ${emailSubject}`);
         } catch (error) {

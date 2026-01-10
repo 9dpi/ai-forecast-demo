@@ -328,8 +328,8 @@ function PricingCard({ title, price, period, desc, features, t, highlighted = fa
       </div>
 
       <button
+        onClick={() => window.dispatchEvent(new CustomEvent('open-quantix-doc', { detail: { docType: highlighted ? 'Upgrade' : 'FreeTrial' } }))}
         className={highlighted ? 'btn-primary' : ''}
-        title="Coming Soon"
         style={{
           width: '100%',
           padding: '0.75rem',
@@ -337,10 +337,13 @@ function PricingCard({ title, price, period, desc, features, t, highlighted = fa
           border: highlighted ? 'none' : '1px solid rgba(255,255,255,0.2)',
           background: highlighted ? undefined : 'transparent',
           color: 'white',
-          cursor: 'not-allowed',
+          cursor: 'pointer',
           fontWeight: '600',
-          opacity: 0.7
-        }}>
+          transition: 'transform 0.2s'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+      >
         {highlighted ? t.btn.buy : t.btn.start}
       </button>
     </div>
@@ -626,10 +629,19 @@ function Hero({ t }) {
         </p>
 
         <div className="hero-cta-row">
-          <button className="btn-primary" title="Coming Soon" style={{ cursor: 'not-allowed', opacity: 0.8 }}>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-quantix-doc', { detail: { docType: 'FreeTrial' } }))}
+            className="btn-primary"
+            style={{ cursor: 'pointer' }}
+          >
             {t.hero.ctaPrimary}
           </button>
-          <button title="Coming Soon" style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '0.75rem 2rem', borderRadius: '99px', cursor: 'not-allowed', fontWeight: '500', opacity: 0.8 }}>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-quantix-doc', { detail: { docType: 'ViewDemo' } }))}
+            style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '0.75rem 2rem', borderRadius: '99px', cursor: 'pointer', fontWeight: '500', transition: 'all 0.3s' }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.color = 'var(--primary)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = 'white'; }}
+          >
             {t.hero.ctaSecondary} <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
           </button>
         </div>

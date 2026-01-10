@@ -60,6 +60,11 @@ function InvestmentThesis() {
         }
     };
 
+    const triggerBotForDoc = (docType) => {
+        const event = new CustomEvent('open-quantix-doc', { detail: { docType } });
+        window.dispatchEvent(event);
+    };
+
     return (
         <div style={{ fontFamily: "'Outfit', sans-serif", background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)', minHeight: '100vh', color: 'white' }}>
             {/* HEADER */}
@@ -101,16 +106,23 @@ function InvestmentThesis() {
                 </p>
 
                 <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <button className="btn-primary" title="Coming Soon" style={{
-                        padding: '1rem 2.5rem', fontSize: '1.1rem', background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                        color: '#000', cursor: 'not-allowed', fontWeight: 'bold'
-                    }}>
-                        Get Executive Summary
+                    <button
+                        onClick={() => triggerBotForDoc('BusinessCase')}
+                        className="btn-primary"
+                        style={{
+                            padding: '1rem 2.5rem', fontSize: '1.1rem', background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                            color: '#000', cursor: 'pointer', fontWeight: 'bold'
+                        }}>
+                        Download Business Case
                     </button>
-                    <button className="btn-primary" title="Coming Soon" style={{
-                        padding: '1rem 2.5rem', fontSize: '1.1rem', background: 'transparent',
-                        border: '2px solid #FFD700', color: '#FFD700', cursor: 'not-allowed', fontWeight: 'bold'
-                    }}>
+                    <button
+                        onClick={() => triggerBotForDoc('TechnicalDeepDive')}
+                        className="btn-primary"
+                        title="Schedule a Session"
+                        style={{
+                            padding: '1rem 2.5rem', fontSize: '1.1rem', background: 'transparent',
+                            border: '2px solid #FFD700', color: '#FFD700', cursor: 'pointer', fontWeight: 'bold'
+                        }}>
                         Book a Technical Deep-Dive
                     </button>
                 </div>
@@ -358,6 +370,67 @@ function InvestmentThesis() {
                 </div>
             </section>
 
+            {/* INSTITUTIONAL RESOURCES */}
+            <section style={{ padding: '6rem 2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="container" style={{ textAlign: 'center' }}>
+                    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', fontWeight: '800' }}>Institutional Resources</h2>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '3rem', fontSize: '1.1rem' }}>
+                            Access our secure documentation for detailed analysis on Mass-Personalized AI Wealth Management.
+                        </p>
+
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <button
+                                onClick={() => triggerBotForDoc('BusinessCase')}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '12px',
+                                    background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                                    color: '#000',
+                                    padding: '1rem 2rem',
+                                    borderRadius: '50px',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                    boxShadow: '0 4px 15px rgba(255, 215, 0, 0.2)',
+                                    transition: 'transform 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                <FileText size={20} />
+                                <span>Download Business Case</span>
+                            </button>
+
+                            <button
+                                onClick={() => triggerBotForDoc('OnePager')}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '12px',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    color: 'white',
+                                    padding: '1rem 2rem',
+                                    borderRadius: '50px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; }}
+                            >
+                                <Activity size={20} />
+                                <span>Get One-Pager</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* CONTACT FORM */}
             <section id="contact" className="container" style={{ padding: '6rem 2rem' }}>
                 <div className="glass-panel" style={{
@@ -498,36 +571,6 @@ function InvestmentThesis() {
                             </button>
                         </form>
                     )}
-                </div>
-            </section>
-
-            <section style={{ padding: '6rem 2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <div className="container" style={{ textAlign: 'center' }}>
-                    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', fontWeight: '800' }}>Ready to Scale?</h2>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '3rem', fontSize: '1.1rem' }}>
-                            Download our confidential one-pager for a detailed technical breakdown of Quantix AI Core v1.5.
-                        </p>
-
-                        <div style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            background: 'rgba(255, 215, 0, 0.1)',
-                            padding: '1rem 2rem',
-                            borderRadius: '50px',
-                            border: '1px solid rgba(255, 215, 0, 0.3)',
-                            position: 'relative'
-                        }} title="Coming Soon">
-                            <FileText size={24} color="var(--primary)" />
-                            <span style={{ fontWeight: 'bold' }}>Download Full One-Pager</span>
-                            <span style={{
-                                position: 'absolute', top: '-10px', right: '10px',
-                                background: 'var(--primary)', color: 'black', padding: '2px 8px',
-                                borderRadius: '10px', fontSize: '0.65rem', fontWeight: 'bold'
-                            }}>COMING SOON</span>
-                        </div>
-                    </div>
                 </div>
             </section>
 
