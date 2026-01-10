@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio, Menu, CheckCircle } from 'lucide-react';
+import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio, Menu, CheckCircle, Moon, Sun } from 'lucide-react';
 import InvestorConcierge from './components/InvestorConcierge';
 
 const TRANSLATIONS = {
@@ -79,7 +79,7 @@ const BACKTEST_DATA = [
 
 function BacktestSection() {
   return (
-    <section style={{ padding: '8rem 2rem', background: 'rgba(255,255,255,0.02)' }}>
+    <section style={{ padding: '8rem 2rem', background: 'var(--bg-section-alt)' }}>
       <div className="container">
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h2 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>
@@ -96,18 +96,23 @@ function BacktestSection() {
             <AreaChart data={BACKTEST_DATA}>
               <defs>
                 <linearGradient id="colorQuantix" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FFD700" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#FFD700" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" />
-              <YAxis stroke="rgba(255,255,255,0.3)" />
+              <XAxis dataKey="date" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)' }} />
+              <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)' }} />
               <Tooltip
-                contentStyle={{ background: '#0a0e27', border: '1px solid rgba(255,215,0,0.2)', borderRadius: '12px' }}
-                itemStyle={{ color: '#fff' }}
+                contentStyle={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--primary)',
+                  borderRadius: '12px',
+                  color: 'var(--text-primary)'
+                }}
+                itemStyle={{ color: 'var(--text-primary)' }}
               />
-              <Area type="monotone" dataKey="quantix" stroke="#FFD700" strokeWidth={3} fillOpacity={1} fill="url(#colorQuantix)" name="Quantix AI v1.5" />
-              <Area type="monotone" dataKey="vn30" stroke="rgba(255,255,255,0.5)" strokeWidth={2} fillOpacity={0} name="VN30 Index" />
+              <Area type="monotone" dataKey="quantix" stroke="var(--primary-dark)" strokeWidth={3} fillOpacity={1} fill="url(#colorQuantix)" name="Quantix AI v1.5" />
+              <Area type="monotone" dataKey="vn30" stroke="var(--text-secondary)" strokeWidth={2} fillOpacity={0} name="VN30 Index" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -163,6 +168,10 @@ function useSecurity() {
 
 function Navbar({ t, onLoginClick, isLoggedIn, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // ... (keeping scrollToSection unchanged, if it's not in the chunk, I don't need to touch it. But I'm replacing the function head so I need to be careful.
+  // Actually, I can just target the function signature and the specific div in separate chunks or one large chunk.
+  // Let's do a large chunk to be safe as I need to change signature and content.
 
   const scrollToSection = (e, id) => {
     e.preventDefault();
@@ -334,9 +343,9 @@ function PricingCard({ title, price, period, desc, features, t, highlighted = fa
           width: '100%',
           padding: '0.75rem',
           borderRadius: '8px',
-          border: highlighted ? 'none' : '1px solid rgba(255,255,255,0.2)',
+          border: highlighted ? 'none' : '1px solid var(--border-color)',
           background: highlighted ? undefined : 'transparent',
-          color: 'white',
+          color: 'var(--text-primary)',
           cursor: 'pointer',
           fontWeight: '600',
           transition: 'transform 0.2s'
@@ -355,7 +364,7 @@ function PricingSection({ t }) {
     <section id="pricing" className="container" style={{ padding: '4rem 2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
         <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>{t.pricing.title}</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>{t.pricing.subtitle}</p>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem' }}>{t.pricing.subtitle}</p>
       </div>
 
       <div className="grid-cols-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', alignItems: 'center' }}>
@@ -403,27 +412,52 @@ function PricingSection({ t }) {
 }
 
 // --- Dashboard Components ---
-const DashboardChart = React.memo(({ data }) => (
-  <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
-    <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={data}>
-        <defs>
-          <linearGradient id="colorVn30" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="name" stroke="var(--text-muted)" tick={{ fontSize: 12 }} />
-        <YAxis domain={['auto', 'auto']} stroke="var(--text-muted)" tick={{ fontSize: 12 }} />
-        <Tooltip
-          contentStyle={{ backgroundColor: '#030014', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
-          itemStyle={{ color: '#fff' }}
-        />
-        <Area type="monotone" dataKey="vn30" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorVn30)" animationDuration={500} />
-      </AreaChart>
-    </ResponsiveContainer>
-  </div>
-));
+const DashboardChart = React.memo(({ data }) => {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+  return (
+    <div style={{ flex: 1, width: '100%', minHeight: '300px' }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="colorVn30" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--primary)" stopOpacity={isLight ? 0.4 : 0.3} />
+              <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis
+            dataKey="name"
+            stroke="var(--text-secondary)"
+            tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
+          />
+          <YAxis
+            domain={['auto', 'auto']}
+            stroke="var(--text-secondary)"
+            tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
+          />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: 'var(--bg-card)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-primary)',
+              borderRadius: '12px'
+            }}
+            itemStyle={{ color: 'var(--text-primary)' }}
+          />
+          <Area
+            type="monotone"
+            dataKey="vn30"
+            stroke="var(--primary-dark)"
+            strokeWidth={3}
+            fillOpacity={1}
+            fill="url(#colorVn30)"
+            animationDuration={500}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+});
 
 function Dashboard({ t }) {
   // Simulating Real-time Data
@@ -495,7 +529,7 @@ function Dashboard({ t }) {
               <Activity size={16} color="var(--primary)" />
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>{val.price.toLocaleString()}</div>
-            <div style={{ color: val.change.includes('+') ? '#00BA88' : '#FF0055', fontSize: '0.9rem' }}>
+            <div style={{ color: val.change.includes('+') ? 'var(--color-buy)' : 'var(--color-sell)', fontSize: '0.9rem' }}>
               {val.change}
             </div>
           </div>
@@ -519,13 +553,13 @@ function Dashboard({ t }) {
               { t: 'GOLD', sig: 'LONG', conf: '88%', time: '15m ago' },
               { t: 'EUR/USD', sig: 'SHORT', conf: '75%', time: '20m ago' }
             ].map((item, i) => (
-              <div key={i} style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', borderLeft: `3px solid ${item.sig === 'LONG' ? '#00BA88' : item.sig === 'SHORT' ? '#FF0055' : 'gold'}` }}>
+              <div key={i} style={{ padding: '1rem', background: 'var(--bg-card)', borderRadius: '8px', borderLeft: `3px solid ${item.sig === 'LONG' ? 'var(--color-buy)' : item.sig === 'SHORT' ? 'var(--color-sell)' : 'gold'}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
                   <span style={{ fontWeight: 'bold' }}>{item.t}</span>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.time}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: item.sig === 'LONG' ? '#00BA88' : item.sig === 'SHORT' ? '#FF0055' : 'gold', fontWeight: 'bold' }}>{item.sig}</span>
+                  <span style={{ color: item.sig === 'LONG' ? 'var(--color-buy)' : item.sig === 'SHORT' ? 'var(--color-sell)' : 'gold', fontWeight: 'bold' }}>{item.sig}</span>
                   <span style={{ fontSize: '0.9rem' }}>Prob: {item.conf}</span>
                 </div>
               </div>
@@ -579,15 +613,15 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
             <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <span style={{ fontWeight: '700', fontSize: '1.2rem' }}>{s.ticker}</span>
-                <span style={{ color: s.change.includes('+') ? '#00BA88' : '#FF0055' }}>{s.change}</span>
+                <span style={{ color: s.change.includes('+') ? 'var(--color-buy)' : 'var(--color-sell)' }}>{s.change}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{s.price}</div>
                 <div style={{
                   padding: '0.25rem 0.75rem',
                   borderRadius: '4px',
-                  background: s.action === 'LONG' || s.action === 'BUY' ? 'rgba(0, 186, 136, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                  color: s.action === 'LONG' || s.action === 'BUY' ? '#00BA88' : 'var(--text-muted)',
+                  background: s.action === 'LONG' || s.action === 'BUY' ? 'rgba(0, 186, 136, 0.2)' : 'rgba(255, 0, 92, 0.1)',
+                  color: s.action === 'LONG' || s.action === 'BUY' ? 'var(--color-buy)' : 'var(--text-secondary)',
                   fontWeight: '600'
                 }}>
                   {s.action}
@@ -670,10 +704,10 @@ function Hero({ t }) {
               <h2 style={{ fontSize: '2rem' }}>1,245.67</h2>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <span style={{ color: '#00BA88', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ color: 'var(--color-buy)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <TrendingUp size={16} /> +1.24%
               </span>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Intraday</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Intraday</p>
             </div>
           </div>
 
@@ -695,13 +729,13 @@ function Hero({ t }) {
           </svg>
 
           <div style={{ marginTop: '2rem', display: 'flex', gap: '10px' }}>
-            <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Prediction</p>
+            <div style={{ flex: 1, background: 'var(--bg-section-alt)', padding: '1rem', borderRadius: '12px' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Prediction</p>
               <p style={{ fontWeight: '600', color: 'var(--primary)' }}>Strong Buy</p>
             </div>
-            <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Confidence</p>
-              <p style={{ fontWeight: '600' }}>High (89%)</p>
+            <div style={{ flex: 1, background: 'var(--bg-section-alt)', padding: '1rem', borderRadius: '12px' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Confidence</p>
+              <p style={{ fontWeight: '600', color: 'var(--text-primary)' }}>High (89%)</p>
             </div>
           </div>
         </div>
@@ -767,7 +801,11 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = "Quantix AI Forecast";
+
+    // Force Dark Theme for Landing Page
+    document.documentElement.setAttribute('data-theme', 'dark');
   }, []);
+
 
   const t = TRANSLATIONS.en;
 

@@ -5,17 +5,80 @@ html {
 }
 
 :root {
+  /* Core Theme Variables (Dynamic) */
+  --bg-app: #0B0E11;
+  --bg-card: #151921;
+  --text-primary: #FFFFFF;
+  --text-secondary: #848E9C;
+  --border-color: #2B3139;
+
+  /* Signal Colors (Life/Death) */
+  --color-buy: #00FFA3;
+  --color-sell: #FF005C;
+  --color-sl: #FF8A00;
+  --color-tp: #00E0FF;
+
+  /* Existing Design Tokens (Mapped or Preserved) */
   --neon-blue: #00F0FF;
   --neon-purple: #BC13FE;
   --primary: #FFD700;
   --primary-dark: #FFA500;
-  --bg-dark: #030014;
-  --bg-card: rgba(255, 255, 255, 0.05);
-  --text-main: #FFFFFF;
-  --text-muted: #A0AEC0;
+
+  /* Mapped for backward compatibility */
+  --bg-dark: var(--bg-app);
+  --text-main: var(--text-primary);
+  --text-muted: var(--text-secondary);
+  --glass-border: var(--border-color);
+
   --font-main: 'Outfit', sans-serif;
   --font-heading: 'Space Grotesk', sans-serif;
   --header-height: 80px;
+  --transition: all 0.3s ease;
+  --bg-gradient: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  --bg-section-alt: rgba(255, 255, 255, 0.02);
+  --secondary: var(--neon-purple);
+  --card-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  --btn-primary-shadow: 0 0 20px var(--neon-blue);
+  /* Badge Text Contrast Logic */
+  --action-text: #080A0C;
+  /* Dark text for neon buttons in dark mode */
+}
+
+/* Light Theme Override - Higher Contrast & Refined Depth */
+[data-theme='light'] {
+  --bg-app: #DBE0E8;
+  /* Slightly deeper for better card separation */
+  --bg-card: #FFFFFF;
+  --text-primary: #121619;
+  /* Extreme contrast */
+  --text-secondary: #2D3748;
+  /* Darker grey for legibility */
+  --border-color: #A0AEC0;
+  /* Stronger borders */
+
+  /* High-Contrast Branding Overrides for Light Mode */
+  --neon-blue: #0056B3;
+  /* Deep Professional Blue instead of Cyan */
+  --neon-purple: #6B46C1;
+  /* Deep Purple */
+  --primary: #B7791F;
+  /* Deep Gold/Brass for contrast */
+  --primary-dark: #975A16;
+
+  /* Adjusted for Light Mode Visibility - Professional Palette */
+  --color-buy: #1B5E20;
+  /* Deepest Forest Green */
+  --color-sell: #B71C1C;
+  /* Deepest Blood Red */
+
+  --bg-gradient: linear-gradient(135deg, #DBE0E8 0%, #FAFBFC 100%);
+  --glass-border: rgba(0, 0, 0, 0.15);
+  --bg-section-alt: rgba(0, 0, 0, 0.05);
+  --secondary: var(--neon-purple);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --btn-primary-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+  --action-text: #FFFFFF;
+  /* White text for deep forest/blood colors in light mode */
 }
 
 * {
@@ -45,7 +108,7 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--card-shadow);
 }
 
 /* Navbar */
@@ -176,7 +239,7 @@ body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 20px var(--neon-blue);
+  box-shadow: var(--btn-primary-shadow);
 }
 
 /* --- RESPONSIVE --- */
@@ -325,7 +388,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #030014;
+  background: var(--bg-app);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -335,4 +398,253 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--neon-blue);
+}
+
+/* --- BENTO SIGNAL CARDS (TikTok Style) --- */
+.tiktok-view-container {
+  width: 100%;
+  max-width: 430px;
+  /* iPhone Pro Max Width */
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 80vh;
+}
+
+.signal-card {
+  background: var(--bg-card);
+  border-radius: 28px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  /* Center everything for TikTok vertical focus */
+}
+
+.signal-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.signal-card .asset-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.signal-card .pair {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.signal-card .timeframe {
+  font-size: 0.75rem;
+  color: var(--neon-blue);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* 1. Nổi bật AI Confidence Card với Gradient Gold mạnh mẽ */
+.ai-confidence-bento {
+  background: linear-gradient(135deg, #FFD700 0%, #D4AF37 50%, #B8860B 100%);
+  padding: 14px;
+  border-radius: 20px;
+  margin: 12px 0 24px 0;
+  /* Increased bottom margin for breathability */
+  box-shadow: 0 8px 25px rgba(184, 134, 11, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.ai-confidence-bento .label {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.8);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.ai-confidence-bento .score {
+  font-size: 2.2rem;
+  /* Even bolder */
+  font-weight: 950;
+  color: #000;
+  /* Pure black for maximum contrast on gold */
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.2);
+  line-height: 1;
+}
+
+.signal-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Nút Action Full-width theo trục dọc */
+.action-badge-full {
+  width: 100%;
+  padding: 16px;
+  border-radius: 20px;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.action-badge-full.buy {
+  background: var(--color-buy);
+  color: var(--action-text);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.3);
+}
+
+.action-badge-full.sell {
+  background: var(--color-sell);
+  color: var(--action-text);
+  box-shadow: 0 0 20px rgba(255, 0, 92, 0.3);
+}
+
+.signal-card .entry-price {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-family: 'Space Grotesk', sans-serif;
+  margin: 8px 0;
+}
+
+.signal-card .entry-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.signal-card .card-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.price-box-bento {
+  padding: 16px 8px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--bg-section-alt);
+  border: 1px solid var(--border-color);
+}
+
+.price-box-bento .tag {
+  font-weight: 900;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.price-box-bento .val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.price-box-bento.sl {
+  color: var(--color-sell);
+  border-color: rgba(183, 28, 28, 0.2);
+}
+
+.price-box-bento.tp {
+  color: var(--color-buy);
+  border-color: rgba(27, 94, 32, 0.2);
+}
+
+/* --- TRẠNG THÁI EXPIRED MẠNH MẼ --- */
+.expired-badge {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  background: #B71C1C;
+  /* Security/Warning Red */
+  color: #fff;
+  padding: 10px 35px;
+  border: 4px solid #fff;
+  font-size: 1.8rem;
+  font-weight: 950;
+  z-index: 20;
+  border-radius: 4px;
+  pointer-events: none;
+  letter-spacing: 4px;
+  box-shadow: 0 10px 30px rgba(183, 28, 28, 0.6);
+  text-transform: uppercase;
+}
+
+.signal-card[data-status="SL_HIT"],
+.signal-card[data-status="TP2_HIT"],
+.signal-card[data-status="EXPIRED"] {
+  filter: grayscale(100%) blur(2px);
+  opacity: 0.35;
+  /* Increased dimming as requested */
+  pointer-events: none;
+}
+
+.signal-card[data-status="SL_HIT"] .expired-badge,
+.signal-card[data-status="TP2_HIT"] .expired-badge,
+.signal-card[data-status="EXPIRED"] .expired-badge {
+  filter: none;
+  /* Keep the label sharp while the background is blurred */
+  opacity: 1;
+}
+
+/* Pulse Animation for Active Signals */
+@keyframes signal-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 200, 129, 0.4);
+  }
+
+  70% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(0, 200, 129, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 200, 129, 0);
+  }
+}
+
+.signal-card[data-status="ENTRY_HIT"] .action-badge,
+.signal-card[data-status="TP1_HIT"] .action-badge {
+  animation: signal-pulse 2s infinite;
+}
+
+@media screen and (max-width: 480px) {
+  .nav-container {
+    border-bottom: 1px solid var(--border-color);
+  }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
-import { TrendingUp, TrendingDown, Clipboard, Check, Radio, Activity, AlertTriangle, Target, XCircle, CheckCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clipboard, Check, Radio, Activity, AlertTriangle, Target, XCircle, CheckCircle, Moon, Sun, Zap } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 // --- SUPABASE CONFIG ---
@@ -15,93 +15,68 @@ try {
 
 // --- OPTIMIZED COMPONENTS ---
 
-// 1. Memoized Table Row: Only re-renders if the specific signal prop changes
-const SignalTableRow = memo(({ signal }) => {
-    const [copied, setCopied] = useState(false);
+// 1. Bento Signal Card: Optimized for TikTok 9:16 - Stacked Vertical Layout
+const SignalBentoCard = memo(({ signal }) => {
+    const confidence = parseFloat(signal.conf || 0);
+    const tp1 = parseFloat(signal.tp1_raw || 0);
+    const tp2 = parseFloat(signal.tp2_raw || 0);
 
-    const handleCopy = useCallback(() => {
-        const text = `${signal.action} ${signal.pair} @ ${signal.entry}\nSL: ${signal.sl} | TP1: ${signal.tp1} | TP2: ${signal.tp2}`;
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    }, [signal]);
+    const finalTP = confidence > 90
+        ? ((tp1 + tp2) / 2).toFixed(5)
+        : tp1.toFixed(5);
 
-    const getStatusBadge = (status) => {
-        const badges = {
-            'WAITING': { text: 'Waiting', color: '#999', icon: null },
-            'ENTRY_HIT': { text: 'Entry Hit', color: '#00BA88', icon: <Check size={14} /> },
-            'TP1_HIT': { text: 'TP1 Hit ✓', color: '#00BA88', icon: <Target size={14} /> },
-            'TP2_HIT': { text: 'TP2 Hit ✓✓', color: '#FFD700', icon: <Target size={14} /> },
-            'SL_HIT': { text: 'SL Hit', color: '#FF0055', icon: <XCircle size={14} /> },
-        };
-        const badge = badges[status] || badges['WAITING'];
-        return (
-            <span style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '4px 10px',
-                borderRadius: '12px',
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-                background: `${badge.color}20`,
-                color: badge.color,
-                border: `1px solid ${badge.color}40`,
-                whiteSpace: 'nowrap'
-            }}>
-                {badge.icon} {badge.text}
-            </span>
-        );
-    };
+    const isExpired = ['SL_HIT', 'TP2_HIT', 'EXPIRED'].includes(signal.status);
 
     return (
-        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <td style={{ padding: '15px 10px' }}>
-                <span style={{
-                    fontWeight: 'bold',
-                    color: signal.action === 'BUY' ? '#00BA88' : '#FF0055',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px'
-                }}>
-                    {signal.action === 'BUY' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+        <div className="signal-card" data-status={signal.status}>
+            {isExpired && <div className="expired-badge">EXPIRED</div>}
+
+            <div className="card-header">
+                <div className="asset-info">
+                    <span className="pair">{signal.pair}</span>
+                    <span className="timeframe">M15 • AI AGENT V1.5</span>
+                </div>
+            </div>
+
+            {/* AI SCORE CARD - Gold Gradient & Prominent */}
+            <div className="ai-confidence-bento">
+                <span className="label">AI SCORE CARD</span>
+                <span className="score">{signal.conf}%</span>
+            </div>
+
+            <div className="card-body">
+                <div className="entry-label">ENTRY PRICE</div>
+                <div className="entry-price">{signal.entry}</div>
+
+                {/* ACTION BADGE - Full Width & Strong */}
+                <div className={`action-badge-full ${signal.action.toLowerCase()}`}>
+                    <Zap size={32} fill="currentColor" />
                     {signal.action}
-                </span>
-            </td>
-            <td style={{ padding: '15px 10px', fontWeight: 'bold' }}>{signal.entry}</td>
-            <td style={{ padding: '15px 10px', color: '#FF0055' }}>{signal.sl}</td>
-            <td style={{ padding: '15px 10px', color: '#00BA88' }}>{signal.tp1}</td>
-            <td style={{ padding: '15px 10px', color: '#FFD700' }}>{signal.tp2}</td>
-            <td style={{ padding: '15px 10px', fontFamily: 'monospace' }}>{signal.rr}</td>
-            <td style={{ padding: '15px 10px' }}>{getStatusBadge(signal.status)}</td>
-            <td style={{ padding: '15px 10px' }}>
-                <button
-                    onClick={handleCopy}
-                    style={{
-                        background: 'rgba(0,186,136,0.2)',
-                        border: '1px solid #00BA88',
-                        color: '#00BA88',
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        fontSize: '0.85rem',
-                        fontWeight: 'bold'
-                    }}
-                >
-                    {copied ? <Check size={14} /> : <Clipboard size={14} />}
-                    {copied ? 'Copied' : 'Copy'}
-                </button>
-            </td>
-        </tr>
+                </div>
+            </div>
+
+            <div className="card-footer">
+                <div className="price-box-bento sl">
+                    <span className="tag">STOP LOSS</span>
+                    <span className="val">{signal.sl}</span>
+                </div>
+                <div className="price-box-bento tp">
+                    <span className="tag">TAKE PROFIT</span>
+                    <span className="val">{finalTP}</span>
+                </div>
+            </div>
+
+            {/* Pulsing Dot Overlay (Centered logic check) */}
+            {['ENTRY_HIT', 'TP1_HIT'].includes(signal.status) && (
+                <div style={{ position: 'absolute', top: 20, right: 20, background: 'var(--color-buy)', width: '12px', height: '12px', borderRadius: '50%', boxShadow: '0 0 10px var(--color-buy)' }} className="animate-pulse" />
+            )}
+        </div>
     );
 });
 
 // 2. Live Ticker Component: Handles high-frequency updates independently
 const LiveTicker = memo(({ initialPrice }) => {
-    // NO MORE HARDCODED DEFAULTS - Only real data from database
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
     const [data, setData] = useState({
         price: initialPrice || null,
         trend1H: 'BULLISH',
@@ -109,7 +84,6 @@ const LiveTicker = memo(({ initialPrice }) => {
         aiConfidence: 87
     });
 
-    // Update internal state when initialPrice changes (from parent fetch)
     useEffect(() => {
         if (initialPrice) {
             setData(prev => ({ ...prev, price: initialPrice }));
@@ -117,254 +91,78 @@ const LiveTicker = memo(({ initialPrice }) => {
     }, [initialPrice]);
 
     return (
-        <section className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(0,186,136,0.05) 100%)' }}>
-            {/* Top Row: Price + AI Confidence */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', marginBottom: '8px', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase' }}>EUR/USD Live Rate</p>
-                    <p style={{ fontSize: '2.5rem', color: '#00F0FF', fontWeight: 'bold', fontFamily: 'monospace', margin: 0, textShadow: '0 0 20px rgba(0,240,255,0.4)' }}>
-                        {data.price ? data.price.toFixed(4) : "---"}
-                    </p>
-                </div>
-
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', marginBottom: '8px', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase' }}>AI Confidence</p>
-                    <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#FFD700', margin: 0 }}>{data.aiConfidence}%</p>
-                </div>
-            </div>
-
-            {/* Bottom Row: Trends */}
-            <div style={{
+        <section style={{ marginBottom: '2rem' }}>
+            <div className="glass-panel" style={{
+                padding: '1.25rem',
+                background: 'var(--bg-card)',
+                boxShadow: 'var(--card-shadow)',
+                borderRadius: '24px',
+                border: '1px solid var(--border-color)',
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '1rem',
-                borderTop: '1px solid rgba(255,255,255,0.1)',
-                paddingTop: '1.5rem'
+                gridTemplateColumns: 'minmax(0, 1.2fr) 1px minmax(0, 0.8fr)', /* Consolidating Top Bar - No gap */
+                alignItems: 'center',
+                gap: '12px'
             }}>
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginBottom: '6px', fontWeight: '600', letterSpacing: '0.5px', textTransform: 'uppercase' }}>1H Trend</p>
-                    <p style={{
-                        fontSize: '1.1rem',
-                        fontWeight: 'bold',
-                        color: data.trend1H === 'BULLISH' ? '#00BA88' : '#FF0055',
-                        margin: 0
-                    }}>
-                        {data.trend1H === 'BULLISH' ? '↗ ' : '↘ '}{data.trend1H}
-                    </p>
+                {/* Left: Live Price Area */}
+                <div style={{ textAlign: 'left', paddingLeft: '8px' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>EUR/USD LIVE</p>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <span style={{
+                            fontSize: '1.8rem',
+                            color: 'var(--neon-blue)',
+                            fontWeight: '900',
+                            fontFamily: 'monospace',
+                            lineHeight: 1
+                        }}>
+                            {data.price ? data.price.toFixed(5) : "---"}
+                        </span>
+                        <TrendingUp size={16} color="var(--color-buy)" className="animate-pulse" />
+                    </div>
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginBottom: '6px', fontWeight: '600', letterSpacing: '0.5px', textTransform: 'uppercase' }}>15M Trend</p>
-                    <p style={{
-                        fontSize: '1.1rem',
-                        fontWeight: 'bold',
-                        color: data.trend15M === 'BULLISH' ? '#00BA88' : '#FF0055',
-                        margin: 0
-                    }}>
-                        {data.trend15M === 'BULLISH' ? '↗ ' : '↘ '}{data.trend15M}
-                    </p>
+                {/* Vertical Divider */}
+                <div style={{ height: '40px', background: 'var(--border-color)' }}></div>
+
+                {/* Right: Market Sentiment - Differentiated from Signal Score */}
+                <div style={{ textAlign: 'right', paddingRight: '12px' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>Market Sentiment</p>
+                    <div style={{ fontSize: '1.2rem', fontWeight: '900', color: data.trend1H === 'BULLISH' ? 'var(--color-buy)' : 'var(--color-sell)', lineHeight: 1 }}>
+                        {data.trend1H === 'BULLISH' ? 'STRONG BULLISH' : 'STRONG BEARISH'}
+                    </div>
                 </div>
             </div>
         </section>
     );
 });
 
-// Mobile Card Component
-const SignalMobileCard = memo(({ signal }) => {
-    const [copied, setCopied] = useState(false);
-
-    const handleCopy = useCallback(() => {
-        const text = `${signal.action} ${signal.pair} @ ${signal.entry}\nSL: ${signal.sl} | TP1: ${signal.tp1} | TP2: ${signal.tp2}`;
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    }, [signal]);
-
-    const getStatusBadge = (status) => {
-        const badges = {
-            'WAITING': { text: 'Waiting', color: '#999', icon: null },
-            'ENTRY_HIT': { text: 'Entry Hit', color: '#00BA88', icon: <Check size={14} /> },
-            'TP1_HIT': { text: 'TP1 Hit ✓', color: '#00BA88', icon: <Target size={14} /> },
-            'TP2_HIT': { text: 'TP2 Hit ✓✓', color: '#FFD700', icon: <Target size={14} /> },
-            'SL_HIT': { text: 'SL Hit', color: '#FF0055', icon: <XCircle size={14} /> },
-        };
-        const badge = badges[status] || badges['WAITING'];
-        return (
-            <span style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '4px 10px',
-                borderRadius: '12px',
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-                background: `${badge.color}20`,
-                color: badge.color,
-                border: `1px solid ${badge.color}40`
-            }}>
-                {badge.icon} {badge.text}
-            </span>
-        );
-    };
-
-    return (
-        <div style={{
-            background: 'rgba(255,255,255,0.08)',
-            borderLeft: `4px solid ${signal.action === 'BUY' ? '#00BA88' : '#FF0055'}`,
-            borderRadius: '12px',
-            padding: '1.25rem',
-            marginBottom: '1rem',
-            border: '1px solid rgba(255,255,255,0.1)'
-        }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{
-                    fontWeight: 'bold',
-                    fontSize: '1.2rem',
-                    color: signal.action === 'BUY' ? '#00BA88' : '#FF0055',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px'
-                }}>
-                    {signal.action === 'BUY' ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
-                    {signal.action} {signal.pair}
-                </span>
-                {getStatusBadge(signal.status)}
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div style={{ background: 'rgba(0,240,255,0.08)', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(0,240,255,0.2)' }}>
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '4px', fontWeight: '600', letterSpacing: '0.5px' }}>ENTRY PRICE</p>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', fontFamily: 'monospace', color: '#00F0FF' }}>{signal.entry}</p>
-                </div>
-                <div style={{ background: 'rgba(255,215,0,0.08)', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(255,215,0,0.2)' }}>
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '4px', fontWeight: '600', letterSpacing: '0.5px' }}>RISK/REWARD</p>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', fontFamily: 'monospace', color: '#FFD700' }}>{signal.rr}</p>
-                </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <div style={{ textAlign: 'center', padding: '0.75rem', background: 'rgba(255,0,85,0.15)', borderRadius: '10px', border: '1px solid rgba(255,0,85,0.3)' }}>
-                    <p style={{ fontSize: '0.7rem', color: '#FF0055', marginBottom: '4px', fontWeight: 'bold' }}>STOP LOSS</p>
-                    <p style={{ fontSize: '1.1rem', fontFamily: 'monospace', fontWeight: 'bold', color: 'white' }}>{signal.sl}</p>
-                </div>
-                <div style={{ textAlign: 'center', padding: '0.75rem', background: 'rgba(0,186,136,0.15)', borderRadius: '10px', border: '1px solid rgba(0,186,136,0.3)' }}>
-                    <p style={{ fontSize: '0.7rem', color: '#00BA88', marginBottom: '4px', fontWeight: 'bold' }}>TARGET 1</p>
-                    <p style={{ fontSize: '1.1rem', fontFamily: 'monospace', fontWeight: 'bold', color: 'white' }}>{signal.tp1}</p>
-                </div>
-                <div style={{ textAlign: 'center', padding: '0.75rem', background: 'rgba(255,215,0,0.15)', borderRadius: '10px', border: '1px solid rgba(255,215,0,0.3)' }}>
-                    <p style={{ fontSize: '0.7rem', color: '#FFD700', marginBottom: '4px', fontWeight: 'bold' }}>TARGET 2</p>
-                    <p style={{ fontSize: '1.1rem', fontFamily: 'monospace', fontWeight: 'bold', color: 'white' }}>{signal.tp2}</p>
-                </div>
-            </div>
-
-            <button
-                onClick={handleCopy}
-                style={{
-                    width: '100%',
-                    background: copied ? '#00BA88' : 'rgba(0,186,136,0.2)',
-                    border: `2px solid ${copied ? '#00BA88' : '#00BA88'}`,
-                    color: copied ? 'white' : '#00BA88',
-                    padding: '12px',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    transition: 'all 0.2s'
-                }}
-            >
-                {copied ? <Check size={18} /> : <Clipboard size={18} />}
-                {copied ? 'Signal Copied!' : 'Copy Signal'}
-            </button>
-        </div>
-    );
-});
-
-// 3. Signal List Container
+// 3. Signal List Container - TikTok Optimized Bento Layout
 const SignalList = memo(({ signals, loadingState }) => {
     return (
-        <section>
-            <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'white', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Target color="#00F0FF" size={28} />
-                Active Trading Signals
+        <section className="tiktok-view-container">
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'var(--text-primary)', textAlign: 'center', fontWeight: '900' }}>
+                LIVE SIGNALS
             </h2>
 
-            {/* Desktop Table View */}
-            <div className="glass-panel desktop-view-only" style={{ padding: '0', overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
-                    <thead>
-                        <tr style={{ background: 'rgba(0,240,255,0.1)', borderBottom: '2px solid rgba(0,240,255,0.3)' }}>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>ACTION</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>ENTRY</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>SL</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>TP1</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>TP2</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>R:R</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>STATUS</th>
-                            <th style={{ padding: '15px 10px', textAlign: 'left', color: '#00F0FF', fontSize: '0.9rem', fontWeight: 'bold' }}>COPY</th>
-                        </tr>
-                    </thead>
-                    <tbody style={{ color: 'white' }}>
-                        {loadingState === 'CONNECTING' ? (
-                            <tr>
-                                <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
-                                    <div style={{ display: 'inline-block', marginBottom: '15px' }} className="animate-spin">
-                                        <Activity size={30} color="#00F0FF" />
-                                    </div>
-                                    <div style={{ fontSize: '1.2rem', color: 'white' }}>Connecting to Live Server...</div>
-                                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Fetching AI Signals</div>
-                                </td>
-                            </tr>
-                        ) : loadingState === 'CONNECTED' ? (
-                            <tr>
-                                <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#00BA88' }}>
-                                    <div style={{ display: 'inline-block', marginBottom: '15px' }}>
-                                        <CheckCircle size={40} color="#00BA88" />
-                                    </div>
-                                    <div style={{ fontSize: '1.2rem', color: '#00BA88', fontWeight: 'bold' }}>Connected Successfully ✅</div>
-                                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Syncing Real-time Data...</div>
-                                </td>
-                            </tr>
-                        ) : signals.length === 0 ? (
-                            <tr>
-                                <td colSpan="8" style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
-                                    <div style={{ marginBottom: '15px' }}>
-                                        <AlertTriangle size={30} color="#FFD700" />
-                                    </div>
-                                    <div style={{ fontSize: '1.2rem', color: 'white' }}>Waiting for New Signals</div>
-                                    <div style={{ fontSize: '0.9rem', color: '#666' }}>System is scanning for high-probability setups...</div>
-                                </td>
-                            </tr>
-                        ) : (
-                            signals.map(s => (
-                                <SignalTableRow key={s.id} signal={s} />
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="mobile-view-only" style={{ display: 'none' }}>
-                {loadingState === 'CONNECTING' ? (
-                    <div style={{ textAlign: 'center', padding: '3rem' }}>
-                        <div className="animate-spin" style={{ display: 'inline-block', marginBottom: '1rem' }}>
-                            <Activity size={30} color="#00F0FF" />
-                        </div>
-                        <p style={{ color: '#999' }}>Connecting...</p>
+            {loadingState === 'CONNECTING' ? (
+                <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-secondary)' }}>
+                    <div style={{ display: 'inline-block', marginBottom: '15px' }} className="animate-spin">
+                        <Activity size={30} color="var(--neon-blue)" />
                     </div>
-                ) : signals.length === 0 ? (
-                    <div className="glass-panel" style={{ textAlign: 'center', padding: '3rem' }}>
-                        <AlertTriangle size={30} color="#FFD700" />
-                        <p style={{ color: 'white', marginTop: '1rem' }}>Waiting for Signals</p>
-                    </div>
-                ) : (
-                    signals.map(s => <SignalMobileCard key={s.id} signal={s} />)
-                )}
-            </div>
+                    <div>SYNCING WITH AI AGENT...</div>
+                </div>
+            ) : signals.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '24px' }}>
+                    <AlertTriangle size={30} color="var(--primary)" style={{ marginBottom: '10px' }} />
+                    <div style={{ fontWeight: 'bold' }}>SCANNING MARKET...</div>
+                    <div style={{ fontSize: '0.8rem' }}>Waiting for high-probability setups</div>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {signals.map(s => (
+                        <SignalBentoCard key={s.id} signal={s} />
+                    ))}
+                </div>
+            )}
         </section>
     );
 });
@@ -374,9 +172,21 @@ export default function AppMVP() {
     const [loadingState, setLoadingState] = useState('CONNECTING'); // CONNECTING -> CONNECTED -> READY
     const [currentPrice, setCurrentPrice] = useState(null);
 
+    const [theme, setTheme] = useState('dark');
+
     useEffect(() => {
         document.title = "Signal Genius AI";
+        const savedTheme = localStorage.getItem('quantix_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        setTheme(savedTheme);
     }, []);
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('quantix_theme', newTheme);
+    };
 
     // FETCH REAL DATA
     useEffect(() => {
@@ -408,10 +218,10 @@ export default function AppMVP() {
                     id: d.id,
                     pair: 'EUR/USD',
                     action: d.signal_type === 'LONG' ? 'BUY' : 'SELL',
-                    entry: parseFloat(d.predicted_close || 0).toFixed(4),
-                    sl: d.sl_price ? parseFloat(d.sl_price).toFixed(4) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(4),
-                    tp1: d.tp1_price ? parseFloat(d.tp1_price).toFixed(4) : (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)).toFixed(4),
-                    tp2: d.tp2_price ? parseFloat(d.tp2_price).toFixed(4) : (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)).toFixed(4),
+                    entry: parseFloat(d.predicted_close || 0).toFixed(5),
+                    sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(5),
+                    tp1_raw: d.tp1_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)),
+                    tp2_raw: d.tp2_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)),
                     rr: '1:2.6',
                     conf: d.confidence_score,
                     status: d.signal_status || 'WAITING',
@@ -453,10 +263,10 @@ export default function AppMVP() {
                         id: d.id,
                         pair: 'EUR/USD',
                         action: d.signal_type === 'LONG' ? 'BUY' : 'SELL',
-                        entry: parseFloat(d.predicted_close || 0).toFixed(4),
-                        sl: d.sl_price ? parseFloat(d.sl_price).toFixed(4) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(4),
-                        tp1: d.tp1_price ? parseFloat(d.tp1_price).toFixed(4) : (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)).toFixed(4),
-                        tp2: d.tp2_price ? parseFloat(d.tp2_price).toFixed(4) : (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)).toFixed(4),
+                        entry: parseFloat(d.predicted_close || 0).toFixed(5),
+                        sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(5),
+                        tp1_raw: d.tp1_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)),
+                        tp2_raw: d.tp2_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)),
                         rr: '1:2.6',
                         conf: d.confidence_score,
                         status: d.signal_status || 'WAITING',
@@ -473,15 +283,36 @@ export default function AppMVP() {
     }, []);
 
     return (
-        <div style={{ fontFamily: "'Outfit', sans-serif", minHeight: '100vh', background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)' }}>
+        <div style={{ fontFamily: "'Outfit', sans-serif", minHeight: '100vh', background: 'var(--bg-gradient)', color: 'var(--text-primary)' }}>
             {/* HEADER */}
             <nav className="glass-panel" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100, borderRadius: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Activity color="#00F0FF" size={24} />
-                    <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: 'white' }}>Signal Genius <span style={{ fontSize: '0.8rem', border: '1px solid #00F0FF', padding: '2px 6px', borderRadius: '4px', color: '#00F0FF' }}>AI</span></span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => window.location.href = '#/'}>
+                    <Activity color="var(--neon-blue)" size={24} />
+                    <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--text-primary)' }}>Signal Genius <span style={{ fontSize: '0.8rem', border: '1px solid var(--neon-blue)', padding: '2px 6px', borderRadius: '4px', color: 'var(--neon-blue)' }}>AI</span></span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#00BA88' }}>
-                    <Radio size={16} className="animate-pulse" /> LIVE MONITORING
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    {/* Theme Toggle Button */}
+                    <button
+                        onClick={toggleTheme}
+                        style={{
+                            background: 'transparent',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: '50%',
+                            width: '36px',
+                            height: '36px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease'
+                        }}
+                        title={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}
+                    >
+                        {theme === 'light' ? <Moon size={18} color="var(--text-secondary)" /> : <Sun size={18} color="var(--primary)" />}
+                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: 'var(--color-buy)' }}>
+                        <Radio size={16} className="animate-pulse" /> LIVE MONITORING
+                    </div>
                 </div>
             </nav>
 
@@ -490,15 +321,15 @@ export default function AppMVP() {
                 <SignalList signals={signals} loadingState={loadingState} />
 
                 {/* FOOTER */}
-                <footer style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
-                    <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: '#999', fontSize: '0.8rem' }}>
+                <footer style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
+                    <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
                         <AlertTriangle size={16} color="orange" />
                         Educational purposes only. Past performance does not guarantee future results.
                     </p>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', marginTop: '0.75rem', fontWeight: '500' }}>
-                        Powered by <span style={{ color: '#00F0FF' }}>Quantix AI Core v1.5</span>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '0.75rem', fontWeight: '500' }}>
+                        Powered by <span style={{ color: 'var(--neon-blue)' }}>Quantix AI Core v1.5</span>
                     </p>
-                    <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', marginTop: '0.5rem' }}>
+                    <p style={{ color: 'var(--text-secondary)', opacity: 0.6, fontSize: '0.7rem', marginTop: '0.5rem' }}>
                         &copy; 2026 Signal Genius AI. Forensic Market Analysis System.
                     </p>
                 </footer>
