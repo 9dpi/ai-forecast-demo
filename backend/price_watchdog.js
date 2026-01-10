@@ -353,6 +353,7 @@ async function startWatchdog() {
     console.log("-----------------------------------\n");
 
     // Chạy ngay lần đầu
+    await sendTelegramAlert("🚀 *Signal Genius AI Watchdog* is now ONLINE and monitoring EUR/USD.");
     await watchSignals();
 
     // Sau đó lặp lại mỗi 10 giây

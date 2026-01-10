@@ -66,7 +66,7 @@ function InvestmentThesis() {
     };
 
     return (
-        <div style={{ fontFamily: "'Outfit', sans-serif", background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)', minHeight: '100vh', color: 'white' }}>
+        <div style={{ fontFamily: "'Outfit', sans-serif", background: 'var(--bg-gradient)', minHeight: '100vh', color: 'var(--text-primary)' }}>
             {/* HEADER */}
             <nav className="glass-panel nav-container">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => window.location.href = '#/'}>

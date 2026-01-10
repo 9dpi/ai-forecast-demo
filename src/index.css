@@ -404,13 +404,27 @@ body {
 .tiktok-view-container {
   width: 100%;
   max-width: 430px;
-  /* iPhone Pro Max Width */
   margin: 0 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   min-height: 80vh;
+}
+
+.ticker-container {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+
+  .tiktok-view-container,
+  .ticker-container {
+    max-width: 650px;
+    /* Expands on desktop */
+  }
 }
 
 .signal-card {

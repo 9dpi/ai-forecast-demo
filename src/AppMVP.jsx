@@ -66,10 +66,31 @@ const SignalBentoCard = memo(({ signal }) => {
                 </div>
             </div>
 
-            {/* Pulsing Dot Overlay (Centered logic check) */}
-            {['ENTRY_HIT', 'TP1_HIT'].includes(signal.status) && (
-                <div style={{ position: 'absolute', top: 20, right: 20, background: 'var(--color-buy)', width: '12px', height: '12px', borderRadius: '50%', boxShadow: '0 0 10px var(--color-buy)' }} className="animate-pulse" />
-            )}
+            {/* PROFESSIONAL STATUS DOT - Binance/TradingView Style */}
+            <div
+                title={
+                    signal.status === 'WAITING' ? "Live: Price in Entry Zone" :
+                        ['ENTRY_HIT', 'TP1_HIT'].includes(signal.status) ? "Trade Running: Order Filled" :
+                            "Signal Expired"
+                }
+                style={{
+                    position: 'absolute',
+                    top: 20,
+                    right: 20,
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    background:
+                        signal.status === 'WAITING' ? 'var(--color-buy)' :
+                            ['ENTRY_HIT', 'TP1_HIT'].includes(signal.status) ? '#FFD700' :
+                                '#666',
+                    boxShadow:
+                        signal.status === 'WAITING' ? '0 0 15px var(--color-buy)' :
+                            ['ENTRY_HIT', 'TP1_HIT'].includes(signal.status) ? '0 0 10px rgba(255, 215, 0, 0.5)' :
+                                'none'
+                }}
+                className={signal.status === 'WAITING' ? 'animate-pulse' : ''}
+            />
         </div>
     );
 });
@@ -91,7 +112,7 @@ const LiveTicker = memo(({ initialPrice }) => {
     }, [initialPrice]);
 
     return (
-        <section style={{ marginBottom: '2rem' }}>
+        <section style={{ marginBottom: '0' }} className="ticker-container">
             <div className="glass-panel" style={{
                 padding: '1.25rem',
                 background: 'var(--bg-card)',
@@ -99,12 +120,12 @@ const LiveTicker = memo(({ initialPrice }) => {
                 borderRadius: '24px',
                 border: '1px solid var(--border-color)',
                 display: 'grid',
-                gridTemplateColumns: 'minmax(0, 1.2fr) 1px minmax(0, 0.8fr)', /* Consolidating Top Bar - No gap */
+                gridTemplateColumns: 'minmax(0, 1fr) 1px minmax(0, 1fr)',
                 alignItems: 'center',
-                gap: '12px'
+                gap: '8px'
             }}>
                 {/* Left: Live Price Area */}
-                <div style={{ textAlign: 'left', paddingLeft: '8px' }}>
+                <div style={{ textAlign: 'left', paddingLeft: '4px' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>EUR/USD LIVE</p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                         <span style={{
@@ -124,7 +145,7 @@ const LiveTicker = memo(({ initialPrice }) => {
                 <div style={{ height: '40px', background: 'var(--border-color)' }}></div>
 
                 {/* Right: Market Sentiment - Differentiated from Signal Score */}
-                <div style={{ textAlign: 'right', paddingRight: '12px' }}>
+                <div style={{ textAlign: 'right', paddingRight: '4px' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>Market Sentiment</p>
                     <div style={{ fontSize: '1.2rem', fontWeight: '900', color: data.trend1H === 'BULLISH' ? 'var(--color-buy)' : 'var(--color-sell)', lineHeight: 1 }}>
                         {data.trend1H === 'BULLISH' ? 'STRONG BULLISH' : 'STRONG BEARISH'}
@@ -321,7 +342,7 @@ export default function AppMVP() {
                 <SignalList signals={signals} loadingState={loadingState} />
 
                 {/* FOOTER */}
-                <footer style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
+                <footer style={{ textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
                     <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
                         <AlertTriangle size={16} color="orange" />
                         Educational purposes only. Past performance does not guarantee future results.
