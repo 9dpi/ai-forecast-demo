@@ -1,0 +1,154 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Signal Genius AI - Standard Signal Schema",
+    "description": "Unified data structure for communication between Quantix AI Core and MVP Frontend",
+    "type": "object",
+    "required": [
+        "signal_id",
+        "timestamp",
+        "pair",
+        "timeframe",
+        "type",
+        "entry_price",
+        "sl",
+        "tp",
+        "confidence_score",
+        "sentiment",
+        "status",
+        "version"
+    ],
+    "properties": {
+        "signal_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the signal (UUID v4)"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when signal was generated"
+        },
+        "pair": {
+            "type": "string",
+            "description": "Trading pair (e.g., EUR/USD, BTC/USD)",
+            "examples": [
+                "EUR/USD",
+                "GBP/USD",
+                "BTC/USD"
+            ]
+        },
+        "timeframe": {
+            "type": "string",
+            "description": "Chart timeframe",
+            "enum": [
+                "M1",
+                "M5",
+                "M15",
+                "M30",
+                "H1",
+                "H4",
+                "D1"
+            ]
+        },
+        "type": {
+            "type": "string",
+            "description": "Signal direction",
+            "enum": [
+                "BUY",
+                "SELL"
+            ]
+        },
+        "entry_price": {
+            "type": "number",
+            "description": "Recommended entry price",
+            "minimum": 0
+        },
+        "sl": {
+            "type": "number",
+            "description": "Stop Loss price",
+            "minimum": 0
+        },
+        "tp": {
+            "type": "number",
+            "description": "Take Profit price (can be average of TP1/TP2 based on confidence)",
+            "minimum": 0
+        },
+        "confidence_score": {
+            "type": "integer",
+            "description": "AI confidence percentage (0-100)",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "sentiment": {
+            "type": "string",
+            "description": "Market sentiment analysis",
+            "enum": [
+                "STRONG BULLISH",
+                "BULLISH",
+                "NEUTRAL",
+                "BEARISH",
+                "STRONG BEARISH"
+            ]
+        },
+        "status": {
+            "type": "string",
+            "description": "Current signal status",
+            "enum": [
+                "ACTIVE",
+                "WAITING",
+                "ENTRY_HIT",
+                "TP1_HIT",
+                "TP2_HIT",
+                "SL_HIT",
+                "EXPIRED"
+            ]
+        },
+        "version": {
+            "type": "string",
+            "description": "AI model version",
+            "examples": [
+                "AI AGENT V1.5",
+                "AI AGENT V2.0"
+            ]
+        },
+        "expiry_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when signal expires (optional)"
+        },
+        "metadata": {
+            "type": "object",
+            "description": "Additional context and analytics",
+            "properties": {
+                "backtest_ref": {
+                    "type": "string",
+                    "description": "Reference to backtest validation"
+                },
+                "volatility": {
+                    "type": "string",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                    ]
+                },
+                "risk_reward_ratio": {
+                    "type": "string",
+                    "pattern": "^1:[0-9]+(\\.[0-9]+)?$",
+                    "examples": [
+                        "1:2.6",
+                        "1:3.0"
+                    ]
+                },
+                "tp1_price": {
+                    "type": "number",
+                    "description": "First take profit level"
+                },
+                "tp2_price": {
+                    "type": "number",
+                    "description": "Second take profit level"
+                }
+            }
+        }
+    }
+}
