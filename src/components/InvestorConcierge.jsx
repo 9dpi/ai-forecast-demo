@@ -1,43 +1,52 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Sparkles, TrendingUp, Mail, User, Briefcase } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, TrendingUp, Mail, User, Briefcase, Loader2 } from 'lucide-react';
 
+// ===== QUANTIX AI BOT v1.5 - INVESTOR-FOCUSED FAQ DATABASE =====
 const FAQ_DATABASE = {
-    'what is quantix': {
-        question: "What is Quantix AI Core?",
-        answer: "Quantix AI Core v1.5 is an enterprise-grade quantitative engine designed to solve the 'Mass-Personalization' challenge in Fintech. We provide tailored insights for thousands of individual portfolios at the cost of a single user."
+    'technical_inquiry': {
+        question: "⚙️ Technical Inquiry",
+        answer: "Quantix Core v1.5 uses **Semantic Caching** to reduce LLM overhead by 70%. We process real-time market data through a hybrid routing system, ensuring high-speed delivery with minimal API costs.\n\nWould you like to see our Architecture Diagram?",
+        followUp: "May I have your email to send the technical documentation?"
     },
-    'api costs': {
-        question: "How do you optimize API costs?",
-        answer: "We utilize a proprietary Semantic Caching mechanism and Hybrid Model routing. This allows us to serve 90% of requests via local cache and high-efficiency SLMs, reducing operational costs by up to 70%."
+    'be_a_partner': {
+        question: "🤝 I want to be a Partner",
+        answer: "We're looking for **Strategic Partners** to scale the Quantix ecosystem. We offer:\n\n• Revenue Sharing for KOLs\n• API Licensing for institutions\n• White-label solutions\n\nShould I send our Partnership Deck to your email?",
+        followUp: "Please provide your email to receive the Partnership Package.",
+        isVIP: true
     },
-    'different': {
-        question: "What makes you different from others?",
-        answer: "Most bots offer a 'one-size-fits-all' signal. Quantix v1.5 focuses on the user's specific watchlist, delivering deep-dive analytics only for the assets they care about, ensuring 100% relevance."
+    'investment_case': {
+        question: "📊 Investment Case",
+        answer: "Our **Unit Economics** are built for scale:\n\n• 90% gross margin per premium user\n• $2.50 CAC with 12-month payback\n• Projected ARR: $5M by Q4 2026\n\nQuantix is designed for rapid ROI. May I provide our 24-month financial roadmap?",
+        followUp: "To send the full Investment Memo, I'll need your email address."
     },
-    'roadmap': {
-        question: "What is the Roadmap for 2026?",
-        answer: "We are scaling from VN30 to the full stock market, integrating automated payment gateways, and preparing for B2B API licensing in Q3/2026."
-    },
-    'financial': {
-        question: "Can I see the Financial Projection?",
-        answer: "I would be happy to share our 24-month growth plan and ROI projections. Please provide your email below, and our founder will send the Executive Summary to you immediately."
+    'market_performance': {
+        question: "📈 Market Performance",
+        answer: "Version 1.5 has expanded from VN30 to the **full market**, maintaining an 85%+ Confidence Score on trend signals.\n\nWe focus on 'Micro-Personalization'—analyzing exactly what's in YOUR portfolio, not generic market noise.",
+        followUp: "Want to see live performance metrics? Leave your email below."
     },
     'pricing': {
-        question: "What is your pricing model?",
-        answer: "We offer tiered pricing: Free tier for individuals, $49/month for Pro traders, and custom enterprise pricing for institutional clients. Our cost-per-user is 70% lower than traditional platforms."
+        question: "💰 Pricing Model",
+        answer: "We offer tiered pricing:\n\n• **Free**: Basic signals for individuals\n• **Pro ($49/mo)**: Advanced analytics + alerts\n• **Enterprise**: Custom API licensing\n\nOur cost-per-user is 70% lower than traditional platforms.",
+        followUp: "Interested in a custom quote? Share your email."
     },
     'technology': {
-        question: "What technology stack do you use?",
-        answer: "We leverage advanced LLM models with proprietary semantic caching, real-time market data integration via Yahoo Finance API, and a scalable Supabase backend infrastructure."
+        question: "🔬 Technology Stack",
+        answer: "We leverage:\n\n• Advanced LLM with proprietary semantic caching\n• Real-time market data via Yahoo Finance & OANDA\n• Scalable Supabase backend\n• Edge computing for sub-100ms latency\n\nOur tech stack is built for institutional-grade reliability.",
+        followUp: "Want the full tech spec sheet? Drop your email."
+    },
+    'roadmap': {
+        question: "🗺️ 2026 Roadmap",
+        answer: "Our expansion plan:\n\n**Q1**: Full market coverage (VN30 → All stocks)\n**Q2**: Automated payment gateway integration\n**Q3**: B2B API licensing launch\n**Q4**: International expansion (Thailand, Indonesia)\n\nWe're scaling fast.",
+        followUp: "Want quarterly updates? Leave your email."
     }
 };
 
+// ===== QUICK REPLY BUTTONS (Investor-Focused) =====
 const QUICK_REPLIES = [
-    { id: 'what is quantix', text: "What is Quantix?" },
-    { id: 'api costs', text: "How do you save costs?" },
-    { id: 'different', text: "What makes you different?" },
-    { id: 'roadmap', text: "2026 Roadmap" },
-    { id: 'financial', text: "Financial Projections" }
+    { id: 'technical_inquiry', text: "⚙️ Technical Inquiry" },
+    { id: 'be_a_partner', text: "🤝 I want to be a Partner" },
+    { id: 'investment_case', text: "📊 Investment Case" },
+    { id: 'market_performance', text: "📈 Market Performance" }
 ];
 
 export default function InvestorConcierge() {
@@ -47,6 +56,7 @@ export default function InvestorConcierge() {
     const [userProfile, setUserProfile] = useState({ name: '', email: '', role: '' });
     const [stage, setStage] = useState('greeting'); // greeting, profiling, consulting, capture
     const [hasGreeted, setHasGreeted] = useState(false);
+    const [isTyping, setIsTyping] = useState(false); // NEW: Typing indicator
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -92,69 +102,99 @@ export default function InvestorConcierge() {
         }]);
     };
 
-    const handleQuickReply = (reply) => {
-        addUserMessage(reply);
+    const handleQuickReply = (replyText) => {
+        // CRITICAL: Reset state immediately to prevent "frozen" buttons
+        setIsTyping(true);
 
-        if (stage === 'profiling') {
-            setUserProfile(prev => ({ ...prev, role: reply }));
-            setTimeout(() => {
-                let followUp = "";
-                if (reply.includes('Invest')) followUp = "Fantastic. We are currently opening our Strategic Seed Round. Would you like to see our Financial Projections?";
-                else if (reply.includes('Partner')) followUp = "We love scaling through collaboration. Are you interested in our API Licensing or Local Distribution?";
-                else followUp = "Our v1.5 Core utilizes Semantic Caching and Hybrid Model routing. What technical aspects can I clarify?";
-
-                addBotMessage(
-                    followUp,
-                    reply.includes('Invest') ? ["Yes, show projections", "Tell me more"] : QUICK_REPLIES.map(q => q.text)
-                );
-                setStage('consulting');
-            }, 800);
-        } else if (stage === 'consulting') {
-            handleFAQ(reply);
+        // Map text to FAQ ID
+        let replyId = replyText;
+        const faqEntry = QUICK_REPLIES.find(q => q.text === replyText);
+        if (faqEntry) {
+            replyId = faqEntry.id;
         }
+
+        // Display user's choice
+        const faqItem = FAQ_DATABASE[replyId];
+        if (faqItem) {
+            addUserMessage(faqItem.question);
+        } else {
+            addUserMessage(replyText);
+        }
+
+        // Show typing indicator for 1.2 seconds
+        setTimeout(() => {
+            setIsTyping(false);
+
+            if (stage === 'profiling') {
+                // Initial profiling stage
+                setUserProfile(prev => ({ ...prev, role: replyId }));
+
+                let followUp = "";
+                if (replyId === 'investment_case') {
+                    followUp = "Fantastic. We are currently opening our Strategic Seed Round. Would you like to see our Financial Projections?";
+                } else if (replyId === 'be_a_partner') {
+                    followUp = "We love scaling through collaboration. Are you interested in our API Licensing or Local Distribution?";
+                } else {
+                    followUp = "Our v1.5 Core utilizes Semantic Caching and Hybrid Model routing. What technical aspects can I clarify?";
+                }
+
+                addBotMessage(followUp, QUICK_REPLIES.map(q => q.text));
+                setStage('consulting');
+            } else {
+                // Consulting stage - handle FAQ
+                handleFAQ(replyId);
+            }
+        }, 1200);
     };
 
-    const handleFAQ = (query) => {
-        const lowerQuery = query.toLowerCase();
-        let response = null;
+    const handleFAQ = (queryOrId) => {
+        setIsTyping(true);
 
-        // Find matching FAQ
-        for (const [key, faq] of Object.entries(FAQ_DATABASE)) {
-            if (lowerQuery.includes(key) || lowerQuery.includes(faq.question.toLowerCase())) {
-                response = faq;
-                break;
+        let faqItem = null;
+
+        // Try direct ID match first
+        if (FAQ_DATABASE[queryOrId]) {
+            faqItem = FAQ_DATABASE[queryOrId];
+        } else {
+            // Fuzzy search through FAQ
+            const lowerQuery = queryOrId.toLowerCase();
+            for (const [key, faq] of Object.entries(FAQ_DATABASE)) {
+                if (lowerQuery.includes(key) ||
+                    lowerQuery.includes(faq.question.toLowerCase()) ||
+                    faq.question.toLowerCase().includes(lowerQuery)) {
+                    faqItem = faq;
+                    break;
+                }
             }
         }
 
         setTimeout(() => {
-            if (response) {
-                addBotMessage(response.answer);
+            setIsTyping(false);
 
-                // If financial projection requested, move to capture stage
-                if (lowerQuery.includes('financial') || lowerQuery.includes('projection')) {
-                    setTimeout(() => {
-                        addBotMessage(
-                            "To send you our Executive Summary, I'll need a few details:",
-                            null
-                        );
+            if (faqItem) {
+                addBotMessage(faqItem.answer);
+
+                // Smart follow-up
+                setTimeout(() => {
+                    if (faqItem.followUp) {
+                        addBotMessage(faqItem.followUp, null);
                         setStage('capture');
-                    }, 1500);
-                } else {
-                    setTimeout(() => {
+                    } else {
                         addBotMessage(
                             "Would you like to know more about something else?",
                             QUICK_REPLIES.map(q => q.text)
                         );
-                    }, 1000);
-                }
+                    }
+                }, 1500);
             } else {
+                // Fallback for unrecognized queries
                 addBotMessage(
                     "That's a great question! Let me connect you with our founder for a detailed answer.\n\nMay I have your email to arrange a follow-up?",
                     null
                 );
                 setStage('capture');
             }
-        }, 800);
+        }, 1200);
     };
 
     const handleSendMessage = async () => {
@@ -168,26 +208,46 @@ export default function InvestorConcierge() {
             // Capture user details
             if (!userProfile.name) {
                 setUserProfile(prev => ({ ...prev, name: message }));
+                setIsTyping(true);
                 setTimeout(() => {
+                    setIsTyping(false);
                     addBotMessage("Great! And what's your email address?");
-                }, 500);
+                }, 800);
             } else if (!userProfile.email) {
+                // ===== EMAIL VALIDATION =====
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!emailRegex.test(message)) {
+                    setIsTyping(true);
+                    setTimeout(() => {
+                        setIsTyping(false);
+                        addBotMessage("⚠️ That doesn't look like a valid email. Please enter a valid email address (e.g., investor@company.com)");
+                    }, 600);
+                    return;
+                }
+
                 setUserProfile(prev => ({ ...prev, email: message }));
+
+                // Determine if this is a VIP Partner lead
+                const isVIPLead = userProfile.role === 'be_a_partner';
 
                 // Send notification email
                 await sendLeadNotification({
                     ...userProfile,
                     email: message,
-                    conversationSummary: messages.map(m => `${m.type}: ${m.text}`).join('\n')
+                    conversationSummary: messages.map(m => `${m.type}: ${m.text}`).join('\n'),
+                    isVIP: isVIPLead
                 });
 
+                setIsTyping(true);
                 setTimeout(() => {
+                    setIsTyping(false);
                     addBotMessage(
-                        `Perfect! I've sent the Executive Summary to **${message}**.\n\nOur founder will personally reach out within 4 hours.\n\nIn the meantime, feel free to explore our [Investment Thesis](#/investment) page! 🚀`,
+                        `Perfect! I've sent the ${isVIPLead ? 'Partnership Package' : 'Executive Summary'} to **${message}**.\n\nOur founder will personally reach out within 4 hours.\n\nIn the meantime, feel free to explore our [Investment Thesis](#/investment) page! 🚀`,
                         null
                     );
                     setStage('completed');
-                }, 1000);
+                }, 1200);
             }
         } else {
             handleFAQ(message);
@@ -196,6 +256,11 @@ export default function InvestorConcierge() {
 
     const sendLeadNotification = async (leadData) => {
         try {
+            // ===== VIP PARTNER ALERT SYSTEM =====
+            const emailSubject = leadData.isVIP
+                ? "🔥 [VIP PARTNER] - Quantix Strategic Partnership Inquiry"
+                : "🚀 [HOT LEAD] - Quantix Investor Inquiry";
+
             await fetch("https://formsubmit.co/ajax/vuquangcuong@gmail.com", {
                 method: "POST",
                 headers: {
@@ -203,14 +268,16 @@ export default function InvestorConcierge() {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    _subject: "🚀 [HOT LEAD] - Quantix Investor Inquiry",
+                    _subject: emailSubject,
                     name: leadData.name,
                     email: leadData.email,
                     role: leadData.role,
+                    priority: leadData.isVIP ? 'HIGH - PARTNER LEAD' : 'NORMAL',
                     conversation: leadData.conversationSummary,
                     timestamp: new Date().toISOString()
                 })
             });
+            console.log(`✅ Lead notification sent: ${emailSubject}`);
         } catch (error) {
             console.error("Failed to send lead notification:", error);
         }
@@ -384,6 +451,28 @@ export default function InvestorConcierge() {
                                 )}
                             </div>
                         ))}
+
+                        {/* ===== TYPING INDICATOR ===== */}
+                        {isTyping && (
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'flex-start',
+                                marginBottom: '0.5rem'
+                            }}>
+                                <div style={{
+                                    padding: '0.75rem 1rem',
+                                    borderRadius: '12px',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}>
+                                    <Loader2 size={16} color="#FFD700" className="animate-spin" />
+                                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem' }}>Quantix is typing...</span>
+                                </div>
+                            </div>
+                        )}
+
                         <div ref={messagesEndRef} />
                     </div>
 
