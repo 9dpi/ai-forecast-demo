@@ -150,6 +150,30 @@ function KnowledgeBase() {
   );
 }
 
+function TooltipIcon({ text }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div style={{ position: 'relative', display: 'inline-block', marginLeft: '6px' }}>
+      <CheckCircle
+        size={14}
+        style={{ cursor: 'pointer', color: 'var(--primary)', opacity: 0.7 }}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+      />
+      {show && (
+        <div style={{
+          position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)',
+          background: '#0a0e27', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--primary)',
+          fontSize: '0.75rem', width: '180px', zIndex: 100, marginBottom: '8px', color: 'white',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+        }}>
+          {text}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MarketIntelligence() {
   const briefs = [
     { title: "Analyzing EUR/USD Liquidity Zones", date: "Jan 11, 2026", desc: "Quantix V1.5 detects shifting order flow in European session open." },
