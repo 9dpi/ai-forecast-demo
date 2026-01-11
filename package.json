@@ -17,7 +17,8 @@
     "data:validate": "node scripts/validate-data-quality.js",
     "db:check": "node scripts/check_db.js",
     "db:clean": "node scripts/clean_db.js",
-    "scheduler": "node scripts/scheduler.js"
+    "scheduler": "node scripts/scheduler.js",
+    "backtest": "node scripts/backtest-engine.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
