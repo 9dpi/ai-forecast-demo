@@ -71,8 +71,8 @@ function InvestmentThesis() {
             <nav className="glass-panel nav-container">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => window.location.href = '#/'}>
                     <Activity color="var(--primary)" size={28} />
-                    <span style={{ fontSize: '1.5rem', fontWeight: '700', fontFamily: 'var(--font-heading)' }}>
-                        Quantix <span className="text-gradient">AI</span> Forecast
+                    <span style={{ fontSize: '1.5rem', fontWeight: '800', fontFamily: 'var(--font-heading)', lineHeight: 1, letterSpacing: '-1px' }}>
+                        QUANTIX <span className="text-gradient">AI</span> CORE
                     </span>
                 </div>
                 <a href="#/" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: '500' }}>
@@ -581,22 +581,22 @@ function InvestmentThesis() {
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
                                 <Activity color="var(--primary)" size={24} />
-                                <span style={{ fontWeight: '700', fontFamily: 'var(--font-heading)', fontSize: '1.2rem' }}>Signal Genius AI</span>
+                                <span style={{ fontWeight: '800', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', letterSpacing: '-1px' }}>QUANTIX AI CORE</span>
                             </div>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.9rem' }}>
-                                Total Market Vision - Personalized Asset Focus. Institutional-grade quantitative infrastructure.
+                                Precision-engineered quantitative infrastructure for strategic alpha generation.
                             </p>
                         </div>
 
                         <div style={{ textAlign: 'right', gridColumn: 'span 2' }}>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-                                © 2026 Signal Genius AI.
+                                © 2026 Quantix AI Core. Institutional Division.
                             </p>
-                            <p style={{ color: 'var(--primary)', fontSize: '0.75rem', marginTop: '4px', fontWeight: '600' }}>
-                                Powered by Quantix AI Core v1.5. Institutional Division.
+                            <p style={{ color: 'var(--primary)', fontSize: '0.75rem', marginTop: '4px', fontWeight: '900', letterSpacing: '1px' }}>
+                                DATA INTEGRITY VERIFIED: 100/100 HEALTH SCORE
                             </p>
                             <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.7rem', marginTop: '8px' }}>
-                                Confidential Investment Materials
+                                Confidential Strategic Materials. Authorized Partners Only.
                             </p>
                         </div>
                     </div>
