@@ -1,0 +1,6 @@
+symbol,name,asset_type,exchange,timezone,currency,is_active,created_at
+VN30F1M,VN30 Futures,FUTURE,HSX,Asia/Ho_Chi_Minh,VND,true,2026-01-08T17:50:38.376Z
+BTC-USD,Bitcoin,CRYPTO,BINANCE,UTC,USD,true,2026-01-08T17:50:38.376Z
+AAPL,Apple,STOCK,NASDAQ,America/New_York,USD,true,2026-01-08T17:50:38.376Z
+XAU-USD,Gold,FOREX,GLOBAL,UTC,USD,true,2026-01-08T17:50:38.376Z
+EURUSD=X,EUR/USD Forex Pair,FOREX,GLOBAL,UTC,USD,true,2026-01-09T03:48:19.366Z

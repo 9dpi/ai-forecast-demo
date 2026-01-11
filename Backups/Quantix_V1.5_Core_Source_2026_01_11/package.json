@@ -13,11 +13,9 @@
     "test:bridge": "node tests/test-bridge.js",
     "test": "npm run test:bridge",
     "data:ingest": "node scripts/data-ingestion-2025.js",
-    "data:ingest:bulk": "node scripts/data-ingest-bulk.js",
     "data:validate": "node scripts/validate-data-quality.js",
     "db:check": "node scripts/check_db.js",
-    "db:clean": "node scripts/clean_db.js",
-    "scheduler": "node scripts/scheduler.js"
+    "db:clean": "node scripts/clean_db.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",

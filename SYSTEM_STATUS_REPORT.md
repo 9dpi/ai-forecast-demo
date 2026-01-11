@@ -130,11 +130,11 @@ Sau khi cấu hình, mỗi khi có sự kiện (Entry Hit, TP Hit, SL Hit), bạ
 
 ## 📊 THỐNG KÊ HỆ THỐNG
 
-- **Uptime:** 9+ giờ liên tục
+- **Uptime:** 24/7 (Powering by Railway Hobby Plan 🚀)
 - **Database Queries:** Thành công 100%
-- **API Calls:** Alpha Vantage (25/25 requests còn lại hôm nay)
+- **API Calls:** Yahoo Finance (Unlimited within usage policy)
 - **Deployment:** Tự động qua GitHub Actions
-- **Chi phí vận hành:** $0/tháng
+- **Chi phí vận hành:** $5/tháng (Hobby Plan)
 
 ---
 
