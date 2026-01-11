@@ -44,6 +44,9 @@ function generateRawReport(market, signal) {
         report += `• Entry: ${parseFloat(signal.entry_price).toFixed(5)}\n`;
         report += `• TP: ${parseFloat(signal.tp1_price).toFixed(5)} | SL: ${parseFloat(signal.sl_price).toFixed(5)}\n`;
     }
+
+    report += `\n🚀 **Status:** Trained on 1-Year Real Data`;
+    report += `\n⏳ **Upgrading:** Ingesting 10-Year History...`;
     return report;
 }
 
@@ -69,11 +72,16 @@ export async function askQuantix(userQuestion) {
 
         const prompt = `
             You are Quantix AI, a professional Quant Trader for UK clients. 
+            
+            **YOUR CURRENT STATUS:** 
+            - ✅ Fully trained on 1 Year of Real Market Data (2025-2026).
+            - ⏳ Currently ingesting 10 Years of Historical Data to reach 'Grandmaster' level.
+            - You are excited to share this progress.
+
             Current Market: ${contextSummary}.
             User asked: "${userQuestion}".
             Strategy: Reversal V1.5. 
-            Instruction: Respond in English. Be concise, professional, and data-driven. 
-            If the user just says hi, welcome them and mention the market.
+            Instruction: Respond in English. Be concise, professional, and data-driven. Highlight your "Continuous Learning" status if appropriate.
         `;
 
         const result = await model.generateContent(prompt);
