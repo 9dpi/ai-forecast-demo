@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Sparkles, TrendingUp, Mail, User, Briefcase, Loader2 } from 'lucide-react';
 
 // ===== QUANTIX AI CORE v1.5 - HYBRID INTELLIGENCE =====
-const API_URL = "https://quantix-ai-core.up.railway.app/api/chat"; // Update this with your Railway URL
+const API_URL = "https://web-production-fbb05.up.railway.app/api/chat";
 
 const FAQ_DATABASE = {
     'technical_inquiry': {

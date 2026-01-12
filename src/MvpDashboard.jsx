@@ -139,8 +139,8 @@ export default function MvpDashboard() {
         }, 30000);
 
         fetchMetrics();
-        // Keep a slow poll as backup, but rely on Real-time
-        const dataTimer = setInterval(fetchMetrics, 30000);
+        // High-frequency backup poll (5s) for a dynamic feel
+        const dataTimer = setInterval(fetchMetrics, 5000);
 
         return () => {
             clearInterval(pipelineTimer);

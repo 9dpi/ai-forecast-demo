@@ -340,26 +340,18 @@ async function watchSignals() {
  * MAIN LOOP
  */
 async function startWatchdog() {
-    // Configurable polling interval (default 10s, can be 3-5s for Hobby Plan)
-    const POLLING_INTERVAL = parseInt(process.env.POLLING_INTERVAL || '10000');
+    // Configurable polling interval (Default to 5s for IRFAN DEMO)
+    const POLLING_INTERVAL = 5000;
 
-    console.log("🚀 Starting Price Watchdog for EUR/USD...");
-    console.log("   Data Source: Alpha Vantage (Real-time Forex)");
-    console.log("   Fallback: Yahoo Finance");
-    console.log("   Anti-Wick: 2x confirmation required");
-    console.log(`   Check Interval: Every ${POLLING_INTERVAL / 1000} seconds`);
-    console.log(`   Mode: ${POLLING_INTERVAL <= 5000 ? '⚡ HIGH-FREQUENCY' : '🔄 STANDARD'}`);
-    console.log("-----------------------------------\n");
+    console.log("🚀 STARTING HIGH-FREQUENCY WATCHDOG (5s INTERVAL)...");
 
-    // Chạy ngay lần đầu
-    await sendTelegramAlert("🚀 *Quantix AI Core* is now ONLINE and monitoring EUR/USD.");
+    // First run
     await watchSignals();
 
-    // Sau đó lặp lại theo POLLING_INTERVAL
+    // Loop
     setInterval(async () => {
         await watchSignals();
     }, POLLING_INTERVAL);
 }
 
-// Start
 startWatchdog();
