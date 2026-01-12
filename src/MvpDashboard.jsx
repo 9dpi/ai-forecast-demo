@@ -126,25 +126,12 @@ export default function MvpDashboard() {
             })
             .subscribe();
 
-        const brandedLogs = [
-            { type: 'TECH', msg: 'Neural Momentum: Ingesting high-volatility raw data.' },
-            { type: 'AI', msg: 'Quantix Core: Processing institutional liquidity clusters.' },
-            { type: 'SUCCESS', msg: 'Pipeline Output: Golden Signal candidate identified.' },
-            { type: 'SENTINEL', msg: 'Market Pulse: Macro-sentiment sync complete (LDN).' }
-        ];
-
-        const logTimer = setInterval(() => {
-            const randomLog = brandedLogs[Math.floor(Math.random() * brandedLogs.length)];
-            addLog(randomLog.type, randomLog.msg);
-        }, 30000);
-
         fetchMetrics();
         // High-frequency backup poll (5s) for a dynamic feel
         const dataTimer = setInterval(fetchMetrics, 5000);
 
         return () => {
             clearInterval(pipelineTimer);
-            clearInterval(logTimer);
             clearInterval(dataTimer);
             supabase.removeChannel(channel); // Cleanup subscription
         };

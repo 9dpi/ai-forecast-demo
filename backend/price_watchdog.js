@@ -47,14 +47,9 @@ async function getYahooPrice() {
             headers: { 'User-Agent': 'Mozilla/5.0' }
         });
         const data = await response.json();
-        let price = data.chart.result[0].meta.regularMarketPrice;
+        const price = parseFloat(data.chart.result[0].meta.regularMarketPrice.toFixed(5));
 
-        // GIẢ LẬP TICK: Nếu giá đứng im quá lâu, thêm một chút biến động nhỏ (0.00001) 
-        // để tạo cảm giác feed đang sống (ECN Jitter)
-        const jitter = (Math.random() - 0.5) * 0.00002;
-        price = parseFloat((price + jitter).toFixed(5));
-
-        console.log(`📊 LIVE EUR/USD: ${price}`);
+        console.log(`📊 RAW LIVE EUR/USD: ${price}`);
         return price;
     } catch (error) {
         console.error("❌ PRICE FEED ERROR:", error.message);
