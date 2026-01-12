@@ -184,7 +184,7 @@ export default function AdminDashboard() {
                 sentinel: statuses[Math.floor(Math.random() * 3) + 3],
                 critic: statuses[Math.floor(Math.random() * 2) + 6]
             }));
-        }, 4000);
+        }, 20000); // Optimized for quota: Every 20 seconds
 
         return () => {
             clearTimeout(handshake);
