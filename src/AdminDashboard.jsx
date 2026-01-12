@@ -258,7 +258,6 @@ export default function AdminDashboard() {
 
     return (
         <div style={{ minHeight: '100vh', background: '#020617', color: '#f1f5f9', padding: '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
-            ...
 
             {/* Top Bar */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid #1e293b', paddingBottom: '1.5rem' }}>
