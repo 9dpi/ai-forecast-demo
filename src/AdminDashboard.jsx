@@ -154,19 +154,20 @@ export default function AdminDashboard() {
             }));
         }, 5000);
 
-        // Hunting Log Simulator
-        const huntingLogs = [
-            { type: 'TECH', msg: 'Analyzing Bullish Divergence on M15...' },
-            { type: 'SENTINEL', msg: 'Scanning Economic Calendar. High Impact News in 45m.' },
-            { type: 'CRITIC', msg: 'Rejected low-confidence signal: Wick Ratio too high (1.4).' },
-            { type: 'TECH', msg: 'RSI oversold detected. Waiting for price confirmation...' },
-            { type: 'SENTINEL', msg: 'Social Sentiment check: Positivity rising for EUR.' },
-            { type: 'AI', msg: 'Recalculating dynamic SL/TP levels for current volatility.' },
-            { type: 'SHIELD', msg: 'Filtered trap breakout at 1.0542. Capital Protected.' }
+        // Hunting Log Simulator - V1.8 BRANDED ABSTRACTION LAYER
+        const brandedLogs = [
+            { type: 'TECH', msg: 'Trend Alignment Core: Primary bias confirmed. Scanning liquidity zones.' },
+            { type: 'SENTINEL', msg: 'Global Sentiment: Macro-economic turbulence filter active.' },
+            { type: 'CRITIC', msg: 'Anti-Wick Defense: Institutional trap identified and filtered.' },
+            { type: 'TECH', msg: 'Neural Momentum Engine: Market Exhaustion detected. Reversal watch.' },
+            { type: 'SENTINEL', msg: 'Liquidity Zone Detection: Institutional supply/demand cluster hit.' },
+            { type: 'TECH', msg: 'Pattern Recognition Matrix: High-precision fractal alignment detected.' },
+            { type: 'CRITIC', msg: 'Consensus Efficiency Audit: 94% alignment achieved.' },
+            { type: 'SHIELD', msg: 'Shadow Mode Protection: Non-Golden signal suppressed (78% Conf).' }
         ];
 
         const logTimer = setInterval(() => {
-            const randomLog = huntingLogs[Math.floor(Math.random() * huntingLogs.length)];
+            const randomLog = brandedLogs[Math.floor(Math.random() * brandedLogs.length)];
             addLog(randomLog.type, randomLog.msg);
 
             // Randomly update agent status
