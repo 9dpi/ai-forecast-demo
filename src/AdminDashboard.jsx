@@ -29,7 +29,14 @@ export default function AdminDashboard() {
         learningPhase: 'Shadow Mode Monitoring',
         confidenceThreshold: '85%',
         activeAgents: '3/3 Council Members',
-        shadowMode: true
+        shadowMode: true,
+        riskReduction: '86%' // NEW: Protection Efficiency
+    });
+
+    const [agentStatuses, setAgentStatuses] = useState({
+        tech: 'Scanning Technical Patterns...',
+        sentinel: 'Monitoring News & Sentiment...',
+        critic: 'Evaluating Consensus...'
     });
 
     const [logs, setLogs] = useState([
@@ -114,10 +121,39 @@ export default function AdminDashboard() {
             }));
         }, 5000);
 
+        // Hunting Log Simulator
+        const huntingLogs = [
+            { type: 'TECH', msg: 'Analyzing Bullish Divergence on M15...' },
+            { type: 'SENTINEL', msg: 'Scanning Economic Calendar. High Impact News in 45m.' },
+            { type: 'CRITIC', msg: 'Rejected low-confidence signal: Wick Ratio too high (1.4).' },
+            { type: 'TECH', msg: 'RSI oversold detected. Waiting for price confirmation...' },
+            { type: 'SENTINEL', msg: 'Social Sentiment check: Positivity rising for EUR.' },
+            { type: 'AI', msg: 'Recalculating dynamic SL/TP levels for current volatility.' },
+            { type: 'SHIELD', msg: 'Filtered trap breakout at 1.0542. Capital Protected.' }
+        ];
+
+        const logTimer = setInterval(() => {
+            const randomLog = huntingLogs[Math.floor(Math.random() * huntingLogs.length)];
+            addLog(randomLog.type, randomLog.msg);
+
+            // Randomly update agent status
+            const statuses = [
+                'Analyzing Technicals...', 'Calculating RSI...', 'Checking EMA 200...',
+                'Scanning News...', 'Parsing Sentiment...', 'Ready for Consensus...',
+                'Rejecting Noise...', 'Hunting Golden Signals...'
+            ];
+            setAgentStatuses(prev => ({
+                tech: statuses[Math.floor(Math.random() * 3)],
+                sentinel: statuses[Math.floor(Math.random() * 3) + 3],
+                critic: statuses[Math.floor(Math.random() * 2) + 6]
+            }));
+        }, 8000);
+
         return () => {
             clearTimeout(handshake);
             clearInterval(dataTimer);
             clearInterval(sysTimer);
+            clearInterval(logTimer);
         };
     }, []);
 
@@ -189,17 +225,26 @@ export default function AdminDashboard() {
                         <Shield size={18} /> Council Intelligence
                     </h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <div style={itemStyle}>
-                            <span>Technical Agent</span>
-                            <span style={{ color: '#4ade80' }}>● Analyst</span>
+                        <div style={{ ...itemStyle, flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                <span>Technical Agent</span>
+                                <span style={{ color: '#4ade80' }}>● Active</span>
+                            </div>
+                            <div style={{ fontSize: '0.65rem', color: '#64748b' }}>{agentStatuses.tech}</div>
                         </div>
-                        <div style={itemStyle}>
-                            <span>Sentinel Agent</span>
-                            <span style={{ color: '#4ade80' }}>● Watcher</span>
+                        <div style={{ ...itemStyle, flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                <span>Sentinel Agent</span>
+                                <span style={{ color: '#4ade80' }}>● Watcher</span>
+                            </div>
+                            <div style={{ fontSize: '0.65rem', color: '#64748b' }}>{agentStatuses.sentinel}</div>
                         </div>
-                        <div style={itemStyle}>
-                            <span>Critic Agent</span>
-                            <span style={{ color: '#38bdf8' }}>● Decision</span>
+                        <div style={{ ...itemStyle, flexDirection: 'column', alignItems: 'flex-start', gap: '4px', marginBottom: 0 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                <span>Critic Agent</span>
+                                <span style={{ color: '#38bdf8' }}>● Decision</span>
+                            </div>
+                            <div style={{ fontSize: '0.65rem', color: '#64748b' }}>{agentStatuses.critic}</div>
                         </div>
                     </div>
                 </div>
@@ -240,13 +285,16 @@ export default function AdminDashboard() {
                             <div style={{ fontSize: '0.65rem', color: '#94a3b8', textTransform: 'uppercase' }}>Filtered (24H)</div>
                             <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f87171', marginTop: '5px' }}>12</div>
                         </div>
-                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '0.65rem', color: '#94a3b8', textTransform: 'uppercase' }}>Approved (24H)</div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#4ade80', marginTop: '5px' }}>2</div>
+                        <div style={{ background: 'rgba(34, 197, 94, 0.05)', padding: '1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid rgba(74, 222, 128, 0.2)' }}>
+                            <div style={{ fontSize: '0.65rem', color: '#4ade80', textTransform: 'uppercase' }}>Protection</div>
+                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#4ade80', marginTop: '5px' }}>{aiState.riskReduction}</div>
                         </div>
                     </div>
-                    <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: '#64748b' }}>
-                        System Accuracy (7D): <span style={{ color: '#f1f5f9', fontWeight: 700 }}>96.4%</span>
+                    <div style={{ marginTop: '1.25rem', padding: '0.75rem', background: 'rgba(56, 189, 248, 0.05)', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.1)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#38bdf8' }}>
+                            <span>Signals Approved: 2</span>
+                            <span>Accuracy: 96.4%</span>
+                        </div>
                     </div>
                 </div>
 
@@ -266,7 +314,10 @@ export default function AdminDashboard() {
                                     minWidth: '60px',
                                     color: log.type === 'SUCCESS' ? '#4ade80' :
                                         log.type === 'ERROR' ? '#f87171' :
-                                            log.type === 'AI' ? '#f472b6' : '#38bdf8'
+                                            log.type === 'AI' ? '#f472b6' :
+                                                log.type === 'SHIELD' ? '#fac515' :
+                                                    log.type === 'TECH' ? '#38bdf8' :
+                                                        log.type === 'SENTINEL' ? '#fbbf24' : '#64748b'
                                 }}>{log.type}</span>
                                 <span style={{ color: '#cbd5e1' }}>{log.msg}</span>
                             </div>
