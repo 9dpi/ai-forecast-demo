@@ -126,7 +126,7 @@ const TelegramTemplates = {
 🧠 **AI Analysis:** Volatility Breakout identified. Institutional flow aligns with H1 trend.
 
 ⏰ _${new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' })} (GMT+7)_
-👉 [Open Live Dashboard](https://9dpi.github.io/Signal Genius/#/mvp)
+👉 [Open Live Dashboard](https://9dpi.github.io/ai-forecast-demo/#/mvp)
 `,
 
     entryHit: (signalType, entry, currentPrice, sl, tp1, tp2) => `
@@ -139,7 +139,7 @@ The order has been filled!
 📍 **Current:** ${currentPrice}
 
 ⏰ _${new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' })} (GMT+7)_
-👉 Monitor on [Dashboard](https://9dpi.github.io/Signal Genius/#/mvp)
+👉 Monitor on [Dashboard](https://9dpi.github.io/ai-forecast-demo/#/mvp)
 `,
 
     tp1Hit: (signalType, entry, tp1, currentPrice) => `
