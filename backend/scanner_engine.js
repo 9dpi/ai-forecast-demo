@@ -149,12 +149,33 @@ async function runScanner() {
 async function scanAll() {
     console.log(`\n⏰ [${new Date().toLocaleTimeString()}] Analysis Cycle Starting...`);
 
-    for (const symbol of ASSETS) {
-        const marketData = await fetchInstitutionalData(symbol);
-        if (!marketData) continue;
+    // FORCED E2E TEST: Inject a signal for EURUSD=X
+    const testMarketData = { symbol: 'EURUSD=X', direction: 'LONG', currentPrice: 1.1695 };
+    const testDecision = { shouldEmitSignal: true, confidence: 99, reasoning: 'E2E FORCE-TRIGGER TEST ACTIVE' };
 
-        // Perform Multi-Agent Analysis
-        const decision = await analyzeSignalWithAgents(marketData);
+    const testSignal = {
+        symbol: testMarketData.symbol,
+        type: testMarketData.direction,
+        entry: testMarketData.currentPrice,
+        tp: testMarketData.currentPrice + 0.0050,
+        sl: testMarketData.currentPrice - 0.0025
+    };
+
+    console.log(`🎯 E2E TEST SIGNAL IDENTIFIED: ${testSignal.symbol}`);
+    const testId = await saveSignalToDB(testSignal, testDecision);
+    if (testId) {
+        await broadcastGoldenSignal({
+            pair: testSignal.symbol,
+            action: testSignal.type,
+            entry: testSignal.entry.toFixed(5),
+            sl: testSignal.sl.toFixed(5),
+            tp: testSignal.tp.toFixed(5),
+            agentDecision: testDecision
+        });
+    }
+
+    // Normal loop follows (commented out or just let it run)
+    for (const symbol of ASSETS) {
 
         if (decision.shouldEmitSignal) {
             console.log(`🎯 SIGNAL IDENTIFIED: ${symbol} (${decision.confidence}%)`);
