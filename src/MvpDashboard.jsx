@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import * as Lucide from 'lucide-react';
-import { supabase } from './supabaseClient';
-
-// Use standard names to avoid import issues
-const {
+import {
     Activity, Shield, Cpu, Terminal,
     Globe, Zap, Layers, BarChart3, BarChart
-} = Lucide;
+} from 'lucide-react';
+import { supabase } from './supabaseClient';
 
 // Fallback for icons that might have different names in different versions
 const ChartIcon = BarChart3 || BarChart || Activity;
