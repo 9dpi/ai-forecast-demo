@@ -343,30 +343,61 @@ export default function AppMVP() {
 
         fetchSignals();
 
-        const channel = supabase
-            .channel('eurusd-signals')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ai_signals', filter: 'symbol=eq.EURUSD=X' },
-                (payload) => {
-                    const d = payload.new;
-                    if (d.current_price) setCurrentPrice(d.current_price);
-                    const newSignal = {
-                        id: d.id,
-                        pair: 'EUR/USD',
-                        action: d.signal_type === 'LONG' ? 'BUY' : 'SELL',
-                        entry: parseFloat(d.predicted_close || 0).toFixed(5),
-                        sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(5),
-                        tp1_raw: d.tp1_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)),
-                        tp2_raw: d.tp2_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)),
-                        conf: d.confidence_score,
-                        status: d.signal_status || 'WAITING',
-                        timestamp: d.created_at,
-                        time: 'Now'
-                    };
-                    setSignals(prev => [newSignal, ...prev]);
-                }
-            ).subscribe();
+        const dataTimer = setInterval(fetchSignals, 5000);
 
-        return () => supabase.removeChannel(channel);
+        const channel = supabase
+            .channel('eurusd-signals-realtime')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'ai_signals',
+                filter: 'symbol=eq.EURUSD=X'
+            }, (payload) => {
+                console.log('⚡ Signal Pulse Received:', payload.eventType);
+
+                if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
+                    const d = payload.new;
+                    if (d.current_price) setCurrentPrice(parseFloat(d.current_price));
+
+                    // Update signals list if the signal is already there, or add if new
+                    setSignals(prev => {
+                        const exists = prev.find(s => s.id === d.id);
+                        if (exists) {
+                            return prev.map(s => s.id === d.id ? {
+                                ...s,
+                                status: d.signal_status || s.status,
+                                entry: parseFloat(d.predicted_close || 0).toFixed(5),
+                                sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : s.sl,
+                                tp1_raw: d.tp1_price || s.tp1_raw,
+                                tp2_raw: d.tp2_price || s.tp2_raw,
+                                conf: d.confidence_score || s.conf,
+                                // Important: We don't display current_price in the card currently, but we update status
+                            } : s);
+                        } else if (payload.eventType === 'INSERT') {
+                            const newSignal = {
+                                id: d.id,
+                                pair: 'EUR/USD',
+                                action: d.signal_type === 'LONG' ? 'BUY' : 'SELL',
+                                entry: parseFloat(d.predicted_close || 0).toFixed(5),
+                                sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(5),
+                                tp1_raw: d.tp1_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)),
+                                tp2_raw: d.tp2_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)),
+                                conf: d.confidence_score,
+                                status: d.signal_status || 'WAITING',
+                                timestamp: d.created_at,
+                                time: 'Now'
+                            };
+                            return [newSignal, ...prev];
+                        }
+                        return prev;
+                    });
+                }
+            }).subscribe();
+
+        return () => {
+            clearInterval(dataTimer);
+            supabase.removeChannel(channel);
+        };
     }, []);
 
     return (
