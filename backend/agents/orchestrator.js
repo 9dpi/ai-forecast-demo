@@ -23,7 +23,6 @@ class MultiAgentOrchestrator {
         this._initializeListeners();
         this._scheduleShadowModeDisable();
         this._startGuardianReportScheduler();
-        this._sendWelcomeMessage();
     }
 
     /**
