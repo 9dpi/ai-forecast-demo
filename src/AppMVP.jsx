@@ -125,7 +125,7 @@ const LiveTicker = memo(({ initialPrice, lastUpdate }) => {
         trend1H: 'BULLISH',
     });
     const [utcTime, setUtcTime] = useState(new Date().toUTCString().split(' ')[4]);
-    const localLastUpdate = lastUpdate ? new Date(lastUpdate).toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh' }) : null;
+    const localLastUpdate = lastUpdate ? new Date(lastUpdate).toLocaleTimeString('en-GB', { timeZone: 'UTC' }) : null;
 
     useEffect(() => {
         if (initialPrice) {
@@ -159,17 +159,23 @@ const LiveTicker = memo(({ initialPrice, lastUpdate }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                         <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', margin: 0 }}>EUR/USD LIVE</p>
                     </div>
-                    <div className="trend-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <TrendingUp size={14} color="var(--color-buy)" />
-                        HIGH CONVICTION Bullish Trend (H1)
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <span style={{
+                            fontSize: '1.8rem',
+                            color: 'var(--neon-blue)',
+                            fontWeight: '900',
+                            fontFamily: 'monospace',
+                            lineHeight: 1
+                        }}>
+                            {data.price ? data.price.toFixed(5) : "---"}
+                        </span>
+                        <TrendingUp size={16} color="var(--color-buy)" className="animate-pulse" />
                     </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: '950', letterSpacing: '-2px', color: 'var(--text-primary)', margin: '4px 0' }}>
-                        {data.price ? data.price.toFixed(5) : '---'}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Activity size={12} className="animate-pulse" />
-                        Live from London ECN {localLastUpdate && `• Last update: ${localLastUpdate} (GMT+7)`}
-                    </div>
+                    {localLastUpdate && (
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '4px', opacity: 0.8, fontWeight: 'bold' }}>
+                            Last Update: {localLastUpdate} (GMT +0)
+                        </div>
+                    )}
                 </div>
 
                 {/* Vertical Divider */}
