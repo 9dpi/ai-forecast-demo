@@ -9,7 +9,7 @@ dotenv.config();
 // --- CONFIGURATION ---
 const ASSETS = ['EURUSD=X', 'BTC-USD', 'AAPL', 'VN30F1M'];
 const TIMEFRAME = '1h';
-const CHECK_INTERVAL = 120000; // 2 minutes (Increased frequency for demo)
+const CHECK_INTERVAL = 60000; // 1 minute - High frequency for market tracking
 
 // --- DATABASE SETUP ---
 const { Pool } = pg;
@@ -24,12 +24,13 @@ const dbConfig = {
 const pool = new Pool(dbConfig);
 
 /**
- * Fetch historical data for indicators
+ * ENHANCED: Fetch comprehensive institutional-grade market data
+ * Includes: OHLC, Volume, Momentum, and Quality Validation
  */
 async function fetchInstitutionalData(symbol) {
     try {
         const period1 = new Date();
-        period1.setDate(period1.getDate() - 30); // Last 30 days
+        period1.setDate(period1.getDate() - 60); // Extended to 60 days for robust indicators
         const period2 = new Date();
 
         const history = await yahooFinance.historical(symbol, {
@@ -38,14 +39,34 @@ async function fetchInstitutionalData(symbol) {
             interval: '1h'
         });
 
-        if (!history || history.length < 30) {
-            throw new Error("Insufficient historical data");
+        if (!history || history.length < 50) {
+            throw new Error(`Insufficient historical data: ${history?.length || 0} candles`);
         }
 
-        const currentPrice = history[history.length - 1].close;
-        const prices = history.map(h => h.close);
-        const volumes = history.map(h => h.volume);
-        const lastCandle = history[history.length - 1];
+        // Filter out invalid candles (missing OHLC data)
+        const validHistory = history.filter(h =>
+            h.open && h.high && h.low && h.close && h.volume !== undefined
+        );
+
+        if (validHistory.length < 50) {
+            throw new Error(`Insufficient valid candles: ${validHistory.length}`);
+        }
+
+        const currentPrice = validHistory[validHistory.length - 1].close;
+        const prices = validHistory.map(h => h.close);
+        const volumes = validHistory.map(h => h.volume);
+        const lastCandle = validHistory[validHistory.length - 1];
+
+        // Calculate price momentum (rate of change)
+        const momentum = prices.length >= 10
+            ? (prices[prices.length - 1] - prices[prices.length - 10]) / prices[prices.length - 10]
+            : 0;
+
+        // Calculate volume context
+        const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
+        const volumeRatio = lastCandle.volume / avgVolume;
+
+        console.log(`📊 [${symbol}] Quality: ${validHistory.length} candles | Momentum: ${(momentum * 100).toFixed(2)}% | Vol: ${volumeRatio.toFixed(2)}x`);
 
         return {
             symbol,
@@ -58,7 +79,13 @@ async function fetchInstitutionalData(symbol) {
                 low: lastCandle.low,
                 close: lastCandle.close
             },
-            direction: prices[prices.length - 1] > prices[prices.length - 2] ? 'LONG' : 'SHORT'
+            direction: prices[prices.length - 1] > prices[prices.length - 2] ? 'LONG' : 'SHORT',
+            metadata: {
+                momentum,
+                volumeRatio,
+                candleCount: validHistory.length,
+                dataQuality: validHistory.length / history.length
+            }
         };
     } catch (error) {
         console.error(`❌ Data Fetch Fail [${symbol}]:`, error.message);

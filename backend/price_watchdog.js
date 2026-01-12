@@ -259,7 +259,7 @@ async function updateSignalStatus(signalId, newStatus, currentPrice) {
 }
 
 /**
- * CORE LOGIC: Price Watchdog
+ * CORE LOGIC: Price Watchdog with Enhanced Market Data Collection
  */
 async function watchSignals() {
     const client = await pool.connect();
@@ -285,12 +285,15 @@ async function watchSignals() {
             return;
         }
 
-        // Lấy giá hiện tại từ Alpha Vantage
+        // Lấy giá hiện tại từ nguồn đa tầng
         const currentPrice = await getAlphaVantagePrice();
         if (!currentPrice) {
             console.error("❌ Cannot fetch current price, skipping this cycle.");
             return;
         }
+
+        // ENHANCED: Store comprehensive market snapshot
+        await storeMarketSnapshot(client, currentPrice);
 
         console.log(`\n🔍 Watching ${signals.length} signals | Current Price: ${currentPrice}`);
 
@@ -378,6 +381,43 @@ async function watchSignals() {
         client.release();
     }
 }
+
+/**
+ * ENHANCED: Store comprehensive market data snapshot
+ * This enables institutional-grade analysis and audit trails
+ */
+async function storeMarketSnapshot(client, price) {
+    try {
+        // Calculate simple volatility metric (would use ATR in production)
+        const volatility = Math.abs(price - (priceHistory[priceHistory.length - 1] || price)) / price;
+
+        // Store in market_data table for historical analysis
+        await client.query(`
+            INSERT INTO market_data (
+                symbol, 
+                timestamp_utc, 
+                close_price, 
+                spread_pips,
+                volatility_index
+            ) VALUES ($1, NOW(), $2, $3, $4)
+            ON CONFLICT (symbol, timestamp_utc) DO UPDATE 
+            SET close_price = EXCLUDED.close_price,
+                spread_pips = EXCLUDED.spread_pips,
+                volatility_index = EXCLUDED.volatility_index
+        `, ['EURUSD=X', price, 0.00001, volatility]);
+
+        // Maintain price history buffer for volatility calculations
+        priceHistory.push(price);
+        if (priceHistory.length > 100) priceHistory.shift();
+
+    } catch (error) {
+        console.warn("⚠️ Market snapshot storage failed:", error.message);
+        // Non-critical, continue execution
+    }
+}
+
+// Price history buffer for volatility tracking
+const priceHistory = [];
 
 /**
  * MAIN LOOP
