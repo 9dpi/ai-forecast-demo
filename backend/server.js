@@ -39,15 +39,9 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', system: 'Quantix AI Core v1.5' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 API Server running on port ${PORT}`);
 });
 
-// Start Bot, Watchdog, and Telegram Scheduler as child processes
-const botProcess = spawn('node', ['backend/bot.js'], { stdio: 'inherit' });
-const watchdogProcess = spawn('node', ['backend/price_watchdog.js'], { stdio: 'inherit' });
-const schedulerProcess = spawn('node', ['backend/telegram_scheduler.js'], { stdio: 'inherit' });
-
-botProcess.on('close', (code) => console.log(`Bot process exited with code ${code}`));
-watchdogProcess.on('close', (code) => console.log(`Watchdog process exited with code ${code}`));
-schedulerProcess.on('close', (code) => console.log(`Scheduler process exited with code ${code}`));
+// NOTE: Bot, Watchdog, and Scheduler are now managed by Railway via Procfile.
+// No manual spawning needed here to avoid double-process conflicts.
