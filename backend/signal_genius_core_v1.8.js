@@ -35,6 +35,7 @@ export async function analyzeSignalWithAgents(marketData) {
         return {
             // Core decision
             shouldEmitSignal: decision.shouldEmitSignal,
+            isGhostSignal: decision.isGhostSignal,
             confidence: decision.confidence,
 
             // Multi-Agent details

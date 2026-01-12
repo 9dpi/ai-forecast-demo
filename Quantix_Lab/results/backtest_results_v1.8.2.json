@@ -1,0 +1,1933 @@
+{
+  "metrics": {
+    "initial": 10000,
+    "final": "7997.70",
+    "netProfit": "-2002.30",
+    "totalTrades": 192,
+    "winRate": "24.48%",
+    "maxDrawdown": "26.23%",
+    "highestConfidenceFound": 84
+  },
+  "trades": [
+    {
+      "time": "2025-01-14T05:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.02470",
+      "exit": "1.02670",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-15T13:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.03477",
+      "exit": "1.03377",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-16T21:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.03050",
+      "exit": "1.02950",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-20T06:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.03135",
+      "exit": "1.03035",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-21T13:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.03788",
+      "exit": "1.03688",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-22T20:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04156",
+      "exit": "1.04056",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-24T08:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04954",
+      "exit": "1.04854",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-27T19:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04943",
+      "exit": "1.04843",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-01-30T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04210",
+      "exit": "1.04110",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-04T00:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.03199",
+      "exit": "1.03299",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-05T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04058",
+      "exit": "1.03958",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-07T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.03939",
+      "exit": "1.03839",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-11T15:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.03434",
+      "exit": "1.03534",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-12T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.03939",
+      "exit": "1.04139",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-14T06:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04624",
+      "exit": "1.04824",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-17T14:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04822",
+      "exit": "1.04722",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-20T13:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04504",
+      "exit": "1.04404",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-24T04:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.05186",
+      "exit": "1.04986",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-02-25T20:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.05197",
+      "exit": "1.04997",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-03T06:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.04123",
+      "exit": "1.04023",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-04T13:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.05419",
+      "exit": "1.05519",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-05T21:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.07921",
+      "exit": "1.08021",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-07T04:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.08155",
+      "exit": "1.08355",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-10T14:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.08472",
+      "exit": "1.08372",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-11T22:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.09194",
+      "exit": "1.09094",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-14T13:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.08767",
+      "exit": "1.08967",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-17T23:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.09218",
+      "exit": "1.09318",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-19T06:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.09242",
+      "exit": "1.09142",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-24T11:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.08378",
+      "exit": "1.08278",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-27T14:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.07910",
+      "exit": "1.08010",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-03-28T21:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.08307",
+      "exit": "1.08407",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-01T05:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.08108",
+      "exit": "1.08008",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-02T13:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.08319",
+      "exit": "1.08219",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-03T20:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.10546",
+      "exit": "1.10446",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-08T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.09266",
+      "exit": "1.09466",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-09T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.10205",
+      "exit": "1.10405",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-10T23:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.12638",
+      "exit": "1.12438",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-14T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13934",
+      "exit": "1.14134",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-16T06:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.13649",
+      "exit": "1.13749",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-17T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13766",
+      "exit": "1.13666",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-21T07:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.15607",
+      "exit": "1.15407",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-24T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13817",
+      "exit": "1.13717",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-28T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13649",
+      "exit": "1.13549",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-04-29T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14064",
+      "exit": "1.13964",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-02T09:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.13533",
+      "exit": "1.13333",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-06T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13135",
+      "exit": "1.13335",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-07T19:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13097",
+      "exit": "1.13297",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-09T20:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.12537",
+      "exit": "1.12437",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-13T16:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.11794",
+      "exit": "1.11894",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-15T01:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.11970",
+      "exit": "1.12170",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-16T08:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.12020",
+      "exit": "1.11820",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-19T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.12385",
+      "exit": "1.12285",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-20T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.12918",
+      "exit": "1.13118",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-22T08:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13058",
+      "exit": "1.13258",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-23T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13623",
+      "exit": "1.13523",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-27T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14038",
+      "exit": "1.13938",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-05-29T15:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.13714",
+      "exit": "1.13814",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-02T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.13714",
+      "exit": "1.13614",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-03T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14207",
+      "exit": "1.14107",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-04T15:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14273",
+      "exit": "1.14173",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-05T22:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14548",
+      "exit": "1.14448",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-09T12:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14038",
+      "exit": "1.13938",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-10T22:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.14325",
+      "exit": "1.14225",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-12T05:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15314",
+      "exit": "1.15214",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-13T21:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15553",
+      "exit": "1.15453",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-19T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15154",
+      "exit": "1.15054",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-23T17:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15727",
+      "exit": "1.15627",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-25T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16293",
+      "exit": "1.16193",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-26T07:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17110",
+      "exit": "1.17210",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-06-27T17:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17055",
+      "exit": "1.17255",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-01T01:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17841",
+      "exit": "1.17941",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-02T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17730",
+      "exit": "1.17630",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-04T10:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17813",
+      "exit": "1.17713",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-08T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17440",
+      "exit": "1.17340",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-10T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17481",
+      "exit": "1.17381",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-15T10:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16877",
+      "exit": "1.16777",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-16T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16387",
+      "exit": "1.16287",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-18T06:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16252",
+      "exit": "1.16452",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-21T14:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17014",
+      "exit": "1.16814",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-22T21:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17536",
+      "exit": "1.17336",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-24T04:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17772",
+      "exit": "1.17572",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-07-28T01:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17564",
+      "exit": "1.17464",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-01T14:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.15580",
+      "exit": "1.15680",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-04T22:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15808",
+      "exit": "1.15708",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-06T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15902",
+      "exit": "1.15802",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-07T17:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16360",
+      "exit": "1.16260",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-11T03:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16754",
+      "exit": "1.16654",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-12T17:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.16768",
+      "exit": "1.16868",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-14T02:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17082",
+      "exit": "1.16982",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-15T10:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.16904",
+      "exit": "1.17004",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-19T12:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16795",
+      "exit": "1.16695",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-20T20:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16523",
+      "exit": "1.16423",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-22T16:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17247",
+      "exit": "1.17347",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-27T23:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.16509",
+      "exit": "1.16609",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-08-29T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16795",
+      "exit": "1.16695",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-01T15:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17041",
+      "exit": "1.16941",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-03T16:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.16781",
+      "exit": "1.16581",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-05T01:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16741",
+      "exit": "1.16941",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-08T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17275",
+      "exit": "1.17475",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-11T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17398",
+      "exit": "1.17298",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-15T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17302",
+      "exit": "1.17502",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-16T12:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.18078",
+      "exit": "1.18178",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-17T20:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.18161",
+      "exit": "1.18061",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-22T16:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17911",
+      "exit": "1.18011",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-24T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.18078",
+      "exit": "1.17978",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-26T21:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17082",
+      "exit": "1.17282",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-09-30T08:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17592",
+      "exit": "1.17492",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-01T15:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17261",
+      "exit": "1.17461",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-03T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17426",
+      "exit": "1.17326",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-09T05:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16428",
+      "exit": "1.16328",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-10T18:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16144",
+      "exit": "1.16044",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-14T17:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16131",
+      "exit": "1.16331",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-16T00:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16673",
+      "exit": "1.16573",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-17T08:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17014",
+      "exit": "1.16914",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-22T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16104",
+      "exit": "1.16004",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-24T06:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16171",
+      "exit": "1.16071",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-27T15:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16387",
+      "exit": "1.16587",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-10-28T22:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16537",
+      "exit": "1.16437",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-06T01:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15101",
+      "exit": "1.15301",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-07T10:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15540",
+      "exit": "1.15440",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-10T19:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15647",
+      "exit": "1.15547",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-12T02:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15835",
+      "exit": "1.15735",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-13T11:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16090",
+      "exit": "1.16290",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-21T07:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15433",
+      "exit": "1.15333",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-24T16:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15221",
+      "exit": "1.15421",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-25T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.15674",
+      "exit": "1.15874",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-27T06:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.15942",
+      "exit": "1.16042",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-11-28T19:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16063",
+      "exit": "1.15963",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-02T03:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16158",
+      "exit": "1.16058",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-03T10:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.16645",
+      "exit": "1.16745",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-04T20:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16469",
+      "exit": "1.16669",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-08T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16482",
+      "exit": "1.16382",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-10T09:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.16401",
+      "exit": "1.16501",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-11T19:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17440",
+      "exit": "1.17540",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-15T03:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17371",
+      "exit": "1.17571",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-16T11:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17661",
+      "exit": "1.17861",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-18T01:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17398",
+      "exit": "1.17298",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-22T09:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17330",
+      "exit": "1.17530",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-23T17:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17730",
+      "exit": "1.17930",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-26T02:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17966",
+      "exit": "1.17866",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2025-12-30T07:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17730",
+      "exit": "1.17530",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-01T10:00:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17495",
+      "exit": "1.17595",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-02T05:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17592",
+      "exit": "1.17492",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-02T15:45:00.000Z",
+      "direction": "SHORT",
+      "entry": "1.17536",
+      "exit": "1.17336",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-05T15:45:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17069",
+      "exit": "1.17269",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-05T23:30:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17206",
+      "exit": "1.17406",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-06T07:15:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17385",
+      "exit": "1.17285",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-07T02:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.17041",
+      "exit": "1.16941",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-07T14:15:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16918",
+      "exit": "1.16818",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-08T04:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16836",
+      "exit": "1.16736",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-08T23:00:00.000Z",
+      "direction": "LONG",
+      "entry": "1.16632",
+      "exit": "1.16532",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T12:36:37.669Z",
+      "direction": "SHORT",
+      "entry": "1.16880",
+      "exit": "1.16980",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T12:39:42.764Z",
+      "direction": "SHORT",
+      "entry": "1.16900",
+      "exit": "1.17000",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T12:43:58.939Z",
+      "direction": "SHORT",
+      "entry": "1.16900",
+      "exit": "1.17000",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T12:52:19.194Z",
+      "direction": "SHORT",
+      "entry": "1.16860",
+      "exit": "1.16960",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T12:59:11.354Z",
+      "direction": "SHORT",
+      "entry": "1.16850",
+      "exit": "1.16950",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:02:07.422Z",
+      "direction": "SHORT",
+      "entry": "1.16850",
+      "exit": "1.16950",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:05:22.542Z",
+      "direction": "SHORT",
+      "entry": "1.16850",
+      "exit": "1.16950",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:07:57.314Z",
+      "direction": "SHORT",
+      "entry": "1.16900",
+      "exit": "1.17000",
+      "pips": -10,
+      "pnl": "-100.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:10:32.423Z",
+      "direction": "SHORT",
+      "entry": "1.16960",
+      "exit": "1.16960",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:13:12.389Z",
+      "direction": "SHORT",
+      "entry": "1.16960",
+      "exit": "1.16960",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:16:27.950Z",
+      "direction": "SHORT",
+      "entry": "1.16960",
+      "exit": "1.16960",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:34:23.559Z",
+      "direction": "SHORT",
+      "entry": "1.16930",
+      "exit": "1.16930",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:37:28.658Z",
+      "direction": "SHORT",
+      "entry": "1.16950",
+      "exit": "1.16950",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:40:33.752Z",
+      "direction": "SHORT",
+      "entry": "1.16950",
+      "exit": "1.16950",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:45:08.526Z",
+      "direction": "SHORT",
+      "entry": "1.16960",
+      "exit": "1.16960",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:47:43.627Z",
+      "direction": "SHORT",
+      "entry": "1.17000",
+      "exit": "1.16800",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T13:50:18.747Z",
+      "direction": "SHORT",
+      "entry": "1.17010",
+      "exit": "1.16810",
+      "pips": 20,
+      "pnl": "199.99",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:07:24.411Z",
+      "direction": "SHORT",
+      "entry": "1.16920",
+      "exit": "1.16920",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:09:59.503Z",
+      "direction": "SHORT",
+      "entry": "1.16920",
+      "exit": "1.16920",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:23:35.089Z",
+      "direction": "SHORT",
+      "entry": "1.16860",
+      "exit": "1.16860",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:27:40.256Z",
+      "direction": "SHORT",
+      "entry": "1.16840",
+      "exit": "1.16840",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:34:10.489Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:37:10.602Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:40:20.757Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:42:55.849Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:46:16.011Z",
+      "direction": "LONG",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 84,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:49:31.148Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:52:06.278Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T14:58:11.522Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:00:46.639Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:03:21.742Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:05:56.855Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:11:27.106Z",
+      "direction": "SHORT",
+      "entry": "1.16780",
+      "exit": "1.16780",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:14:02.212Z",
+      "direction": "SHORT",
+      "entry": "1.16800",
+      "exit": "1.16800",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:16:37.347Z",
+      "direction": "LONG",
+      "entry": "1.16800",
+      "exit": "1.16800",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:19:12.420Z",
+      "direction": "LONG",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:22:07.545Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:26:14.905Z",
+      "direction": "SHORT",
+      "entry": "1.16820",
+      "exit": "1.16820",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:28:50.033Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:32:20.188Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    },
+    {
+      "time": "2026-01-12T15:34:55.297Z",
+      "direction": "SHORT",
+      "entry": "1.16810",
+      "exit": "1.16810",
+      "pips": 0,
+      "pnl": "-0.01",
+      "confidence": 81,
+      "mode": "SILVER"
+    }
+  ]
+}

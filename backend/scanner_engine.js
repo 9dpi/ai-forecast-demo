@@ -136,8 +136,8 @@ async function scanAll() {
         // Perform Multi-Agent Analysis
         const decision = await analyzeSignalWithAgents(marketData);
 
-        if (decision.shouldEmitSignal) {
-            console.log(`🎯 SIGNAL IDENTIFIED: ${symbol} (${decision.confidence}%)`);
+        if (decision.shouldEmitSignal || decision.isGhostSignal) {
+            console.log(`🎯 SIGNAL IDENTIFIED: ${symbol} (${decision.confidence}%)${decision.isGhostSignal ? ' [GHOST MODE]' : ''}`);
 
             const signal = {
                 symbol: marketData.symbol,
@@ -149,8 +149,8 @@ async function scanAll() {
 
             const signalId = await saveSignalToDB(signal, decision);
 
-            if (signalId) {
-                // Broadcast to Telegram
+            if (signalId && decision.shouldEmitSignal) {
+                // Only broadcast to Telegram if it's NOT a ghost signal
                 await broadcastGoldenSignal({
                     pair: symbol,
                     action: signal.type,
@@ -159,6 +159,8 @@ async function scanAll() {
                     tp: signal.tp.toFixed(5),
                     agentDecision: decision
                 });
+            } else if (signalId && decision.isGhostSignal) {
+                console.log(`👻 [GHOST MODE] Signal ${signalId} saved to database for audit. Skipping broadcast.`);
             }
         }
     }

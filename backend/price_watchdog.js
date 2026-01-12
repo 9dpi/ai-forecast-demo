@@ -130,47 +130,59 @@ const TelegramTemplates = {
 `,
 
     entryHit: (signalType, entry, currentPrice, sl, tp1, tp2) => `
-⚡ **PROGRESS: ENTRY HIT**
+⚡ **[PROGRESS] ENTRY HIT**
 
-The order has been filled!
-📊 **EUR/USD** is now ACTIVE.
+✅ Order filled! **EUR/USD** is now ACTIVE.
 
 💰 **Entry:** ${entry}
 📍 **Current:** ${currentPrice}
+🎯 **TP1:** ${tp1} | **TP2:** ${tp2}
+🛑 **SL:** ${sl}
+
+📊 Position is being monitored in real-time.
 
 ⏰ _${new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' })} (GMT+7)_
-👉 Monitor on [Dashboard](https://9dpi.github.io/ai-forecast-demo/#/mvp)
+👉 [Live Dashboard](https://9dpi.github.io/ai-forecast-demo/#/mvp)
 `,
 
     tp1Hit: (signalType, entry, tp1, currentPrice) => `
-💰 **TP1 SMASHED! (+20 Pips)**
+🎉 **[PROFIT] TP1 HIT! +25 pips secured**
 
-We just secured the first bag.
+First target achieved! 🎯
 📊 **EUR/USD ${signalType === 'LONG' ? 'BUY' : 'SELL'}**
-👉 Move Stop Loss to Entry to trade risk-free!
 
-🚀 **Next Target:** TP2
+💡 **Recommended Action:** Move Stop Loss to Entry for risk-free trading.
+
+🚀 **Next Target:** TP2 (Full profit)
+
 ⏰ _${new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' })} (GMT+7)_
+🛡️ Powered by Quantix Core AI v1.8.2
 `,
 
     tp2Hit: (signalType, entry, tp2, currentPrice) => `
-🏆 **TP2 HIT - HOME RUN! (+50 Pips)**
+🏆 **[PROFIT] TP2 HIT - FULL TARGET! +50 pips**
 
-Full profit target achieved.
-📊 **EUR/USD** trade is closed.
+✅ Trade closed with maximum profit.
+📊 **EUR/USD** position fully exited.
 
-🔥 **Signal Genius AI** strikes again.
-_Wait for the next setup._
+💰 **Performance:** Excellent execution by Quantix AI.
+🔄 **Status:** Scanning for next high-probability setup...
+
 ⏰ _${new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' })} (GMT+7)_
+🛡️ Powered by Quantix Core AI v1.8.2
 `,
 
     slHit: (signalType, entry, sl, currentPrice) => `
-❌ **STOP LOSS HIT**
+❌ **[ALERT] STOP LOSS HIT**
 
-Market reversed against analysis.
-Loss accepted. Capital preserved.
-🔄 **AI is scanning for next opportunity...**
+⚠️ Market reversed against our analysis.
+📊 **EUR/USD** position closed with controlled loss.
+
+🛡️ **Capital Protection:** Risk management protocol executed.
+🔄 **Next Steps:** AI is analyzing market for recovery opportunities.
+
 ⏰ _${new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' })} (GMT+7)_
+💡 Remember: Losses are part of trading. Stay disciplined.
 `
 };
 

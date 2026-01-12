@@ -14,8 +14,7 @@ class MultiAgentOrchestrator {
     constructor() {
         this.name = 'ORCHESTRATOR';
         this.shadowMode = true; // Enable shadow mode for first 24h
-        const envThreshold = process.env.MIN_CONFIDENCE_THRESHOLD;
-        this.shadowModeThreshold = envThreshold ? (parseFloat(envThreshold) <= 1 ? parseFloat(envThreshold) * 100 : parseFloat(envThreshold)) : 85;
+        this.shadowModeThreshold = 85; // Only emit signals >= 85% confidence
         this.shadowModeStartTime = new Date();
         this.signalHistory = [];
         this.rejectedCounter = 0;
@@ -57,7 +56,6 @@ class MultiAgentOrchestrator {
             // Step 5: Return result
             return {
                 shouldEmitSignal: finalDecision.decision === 'APPROVE' && finalDecision.passedShadowMode,
-                isGhostSignal: finalDecision.isGhostSignal || false,
                 confidence: finalDecision.compositeConfidence || 0,
                 reasoning: finalDecision.reasoning,
                 votes: finalDecision.votes,
@@ -88,19 +86,15 @@ class MultiAgentOrchestrator {
         const passedShadowMode = confidence >= this.shadowModeThreshold;
 
         if (consensusResult.decision === 'APPROVE' && !passedShadowMode) {
-            const isSilver = confidence >= 80;
             console.log(`\n🛡️  [SHADOW MODE] Signal confidence ${confidence}% < ${this.shadowModeThreshold}%`);
-            console.log(`   ⚠️  Signal ${isSilver ? 'converted to GHOST MODE (Silver)' : 'SUPPRESSED'} for safety`);
+            console.log(`   ⚠️  Signal SUPPRESSED for safety (Shadow Mode active)`);
 
             return {
                 ...consensusResult,
-                decision: 'APPROVE', // Keep as APPROVE to save to DB
-                isGhostSignal: isSilver,
+                decision: 'REJECT',
                 passedShadowMode: false,
-                reason: isSilver ? 'GHOST_MODE_SILVER' : 'SHADOW_MODE_FILTER',
-                reasoning: isSilver
-                    ? `Ghost Mode (Silver): Confidence ${confidence}% logged for audit. No broadcast.`
-                    : `Shadow Mode: Confidence ${confidence}% below threshold.`
+                reason: 'SHADOW_MODE_FILTER',
+                reasoning: `Shadow Mode: Confidence ${confidence}% below ${this.shadowModeThreshold}% threshold`
             };
         }
 
