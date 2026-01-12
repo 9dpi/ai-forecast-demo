@@ -1,4 +1,4 @@
-// Signal Genius AI Dashboard - V1.8.9 Premium (Production Sync)
+// Signal Genius AI Dashboard - V1.9.0 Premium (UI Enforcement)
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
     Activity, Shield, Cpu, Terminal,
@@ -281,12 +281,12 @@ export default function MvpDashboard() {
                     <h2 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '1.25rem', color: '#4ade80' }}><Activity size={18} /> Protection</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', flex: 1 }}>
                         <div style={{ background: 'rgba(239, 68, 68, 0.05)', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(239, 68, 68, 0.2)', textAlign: 'center' }}>
-                            <div style={{ fontSize: '0.6rem', color: '#f87171', marginBottom: '4px' }}>FILTERED</div>
-                            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#f87171', lineHeight: 1 }}>12</div>
+                            <div style={{ fontSize: '0.65rem', color: '#f87171', marginBottom: '4px', opacity: 0.8 }}>FILTERED</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#f87171', lineHeight: '1', textShadow: '0 0 20px rgba(248, 113, 113, 0.3)' }}>12</div>
                         </div>
                         <div style={{ background: 'rgba(34, 197, 94, 0.05)', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(34, 197, 94, 0.2)', textAlign: 'center' }}>
-                            <div style={{ fontSize: '0.6rem', color: '#4ade80', marginBottom: '4px' }}>SECURE</div>
-                            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#4ade80', lineHeight: 1 }}>86%</div>
+                            <div style={{ fontSize: '0.65rem', color: '#4ade80', marginBottom: '4px', opacity: 0.8 }}>SECURE</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#4ade80', lineHeight: '1', textShadow: '0 0 20px rgba(74, 222, 128, 0.3)' }}>86%</div>
                         </div>
                     </div>
                     <div style={{ marginTop: '1rem', fontSize: '0.65rem', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
