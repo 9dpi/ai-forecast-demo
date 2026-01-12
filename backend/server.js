@@ -43,9 +43,11 @@ app.listen(PORT, () => {
     console.log(`🚀 API Server running on port ${PORT}`);
 });
 
-// Start Bot and Watchdog as child processes
+// Start Bot, Watchdog, and Telegram Scheduler as child processes
 const botProcess = spawn('node', ['backend/bot.js'], { stdio: 'inherit' });
 const watchdogProcess = spawn('node', ['backend/price_watchdog.js'], { stdio: 'inherit' });
+const schedulerProcess = spawn('node', ['backend/telegram_scheduler.js'], { stdio: 'inherit' });
 
 botProcess.on('close', (code) => console.log(`Bot process exited with code ${code}`));
 watchdogProcess.on('close', (code) => console.log(`Watchdog process exited with code ${code}`));
+schedulerProcess.on('close', (code) => console.log(`Scheduler process exited with code ${code}`));

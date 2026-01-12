@@ -30,6 +30,7 @@
     "framer-motion": "^12.24.11",
     "helmet": "^8.1.0",
     "lucide-react": "^0.562.0",
+    "node-cron": "^4.2.1",
     "node-fetch": "^2.7.0",
     "node-telegram-bot-api": "^0.67.0",
     "pg": "^8.16.3",
