@@ -4,7 +4,15 @@
  */
 
 import { sendSystemMessage } from './bot.js';
-import { supabase } from './supabase_backend.js';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+);
 
 /**
  * 🚨 GOLDEN SIGNAL - High confidence signal with full Council analysis
