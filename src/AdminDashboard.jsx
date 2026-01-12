@@ -13,6 +13,13 @@ export default function AdminDashboard() {
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [passcodeInput, setPasscodeInput] = useState('');
     const [lockError, setLockError] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handlePasscode = (e) => {
         const value = e.target.value;
@@ -257,21 +264,30 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#020617', color: '#f1f5f9', padding: '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: '#020617', color: '#f1f5f9', padding: isMobile ? '1.5rem' : '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
 
             {/* Top Bar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid #1e293b', paddingBottom: '1.5rem' }}>
+            <div style={{
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                justifyContent: 'space-between',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                marginBottom: '2.5rem',
+                borderBottom: '1px solid #1e293b',
+                paddingBottom: '1.5rem',
+                gap: isMobile ? '20px' : '0'
+            }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <Shield size={36} color="#38bdf8" />
+                    <Shield size={isMobile ? 28 : 36} color="#38bdf8" />
                     <div>
-                        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.5px', background: 'linear-gradient(90deg, #facc15, #f87171, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>
+                        <h1 style={{ fontSize: isMobile ? '1.25rem' : '1.75rem', fontWeight: 800, letterSpacing: '-0.5px', background: 'linear-gradient(90deg, #facc15, #f87171, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>
                             QUANTIX V1.8 EVOLUTION
                         </h1>
                         <p style={{ margin: 0, fontSize: '0.7rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px' }}>Operational Control | Council of Agents</p>
                     </div>
                 </div>
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                    <div style={{ textAlign: 'right' }}>
+                <div style={{ display: 'flex', gap: '20px', alignItems: 'center', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-end' }}>
+                    <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
                         <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Protection Level</div>
                         <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#facc15' }}>🛡️ SHADOW MODE (85%)</div>
                     </div>
@@ -282,7 +298,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Bento Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '1.5rem' }}>
 
                 {/* Infrastructure */}
                 <div style={cardStyle}>
@@ -364,7 +380,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Column Span for Logs */}
-                <div style={{ gridColumn: 'span 3', background: '#000', borderRadius: '16px', border: '1px solid #1e293b', padding: '1.25rem', height: '350px', display: 'flex', flexDirection: 'column', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8)' }}>
+                <div style={{ gridColumn: isMobile ? 'span 1' : 'span 3', background: '#000', borderRadius: '16px', border: '1px solid #1e293b', padding: '1.25rem', height: isMobile ? '400px' : '350px', display: 'flex', flexDirection: 'column', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '0.75rem' }}>
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 700 }}>
                             <Terminal size={16} /> NEURAL_LOG_STREAM
