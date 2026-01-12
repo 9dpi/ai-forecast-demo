@@ -29,18 +29,52 @@ const priceConfirmationBuffer = new Map(); // signalId -> { price, count, timest
 const CONFIRMATION_THRESHOLD = 2; // Cần 2 lần check liên tiếp để xác nhận
 
 /**
- * Lấy giá EUR/USD từ Yahoo Finance (Primary for High Frequency)
+ * Lớp trừu tượng lấy giá EUR/USD với cơ chế fallback đa tầng
+ * Thứ tự: Yahoo (Primary) -> Alpha Vantage (Backup) -> Yahoo Alternative
  */
 async function getAlphaVantagePrice() {
-    return await getYahooPrice(); // Ép dùng Yahoo làm chính để tránh limit
+    // 1. Thử Yahoo Finance đầu tiên (Nhanh, không cần Key)
+    let price = await getYahooPrice();
+    if (price) return price;
+
+    // 2. Thử Alpha Vantage (Dữ liệu Forex chuyên sâu, có Key)
+    console.warn("⚠️ PRIMARY FEED FAILED: Falling back to Alpha Vantage...");
+    price = await fetchAlphaVantagePriceRaw();
+    if (price) return price;
+
+    // 3. Cuối cùng thử Yahoo lần nữa với endpoint khác nếu có (Dự phòng cuối cùng)
+    console.warn("⚠️ BACKUP FEED FAILED: Retrying Yahoo Alternative...");
+    return await getYahooPriceAlt();
 }
 
 /**
- * Nguồn giá siêu tốc từ Yahoo
+ * Nguồn thô từ Alpha Vantage
+ */
+async function fetchAlphaVantagePriceRaw() {
+    try {
+        const url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=EUR&to_currency=USD&apikey=${ALPHA_VANTAGE_KEY}`;
+        const response = await fetch(url, { timeout: 5000 });
+        const data = await response.json();
+
+        if (data.Note || data['Error Message'] || !data['Realtime Currency Exchange Rate']) {
+            console.warn("❌ Alpha Vantage rejected request (Rate limit or error)");
+            return null;
+        }
+
+        const price = parseFloat(data['Realtime Currency Exchange Rate']['5. Exchange Rate']);
+        console.log(`📊 ALPHA VANTAGE EUR/USD: ${price}`);
+        return price;
+    } catch (e) {
+        console.error("❌ AV Fetch Error:", e.message);
+        return null;
+    }
+}
+
+/**
+ * Nguồn giá thô từ Yahoo Finance
  */
 async function getYahooPrice() {
     try {
-        // Thêm timestamp để bypass cache
         const ts = Date.now();
         const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/EURUSD=X?interval=1m&range=1d&_=${ts}`, {
             timeout: 5000,
@@ -48,11 +82,26 @@ async function getYahooPrice() {
         });
         const data = await response.json();
         const price = parseFloat(data.chart.result[0].meta.regularMarketPrice.toFixed(5));
-
-        console.log(`📊 RAW LIVE EUR/USD: ${price}`);
+        console.log(`📊 YAHOO LIVE EUR/USD: ${price}`);
         return price;
     } catch (error) {
-        console.error("❌ PRICE FEED ERROR:", error.message);
+        console.error("❌ YAHOO FETCH ERROR:", error.message);
+        return null;
+    }
+}
+
+/**
+ * Nguồn giá từ Yahoo Finance (Alternative Endpoint)
+ */
+async function getYahooPriceAlt() {
+    try {
+        const response = await fetch('https://query2.finance.yahoo.com/v8/finance/chart/EURUSD=X?interval=1m&range=1d', { timeout: 5000 });
+        const data = await response.json();
+        const price = parseFloat(data.chart.result[0].meta.regularMarketPrice.toFixed(5));
+        console.log(`📊 YAHOO ALT EUR/USD: ${price}`);
+        return price;
+    } catch (error) {
+        console.error("❌ YAHOO ALT ERROR:", error.message);
         return null;
     }
 }
