@@ -167,10 +167,17 @@ bot.on('message', async (msg) => {
 });
 
 /**
- * Error Handling
+ * Exported function to send messages to a default channel or admin
  */
-bot.on('polling_error', (error) => {
-    console.error("❌ Telegram Polling Error:", error.message);
-});
+export const sendSystemMessage = async (message, options = {}) => {
+    const chatId = process.env.TELEGRAM_CHAT_ID || '-100123456789'; // Fallback to provided chat ID
+    try {
+        await bot.sendMessage(chatId, message, { parse_mode: 'Markdown', ...options });
+        return true;
+    } catch (error) {
+        console.error("❌ sendSystemMessage Error:", error.message);
+        return false;
+    }
+};
 
 console.log("✅ Bot is ready to serve international clients.");

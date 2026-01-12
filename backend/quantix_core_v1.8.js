@@ -98,12 +98,12 @@ export function disableShadowMode() {
  * Returns enhanced message with agent consensus details
  */
 export function formatTelegramMessage(signal, agentDecision) {
-    const { agentConsensus, confidence, shadowMode } = agentDecision;
+    const { agentConsensus, confidence, shadowMode, reasoning } = agentDecision;
+    const isGolden = confidence >= 85;
 
     if (!agentConsensus) {
-        // Fallback to simple message if no agent data
         return `
-🎯 **QUANTIX AI SIGNAL** (V1.8)
+${isGolden ? '🚨 **GOLDEN SIGNAL DETECTED** (85%+ CONFIDENCE)' : '🎯 **QUANTIX AI SIGNAL** (V1.8)'}
 
 📊 **${signal.pair}** | ${signal.action}
 💰 Entry: ${signal.entry}
@@ -116,21 +116,25 @@ export function formatTelegramMessage(signal, agentDecision) {
 `;
     }
 
+    // Agent reasoning or fallback
+    const techReason = agentConsensus.technical.reasoning || (agentConsensus.technical.decision === 'APPROVE' ? 'Strong technical alignment.' : 'Technical check failed.');
+    const sentinelReason = agentConsensus.sentinel.reasoning || (agentConsensus.sentinel.decision === 'APPROVE' ? 'Market environment stable.' : 'Sentiment/News risk detected.');
+    const criticReason = reasoning || `Decision finalized with ${confidence}% consensus.`;
+
     // Enhanced message with Multi-Agent consensus
     return `
-🎯 **QUANTIX AI SIGNAL** (V1.8 Evolution)
+${isGolden ? '🚨 **GOLDEN SIGNAL DETECTED** (85%+ CONFIDENCE)' : '🎯 **QUANTIX AI SIGNAL** (V1.8 Evolution)'}
 
-📊 **${signal.pair}** | ${signal.action}
-💰 Entry: ${signal.entry}
-🛑 Stop Loss: ${signal.sl}
-🎯 Take Profit: ${signal.tp}
+💹 **Asset**: ${signal.pair} | 📈 **Action**: ${signal.action} @ ${signal.entry}
 
-🧠 **Multi-Agent Consensus**:
-├─ Technical Agent: ${agentConsensus.technical.decision === 'APPROVE' ? '✅' : '❌'} APPROVE (Score: ${agentConsensus.technical.score})
-├─ Sentinel Agent: ${agentConsensus.sentinel.decision === 'APPROVE' ? '✅' : '❌'} APPROVE (Sentiment: ${agentConsensus.sentinel.score > 0 ? '+' : ''}${agentConsensus.sentinel.score})
-└─ Final Confidence: ${confidence}%
+🧠 **AI Council Verdict**:
+├─ **Tech Agent**: ${techReason}
+├─ **Sentinel Agent**: ${sentinelReason}
+└─ **Critic Agent**: ${agentConsensus.sentinel.decision === 'APPROVE' && agentConsensus.technical.decision === 'APPROVE' ? '✅' : '❌'} APPROVED (${confidence}% Confidence)
 
-${shadowMode ? `🛡️  **Shadow Mode Active**: Only highest-confidence signals (>= 85%)` : ''}
+🎯 **TP**: ${signal.tp} | ❌ **SL**: ${signal.sl}
+
+${shadowMode ? `🛡️  **Shadow Mode Active**: Filtering for highest-confidence setups.` : ''}
 
 ⚡ Powered by Quantix AI Core V1.8 | Multi-Agent System
 `;

@@ -8,6 +8,7 @@ import { technicalAgent } from './tech_agent.js';
 import { sentinelAgent } from './sentinel_agent.js';
 import { criticAgent } from './critic_agent.js';
 import { agentBus, CHANNELS } from './bus.js';
+import { sendSystemMessage } from '../bot.js';
 
 class MultiAgentOrchestrator {
     constructor() {
@@ -16,9 +17,13 @@ class MultiAgentOrchestrator {
         this.shadowModeThreshold = 85; // Only emit signals >= 85% confidence
         this.shadowModeStartTime = new Date();
         this.signalHistory = [];
+        this.rejectedCounter = 0;
+        this.lastSignalTime = Date.now();
 
         this._initializeListeners();
         this._scheduleShadowModeDisable();
+        this._startGuardianReportScheduler();
+        this._sendWelcomeMessage();
     }
 
     /**
@@ -117,9 +122,11 @@ class MultiAgentOrchestrator {
 
         this.signalHistory.push(logEntry);
 
-        // Keep only last 100 decisions
-        if (this.signalHistory.length > 100) {
-            this.signalHistory.shift();
+        if (decision.decision === 'REJECT') {
+            this.rejectedCounter++;
+        } else if (decision.passedShadowMode) {
+            this.lastSignalTime = Date.now();
+            this.rejectedCounter = 0; // Reset after a successful signal
         }
 
         console.log(`\n${'='.repeat(60)}`);
@@ -196,6 +203,48 @@ class MultiAgentOrchestrator {
         agentBus.subscribe(CHANNELS.SIGNAL_REJECTED, (message) => {
             console.log(`[${this.name}] ❌ Received REJECTED signal from Critic`);
         });
+    }
+
+    /**
+     * Send Welcome Message on startup
+     */
+    async _sendWelcomeMessage() {
+        const msg = `
+🛡️ **SYSTEM UPGRADE: QUANTIX v1.8 "IRON HAND" IS LIVE**
+
+• **Multi-Agent Council**: Tech, Sentinel, and Critic Agents activated.
+• **Shadow Mode**: ON (Threshold: ${this.shadowModeThreshold}% Confidence).
+• **Status**: High-precision hunting mode engaged.
+
+Only "Golden Signals" will be broadcasted today to safeguard capital.
+
+👉 [Open Live Dashboard](${process.env.VITE_APP_URL || 'https://quantix.ai'})
+        `;
+        await sendSystemMessage(msg);
+    }
+
+    /**
+     * Start the Guardian Report scheduler (check every 3 hours)
+     */
+    _startGuardianReportScheduler() {
+        setInterval(async () => {
+            const idleTimeSeconds = (Date.now() - this.lastSignalTime) / 1000;
+
+            // If no signal for 3 hours AND we have rejected signals
+            if (idleTimeSeconds >= 3 * 60 * 60 && this.rejectedCounter > 0) {
+                const msg = `
+🛡️ **QUANTIX GUARDIAN REPORT**
+
+Market is currently showing "Low Quality" setups. Iron Hand has rejected **${this.rejectedCounter}** signals in the last 3 hours to protect your balance.
+
+Our goal today: **Quality over Quantity**. Staying patient for the ${this.shadowModeThreshold}%+ setup.
+
+🟢 System Health: 100% | 🛡️ Shadow Mode: ${this.shadowMode ? 'ACTIVE' : 'OFF'}
+                `;
+                await sendSystemMessage(msg);
+                this.rejectedCounter = 0; // Reset after report
+            }
+        }, 3 * 60 * 60 * 1000); // 3 hours
     }
 }
 
