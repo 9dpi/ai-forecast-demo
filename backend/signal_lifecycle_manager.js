@@ -86,7 +86,7 @@ async function checkSignalExpiration(client) {
 💰 **Entry**: ${parseFloat(signal.predicted_close).toFixed(5)}
 ⏱️ **Age**: ${ageHours} hours
 
-🧠 **AI Core Assessment**: Cấu trúc giá đã thay đổi sau ${TTL_HOURS}h. Hủy lệnh để bảo toàn vốn.
+🧠 **AI Core Assessment**: Price structure has shifted after ${TTL_HOURS}h. Order cancelled to preserve capital.
 
 🛡️ Powered by Quantix Core AI v1.8.2
         `;
