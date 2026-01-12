@@ -112,7 +112,7 @@ ${isGolden ? '🚨 **GOLDEN SIGNAL DETECTED** (85%+ CONFIDENCE)' : '🎯 **Signa
 
 🧠 **AI Confidence**: ${confidence}%
 
-⚡ Powered by Signal Genius AI Core V1.8
+⚡ Powered by Quantix Core AI V1.8
 `;
     }
 
@@ -136,7 +136,7 @@ ${isGolden ? '🚨 **GOLDEN SIGNAL DETECTED** (85%+ CONFIDENCE)' : '🎯 **Signa
 
 ${shadowMode ? `🛡️  **Shadow Mode Active**: Filtering for highest-confidence setups.` : ''}
 
-⚡ Powered by Signal Genius AI Core V1.8 | Multi-Agent System
+⚡ Powered by Quantix Core AI V1.8 | Multi-Agent System
 `;
 }
 

@@ -483,7 +483,7 @@ export default function AppMVP() {
                         Educational purposes only. Past performance does not guarantee future results.
                     </p>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: '500' }}>
-                        Powered by <span style={{ color: 'var(--neon-blue)' }}>Signal Genius AI v1.8</span>
+                        Powered by <span style={{ color: 'var(--neon-blue)' }}>Quantix Core AI v1.8</span>
                     </p>
                     <p style={{ color: 'var(--text-secondary)', opacity: 0.6, fontSize: '0.65rem', marginTop: '0.4rem' }}>
                         &copy; 2026 Signal Genius AI. Forensic Market Analysis System.

@@ -39,7 +39,7 @@ export async function broadcastGoldenSignal(signalData) {
 
 🛡️ **Shadow Mode Active**: Only highest-confidence setups.
 
-⚡ Powered by Signal Genius AI Core V1.8 | Multi-Agent System
+⚡ Powered by Quantix Core AI V1.8 | Multi-Agent System
     `;
 
     await sendSystemMessage(message);

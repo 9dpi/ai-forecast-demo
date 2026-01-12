@@ -46,7 +46,7 @@ Welcome! I am your automated EUR/USD market surveillance bot.
 **How to use:**
 Simply send any message or use the \`/status\` command to receive the latest market report.
 
-*Powered by Signal Genius AI Core*
+*Powered by Quantix Core AI*
     `;
 
     bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'Markdown' });
