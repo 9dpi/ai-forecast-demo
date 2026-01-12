@@ -39,23 +39,38 @@ async function fetchInstitutionalData(symbol) {
             interval: '1h'
         });
 
+        // FAST TRACK: Fetch LIVE quote to override the last candle (Latency Reduction)
+        const quote = await yahooFinance.quote(symbol);
+        const livePrice = quote.regularMarketPrice;
+
         if (!history || history.length < 50) {
             throw new Error(`Insufficient historical data: ${history?.length || 0} candles`);
         }
 
-        // Filter out invalid candles (missing OHLC data)
+        // Filter out invalid candles
         const validHistory = history.filter(h =>
-            h.open && h.high && h.low && h.close && h.volume !== undefined
+            h.open && h.high && h.low && h.close
         );
 
-        if (validHistory.length < 50) {
-            throw new Error(`Insufficient valid candles: ${validHistory.length}`);
+        // SYNC: Replace the latest historical close with the LIVE market price
+        // This ensures indicators are calculated on the absolute current moment
+        if (validHistory.length > 0) {
+            const lastIndex = validHistory.length - 1;
+            validHistory[lastIndex].close = livePrice;
+            validHistory[lastIndex].high = Math.max(validHistory[lastIndex].high, livePrice);
+            validHistory[lastIndex].low = Math.min(validHistory[lastIndex].low, livePrice);
         }
 
-        const currentPrice = validHistory[validHistory.length - 1].close;
+        const currentPrice = livePrice;
         const prices = validHistory.map(h => h.close);
-        const volumes = validHistory.map(h => h.volume);
+        const volumes = validHistory.map(h => h.volume || 0);
         const lastCandle = validHistory[validHistory.length - 1];
+
+        // LATENCY DETECTION: Check if the market is actually 'live'
+        const candleAgeMinutes = (new Date() - new Date(lastCandle.date)) / (1000 * 60);
+        if (candleAgeMinutes > 120) { // 2 hours delay
+            console.warn(`⚠️ [${symbol}] DATA LATENCY DETECTED: Last candle is ${Math.round(candleAgeMinutes)}m old.`);
+        }
 
         // Calculate price momentum (rate of change)
         const momentum = prices.length >= 10
