@@ -857,6 +857,7 @@ function TestimonialsSection({ t }) {
 
 function App() {
   useSecurity();
+  const [page, setPage] = useState('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -872,6 +873,8 @@ function App() {
       const hash = window.location.hash;
       const path = window.location.pathname;
 
+      console.log("Current Route:", { hash, path });
+
       // If path contains 'dashboard' or hash is '#/admin', show admin
       if (path.includes('dashboard') || hash === '#/admin') {
         setPage('admin');
@@ -886,7 +889,7 @@ function App() {
     return () => window.removeEventListener('hashchange', handleRoute);
   }, []);
 
-  const [page, setPage] = useState('home');
+
 
 
   const t = TRANSLATIONS.en;
