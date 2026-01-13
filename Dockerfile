@@ -1,7 +1,7 @@
 # Quantix AI - Production Dockerfile
 # Optimized for Railway deployment with full automation
 
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Set working directory
 WORKDIR /app
