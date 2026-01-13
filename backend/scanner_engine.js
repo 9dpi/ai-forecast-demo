@@ -7,7 +7,7 @@ if (dns.setDefaultResultOrder) dns.setDefaultResultOrder('ipv4first');
 import dotenv from 'dotenv';
 import pg from 'pg';
 import { createClient } from '@supabase/supabase-js';
-import { analyzeSignalWithAgents } from './signal_genius_core_v1.8.js';
+import { analyzeSignalWithAgents } from './signal_genius_core_v2.5_base.js';
 import { broadcastGoldenSignal } from './telegram_autopilot.js';
 
 dotenv.config();
