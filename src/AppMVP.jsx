@@ -34,7 +34,7 @@ const SignalBentoCard = memo(({ signal }) => {
             <div className="card-header">
                 <div className="asset-info">
                     <span className="pair">{signal.pair}</span>
-                    <span className="timeframe">M15 • AI AGENT V1.5</span>
+                    <span className="timeframe">M15 • QUANTIX ELITE v2.5.3</span>
                 </div>
             </div>
 
@@ -286,7 +286,7 @@ export default function AppMVP() {
     const [isSmartMode, setIsSmartMode] = useState(true);
 
     useEffect(() => {
-        document.title = "Signal Genius AI";
+        document.title = "Quantix Elite AI";
         const savedTheme = localStorage.getItem('Signal Genius_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
         setTheme(savedTheme);
@@ -358,6 +358,9 @@ export default function AppMVP() {
                 if (snapshot && !snapError) {
                     setCurrentPrice(snapshot.price);
                     setLastUpdate(snapshot.last_updated);
+                    // Update trend based on snapshot or sentiment column if exists
+                    const sentiment = snapshot.sentiment || 'BULLISH';
+                    setData(prev => ({ ...prev, price: snapshot.price, trend1H: sentiment }));
                 }
 
                 // 2. Fetch Signals from ai_signals
@@ -369,19 +372,32 @@ export default function AppMVP() {
                     .limit(10);
 
                 if (signalsData && !sigError) {
-                    const realSignals = signalsData.map(d => ({
-                        id: d.id,
-                        pair: 'EUR/USD',
-                        action: d.signal_type === 'LONG' ? 'BUY' : 'SELL',
-                        entry: parseFloat(d.predicted_close || 0).toFixed(5),
-                        sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : (d.predicted_close * (d.signal_type === 'LONG' ? 0.997 : 1.003)).toFixed(5),
-                        tp1_raw: d.tp1_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.004 : 0.996)),
-                        tp2_raw: d.tp2_price || (d.predicted_close * (d.signal_type === 'LONG' ? 1.008 : 0.992)),
-                        conf: d.confidence_score,
-                        status: d.signal_status || 'WAITING',
-                        timestamp: d.created_at,
-                        time: new Date(d.created_at).toLocaleTimeString()
-                    }));
+                    const realSignals = signalsData.map(d => {
+                        const current = currentPrice || parseFloat(d.predicted_close || 0);
+                        const entry = parseFloat(d.predicted_close || 0);
+
+                        // PILLAR FIX: Price Gap Alignment (Core v2.5.3)
+                        const isStale = Math.abs(current - entry) > 0.1;
+                        const correctedEntry = isStale ? current : entry;
+
+                        // PILLAR FIX: Action-Sentiment Synchronization
+                        // Use ai_analysis (BULLISH/BEARISH) to determine BUY/SELL
+                        const action = d.ai_analysis === 'BULLISH' ? 'BUY' : d.ai_analysis === 'BEARISH' ? 'SELL' : (d.signal_type === 'LONG' ? 'BUY' : 'SELL');
+
+                        return {
+                            id: d.id,
+                            pair: 'EUR/USD',
+                            action: action,
+                            entry: correctedEntry.toFixed(5),
+                            sl: d.sl_price ? parseFloat(d.sl_price).toFixed(5) : (correctedEntry * (action === 'BUY' ? 0.997 : 1.003)).toFixed(5),
+                            tp1_raw: d.tp1_price || (correctedEntry * (action === 'BUY' ? 1.004 : 0.996)),
+                            tp2_raw: d.tp2_price || (correctedEntry * (action === 'BUY' ? 1.008 : 0.992)),
+                            conf: d.confidence_score,
+                            status: d.signal_status || 'WAITING',
+                            timestamp: d.created_at,
+                            time: new Date(d.created_at).toLocaleTimeString()
+                        };
+                    });
                     setSignals(realSignals);
                 }
 
@@ -393,7 +409,7 @@ export default function AppMVP() {
         };
 
         fetchSSOTData();
-        const dataTimer = setInterval(fetchSSOTData, 10000); // 10s update for MVP
+        const dataTimer = setInterval(fetchSSOTData, 3000); // 3s polling for Sniper accuracy
 
         return () => clearInterval(dataTimer);
     }, []);
@@ -403,8 +419,8 @@ export default function AppMVP() {
             {/* HEADER */}
             <nav className="glass-panel" style={{ padding: '0.75rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100, borderRadius: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => window.location.href = '#/'}>
-                    <Activity color="var(--neon-blue)" size={20} />
-                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--text-primary)' }}>Signal Genius <span style={{ fontSize: '0.7rem', border: '1px solid var(--neon-blue)', padding: '1px 4px', borderRadius: '4px', color: 'var(--neon-blue)' }}>AI</span></span>
+                    <Zap color="var(--primary)" size={20} />
+                    <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--text-primary)' }}>Quantix Elite <span style={{ fontSize: '0.7rem', border: '1px solid var(--primary)', padding: '1px 4px', borderRadius: '4px', color: 'var(--primary)' }}>AI</span></span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <button onClick={toggleTheme} style={{ background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
@@ -446,10 +462,10 @@ export default function AppMVP() {
                         Educational purposes only. Past performance does not guarantee future results.
                     </p>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: '500' }}>
-                        Powered by <span style={{ color: 'var(--neon-blue)' }}>Quantix Core AI v1.8</span>
+                        Powered by <span style={{ color: 'var(--neon-blue)' }}>Quantix Elite Core v2.5.3</span>
                     </p>
                     <p style={{ color: 'var(--text-secondary)', opacity: 0.6, fontSize: '0.65rem', marginTop: '0.4rem' }}>
-                        &copy; 2026 Signal Genius AI. Forensic Market Analysis System.
+                        &copy; 2026 Quantix AI. Forensic Market Analysis System.
                     </p>
                 </footer>
             </main>
