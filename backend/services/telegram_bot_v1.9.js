@@ -69,18 +69,22 @@ loadPatterns();
 // --- TELEGRAM API WRAPPER ---
 async function botAction(method, body) {
     try {
-        const res = await fetch(`${TELEGRAM_API}/${method}`, {
+        const response = await fetch(`${TELEGRAM_API}/${method}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        const data = await res.json();
+        const data = await response.json();
         if (!data.ok) {
             console.error(`[BOT API Error] ${method} failed:`, data.description);
+            if (data.description && data.description.includes('conflict')) {
+                console.warn('⚠️ Conflict detected. Another bot might be running.');
+            }
         }
         return data;
     } catch (e) {
         console.error(`[BOT Network Error] ${method} failed:`, e.message);
+        return { ok: false, error: e.message };
     }
 }
 
@@ -282,19 +286,24 @@ async function initBot() {
 
 async function pollUpdates() {
     try {
-        const data = await botAction('getUpdates', { offset: lastUpdateId + 1, timeout: 30 });
-        if (data && data.ok && data.result) {
+        const data = await botAction('getUpdates', { offset: lastUpdateId + 1, timeout: 20 });
+        if (data && data.ok && data.result && data.result.length > 0) {
             for (const update of data.result) {
                 lastUpdateId = update.update_id;
-                if (update.message) handleMessage(update.message);
+                if (update.message) {
+                    try {
+                        await handleMessage(update.message);
+                    } catch (msgErr) {
+                        console.error('[HANDLER ERROR]', msgErr.message);
+                    }
+                }
             }
-        } else if (data && !data.ok) {
-            console.error('[POLLING] Telegram Error:', data.description);
         }
     } catch (e) {
-        console.error('[POLLING] System Error:', e.message);
+        console.error('[POLLING CRITICAL ERROR]:', e.message);
     }
-    setTimeout(pollUpdates, 1000);
+    // High-frequency polling backoff
+    setTimeout(pollUpdates, 500);
 }
 
 initBot();
