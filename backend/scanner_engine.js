@@ -236,32 +236,45 @@ async function scanAll() {
             console.log(`⚡ [SSOT_FAST_TRACK] Updating ${symbol}...`);
             await updateSSOT(symbol, marketData, { action: 'WAVE_SYNC', confidence: 0 });
 
-            // AI Analysis
-            const decision = await analyzeSignalWithAgents(marketData);
-            await updateSSOT(symbol, marketData, decision);
+            // --- AI ANALYTICS BLACK BOX (ISOLATED) ---
+            try {
+                console.log(`🧠 [AI_CORE] Analyzing ${symbol} (Strict Isolation Mode)...`);
 
-            if (decision.shouldEmitSignal || decision.isGhostSignal) {
-                const signalBody = {
-                    symbol,
-                    action: decision.action,
-                    entry_price: marketData.currentPrice,
-                    tp: decision.tp,
-                    sl: decision.sl,
-                    confidence: decision.confidence,
-                    ai_status: decision.action,
-                    metadata: {
-                        agents: decision.agents,
-                        market_state: decision.market_state,
-                        source: marketData.metadata.source
+                // AI Analysis: Receives marketData, returns decision
+                const decision = await analyzeSignalWithAgents(marketData);
+
+                // Final SSOT sync with AI decision
+                await updateSSOT(symbol, marketData, decision);
+
+                if (decision.shouldEmitSignal || decision.isGhostSignal) {
+                    const signalBody = {
+                        symbol,
+                        action: decision.action,
+                        entry_price: marketData.currentPrice,
+                        tp: decision.tp,
+                        sl: decision.sl,
+                        confidence: decision.confidence,
+                        ai_status: decision.action,
+                        metadata: {
+                            agents: decision.agents,
+                            market_state: decision.market_state,
+                            source: marketData.metadata.source,
+                            isolation: 'STRICT_ACTIVE'
+                        }
+                    };
+
+                    await saveSignalToDB(signalBody);
+
+                    if (decision.shouldEmitSignal) {
+                        await broadcastGoldenSignal(signalBody);
                     }
-                };
-
-                await saveSignalToDB(signalBody);
-
-                if (decision.shouldEmitSignal) {
-                    await broadcastGoldenSignal(signalBody);
                 }
+            } catch (aiError) {
+                console.error(`⚠️ [AI_CORE_CRASH] Brain v2.5 failed, but Scanner is ALIVE:`, aiError.message);
+                // System remains functional, price was already updated by Fast-Track call above
+                await sendCriticalAlert(`AI Core isolated error for ${symbol}: ${aiError.message}. Heartbeat remains stable.`);
             }
+            // --- END BLACK BOX ---
         } catch (error) {
             console.error(`💥 CRITICAL ERROR for ${symbol}:`, error.message);
 
