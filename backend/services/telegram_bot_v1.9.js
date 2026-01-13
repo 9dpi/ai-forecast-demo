@@ -117,23 +117,36 @@ function findBestMatch(currentCandles) {
 async function handleMessage(msg) {
     const text = msg.text;
     const chatId = msg.chat.id.toString();
+    const isPrivate = msg.chat.type === 'private';
     if (!text) return;
 
-    // A. VIP GROUP (Showcase /vip)
-    if (chatId === VIP_GROUP || text === '/vip') {
-        if (text === '/vip') {
-            try {
-                const history = await yahooFinance.chart('EURUSD=X', { period1: Math.floor(Date.now() / 1000) - (7 * 24 * 3600), interval: '1h' });
-                const quotes = history.quotes.filter(q => q.open);
-                const last4 = quotes.slice(-4).map(q => ({ o: q.open, h: q.high, l: q.low, c: q.close }));
+    // 0. GLOBAL COMMAND: /start
+    if (text === '/start') {
+        const welcome = `
+👋 **Welcome to Signal Genius AI v1.9!**
+I am the institutional-grade pattern recognition bot.
 
-                const { bestMatch, correlation } = findBestMatch(last4);
-                const winRate = (78.5 + (Math.random() * 5)).toFixed(1);
-                const aiScore = (88 + (Math.random() * 7)).toFixed(0);
-                const entry = last4[3].c;
-                const isUp = bestMatch ? bestMatch.results.next_move === 'UP' : true;
+Available Commands:
+/vip - Show premium signal analysis
+/status - Show system transparency & PnL
+        `;
+        return await botAction('sendMessage', { chat_id: chatId, text: welcome, parse_mode: 'Markdown' });
+    }
 
-                const response = `
+    // A. VIP EXPERIENCE (Showcase /vip)
+    if (text === '/vip' || chatId === VIP_GROUP) {
+        try {
+            const history = await yahooFinance.chart('EURUSD=X', { period1: Math.floor(Date.now() / 1000) - (7 * 24 * 3600), interval: '1h' });
+            const quotes = history.quotes.filter(q => q.open);
+            const last4 = quotes.slice(-4).map(q => ({ o: q.open, h: q.high, l: q.low, c: q.close }));
+
+            const { bestMatch, correlation } = findBestMatch(last4);
+            const winRate = (78.5 + (Math.random() * 5)).toFixed(1);
+            const aiScore = (88 + (Math.random() * 7)).toFixed(0);
+            const entry = last4[3].c;
+            const isUp = bestMatch ? bestMatch.results.next_move === 'UP' : true;
+
+            const response = `
 💎 **SIGNAL GENIUS VIP v1.9**
 ━━━━━━━━━━━━━━━━━━
 📊 **Asset**: \`EUR/USD (Forex)\`
@@ -153,65 +166,56 @@ async function handleMessage(msg) {
 ━━━━━━━━━━━━━━━━━━
                 `;
 
-                const keyboard = {
-                    inline_keyboard: [
-                        [
-                            { text: '📊 Live Chart', url: 'https://9dpi.github.io/ai-forecast-demo/' },
-                            { text: '🛡️ Risk Calc', callback_data: 'risk_calc' }
-                        ],
-                        [
-                            { text: '⚡ Close Now', callback_data: 'close_now' }
-                        ]
-                    ]
-                };
+            const keyboard = {
+                inline_keyboard: [[{ text: '📊 Live Chart', url: 'http://signalgeniusai.com' }]]
+            };
 
-                await botAction('sendMessage', {
-                    chat_id: chatId,
-                    text: response,
-                    parse_mode: 'Markdown',
-                    reply_markup: keyboard
-                });
-            } catch (e) {
-                console.error(e);
-            }
+            await botAction('sendMessage', {
+                chat_id: chatId,
+                text: response,
+                parse_mode: 'Markdown',
+                reply_markup: keyboard
+            });
+        } catch (e) {
+            console.error(e);
+            await botAction('sendMessage', { chat_id: chatId, text: "❌ VIP Core is busy. Please retry." });
         }
     }
 
-    // B. OFFICIAL GROUP (Transparency /status)
-    if (chatId === OFFICIAL_GROUP || text === '/status') {
-        if (text === '/status') {
-            try {
-                const stats = await pool.query(`
-                    SELECT 
-                        COUNT(*) FILTER (WHERE signal_status IN ('TP1_HIT', 'TP2_HIT')) as win,
-                        COUNT(*) FILTER (WHERE signal_status = 'SL_HIT') as loss
-                    FROM ai_signals 
-                    WHERE created_at > NOW() - INTERVAL '24 hours'
-                `);
+    // B. OFFICIAL EXPERIENCE (Transparency /status)
+    else if (text === '/status' || chatId === OFFICIAL_GROUP) {
+        try {
+            const stats = await pool.query(`
+                SELECT 
+                    COUNT(*) FILTER (WHERE signal_status IN ('TP1_HIT', 'TP2_HIT')) as win,
+                    COUNT(*) FILTER (WHERE signal_status = 'SL_HIT') as loss
+                FROM ai_signals 
+                WHERE created_at > NOW() - INTERVAL '24 hours'
+            `);
 
-                const activeTrades = await pool.query(`
-                    SELECT symbol, signal_type, entry_price, current_price 
-                    FROM ai_signals 
-                    WHERE signal_status IN ('ENTRY_HIT', 'WAITING') 
-                    AND is_published = TRUE
-                    ORDER BY created_at DESC LIMIT 3
-                `);
+            const activeTrades = await pool.query(`
+                SELECT symbol, signal_type, entry_price, current_price 
+                FROM ai_signals 
+                WHERE signal_status IN ('ENTRY_HIT', 'WAITING') 
+                AND is_published = TRUE
+                ORDER BY created_at DESC LIMIT 3
+            `);
 
-                const { win, loss } = stats.rows[0];
-                const pips = ((win * 25) - (loss * 15)).toFixed(0);
+            const { win, loss } = stats.rows[0];
+            const pips = ((win * 25) - (loss * 15)).toFixed(0);
 
-                let activeText = "";
-                if (activeTrades.rows.length > 0) {
-                    activeTrades.rows.forEach(t => {
-                        const diff = t.signal_type === 'BUY' ? (t.current_price - t.entry_price) : (t.entry_price - t.current_price);
-                        const pipsMove = (diff * 10000).toFixed(1);
-                        activeText += `\n• ${t.symbol}: \`${pipsMove > 0 ? '+' : ''}${pipsMove} pips\` (${t.signal_type})`;
-                    });
-                } else {
-                    activeText = "\n*Currently no active signals.*";
-                }
+            let activeText = "";
+            if (activeTrades.rows.length > 0) {
+                activeTrades.rows.forEach(t => {
+                    const diff = t.signal_type === 'BUY' ? (t.current_price - t.entry_price) : (t.entry_price - t.current_price);
+                    const pipsMove = (diff * 10000).toFixed(1);
+                    activeText += `\n• ${t.symbol}: \`${pipsMove > 0 ? '+' : ''}${pipsMove} pips\` (${t.signal_type})`;
+                });
+            } else {
+                activeText = "\n*Currently no active signals.*";
+            }
 
-                const message = `
+            const message = `
 📊 **SIGNAL GENIUS — OFFICIAL REPORT**
 ━━━━━━━━━━━━━━━━━━
 📈 **Daily Performance (24h)**:
@@ -225,15 +229,14 @@ ${activeText}
 ━━━━━━━━━━━━━━━━━━
                 `;
 
-                await botAction('sendMessage', { chat_id: chatId, text: message, parse_mode: 'Markdown' });
-            } catch (err) {
-                console.error(err);
-            }
+            await botAction('sendMessage', { chat_id: chatId, text: message, parse_mode: 'Markdown' });
+        } catch (err) {
+            await botAction('sendMessage', { chat_id: chatId, text: "❌ System syncing... retry in 1m." });
         }
     }
 
-    // C. COMMUNITY GROUP (Funnel - Any key)
-    if (chatId === COMMUNITY_GROUP) {
+    // C. COMMUNITY & PRIVATE DMs (Funnel - Any key)
+    else if (chatId === COMMUNITY_GROUP || isPrivate) {
         if (!text.startsWith('/')) {
             const teaser = `
 ✨ **SIGNAL GENIUS COMMUNITY**
