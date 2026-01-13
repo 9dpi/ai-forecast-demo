@@ -1,0 +1,32 @@
+{
+    "backup_date": "2026-01-13T11:42:00+07:00",
+    "version": "v1.9.3-stable",
+    "git_commit": "a751eea",
+    "git_tag": "v1.9.3-stable",
+    "system_status": {
+        "bot_service": "ONLINE",
+        "scanner_service": "ONLINE",
+        "lifecycle_service": "ONLINE",
+        "scheduler_service": "ONLINE",
+        "web_service": "ONLINE"
+    },
+    "pattern_cache": {
+        "file": "patterns_backup_v1.9.json",
+        "size_mb": 6.4,
+        "pattern_count": 7011,
+        "last_updated": "2026-01-13T08:45:00+07:00"
+    },
+    "deployment_platform": "Railway",
+    "node_version": "22.x",
+    "critical_dependencies": {
+        "yahoo-finance2": "3.11.2",
+        "node-telegram-bot-api": "0.67.0",
+        "pg": "8.16.3"
+    },
+    "notes": [
+        "Bot v1.9.3 successfully deployed and responsive",
+        "Scanner fixed with ca-certificates in Dockerfile",
+        "All services running independently on Railway",
+        "Pattern cache loaded asynchronously to prevent startup blocking"
+    ]
+}
