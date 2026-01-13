@@ -1,4 +1,6 @@
-import yahooFinance from 'yahoo-finance2';
+import YahooFinance from 'yahoo-finance2';
+const yahooFinance = new YahooFinance();
+
 import dotenv from 'dotenv';
 import pg from 'pg';
 import { analyzeSignalWithAgents } from './signal_genius_core_v1.8.js';
