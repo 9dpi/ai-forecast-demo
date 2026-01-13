@@ -3,6 +3,7 @@ import { LineChart, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaCh
 import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, LogOut, Check, Star, Briefcase, Cpu, Radio, Menu, CheckCircle, Moon, Sun } from 'lucide-react';
 import InvestorConcierge from './components/InvestorConcierge';
 import AdminDashboard from './AdminDashboard'; // Import Dashboard
+import { supabase } from './supabaseClient';
 
 const TRANSLATIONS = {
   en: {
@@ -522,47 +523,53 @@ const DashboardChart = React.memo(({ data }) => {
 });
 
 function Dashboard({ t }) {
-  // Simulating Real-time Data
-  const [data, setData] = useState([
-    { name: '09:00', vn30: 1240, spx: 4500 },
-    { name: '10:00', vn30: 1242, spx: 4510 },
-    { name: '11:00', vn30: 1238, spx: 4505 },
-    { name: '13:00', vn30: 1245, spx: 4520 },
-    { name: '14:00', vn30: 1250, spx: 4530 },
-  ]);
+  const [data, setData] = useState([]);
+  const [livePrices, setLivePrices] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const [livePrices, setLivePrices] = useState({
-    VN30: { price: 1245.5, change: '+0.5%' },
-    AAPL: { price: 175.2, change: '+1.2%' },
-    BTC: { price: 42000, change: '-0.8%' },
-    GOLD: { price: 2030, change: '+0.1%' }
-  });
+  // Fetch from SSOT (market_snapshot)
+  const fetchSSOTData = async () => {
+    try {
+      const { data: snapshot, error } = await supabase
+        .from('market_snapshot')
+        .select('*');
+
+      if (error) throw error;
+
+      if (snapshot) {
+        const prices = {};
+        snapshot.forEach(item => {
+          prices[item.symbol.replace('=X', '').replace('-USD', '')] = {
+            price: item.price,
+            change: (item.change_24h >= 0 ? '+' : '') + item.change_24h + '%',
+            status: item.ai_status,
+            conf: item.confidence_score
+          };
+        });
+        setLivePrices(prices);
+
+        // Update chart data for VN30 (example)
+        const vn30 = snapshot.find(s => s.symbol === 'VN30F1M' || s.symbol === 'EURUSD=X');
+        if (vn30) {
+          setData(prev => {
+            const newPoint = {
+              name: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+              vn30: vn30.price
+            };
+            const newData = [...prev, newPoint];
+            return newData.slice(-20);
+          });
+        }
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error("SSOT Fetch Error:", err);
+    }
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setLivePrices(prev => {
-        const newObj = { ...prev };
-        Object.keys(newObj).forEach(key => {
-          const mult = 1 + (Math.random() - 0.5) * 0.002;
-          newObj[key].price = parseFloat((newObj[key].price * mult).toFixed(2));
-        });
-        return newObj;
-      });
-
-      setData(prev => {
-        const last = prev[prev.length - 1];
-        const newPoint = {
-          name: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          vn30: last.vn30 + (Math.random() - 0.5) * 5,
-          spx: last.spx + (Math.random() - 0.5) * 10
-        };
-        const newData = [...prev, newPoint];
-        if (newData.length > 20) newData.shift();
-        return newData;
-      });
-
-    }, 2000);
-
+    fetchSSOTData();
+    const interval = setInterval(fetchSSOTData, 10000); // Poll every 10s
     return () => clearInterval(interval);
   }, []);
 
@@ -571,9 +578,9 @@ function Dashboard({ t }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
           <h2 style={{ fontSize: '2rem' }}>{t.dashboard.welcome}</h2>
-          <p style={{ color: 'var(--text-muted)' }} className="flex items-center gap-2">
-            <Radio size={14} className="animate-pulse text-green-500" style={{ display: 'inline', color: '#00BA88' }} />
-            {t.dashboard.conn}
+          <p style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="live-dot" style={{ width: '8px', height: '8px', background: '#00BA88', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 10px #00BA88' }}></span>
+            Connected to Quantix SSOT v1.9.4
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -633,17 +640,55 @@ function Dashboard({ t }) {
   );
 }
 
-// --- MOCK SIGNALS ---
-const MOCK_SIGNALS = [
-  { ticker: 'VN30F1M', price: '1,245.8', change: '+1.2%', action: 'LONG', conf: '92%' },
-  { ticker: 'TCB', price: '34,500', change: '+2.1%', action: 'BUY', conf: '88%' },
-  { ticker: 'HPG', price: '28,100', change: '-0.5%', action: 'HOLD', conf: '65%' },
-  { ticker: 'FPT', price: '96,200', change: '+1.5%', action: 'BUY', conf: '85%' },
-  { ticker: 'VCB', price: '89,500', change: '+0.2%', action: 'HOLD', conf: '60%' },
-  { ticker: 'MWG', price: '45,800', change: '-1.2%', action: 'SHORT', conf: '78%' },
-];
-
+// --- REPLACED MOCK SIGNALS WITH SSOT LOGIC ---
 function SignalsSection({ isLoggedIn, onUnlock, t }) {
+  const [signals, setSignals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSignals = async () => {
+      try {
+        // Fetch real signals from last 48 hours
+        const { data, error } = await supabase
+          .from('ai_signals')
+          .select('*')
+          .gte('created_at', new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString())
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (data) {
+          const processedSignals = data.map(s => {
+            const entry = s.entry_price || 0;
+            const exit = s.current_price || s.tp1_price || 0;
+
+            // Correct PIP Calculation for Gold vs Forex
+            const pips = (s.symbol.includes('XAU') || s.symbol.includes('GOLD'))
+              ? (Math.abs(exit - entry) * 10).toFixed(1)
+              : (Math.abs(exit - entry) / 0.0001).toFixed(1);
+
+            return {
+              ticker: s.symbol,
+              price: s.current_price || s.entry_price,
+              pips: pips,
+              action: s.ai_analysis === 'BULLISH' ? 'LONG' : s.ai_analysis === 'BEARISH' ? 'SHORT' : 'WATCH',
+              conf: s.confidence_score + '%',
+              status: s.signal_status
+            };
+          });
+          setSignals(processedSignals);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error("Signal Fetch Error:", err);
+      }
+    };
+
+    fetchSignals();
+    const interval = setInterval(fetchSignals, 30000); // 30s update
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '24px', margin: '4rem 0' }} className="glass-panel">
       {!isLoggedIn && (
@@ -664,6 +709,7 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Zap color="var(--primary)" /> {t.signals.liveTitle}
+            <span style={{ fontSize: '0.7rem', padding: '2px 8px', background: 'rgba(0,186,136,0.1)', color: '#00BA88', borderRadius: '10px', border: '1px solid #00BA88' }}>SSOT v1.9.4</span>
           </h3>
           <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>
             {t.signals.viewFull} <ChevronRight size={16} />
@@ -671,11 +717,11 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-          {MOCK_SIGNALS.map((s, i) => (
+          {signals.length > 0 ? signals.map((s, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <span style={{ fontWeight: '700', fontSize: '1.2rem' }}>{s.ticker}</span>
-                <span style={{ color: s.change.includes('+') ? 'var(--color-buy)' : 'var(--color-sell)' }}>{s.change}</span>
+                <span style={{ color: 'var(--primary)', fontSize: '0.9rem' }}>+{s.pips} Pips</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{s.price}</div>
@@ -683,7 +729,7 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
                   padding: '0.25rem 0.75rem',
                   borderRadius: '4px',
                   background: s.action === 'LONG' || s.action === 'BUY' ? 'rgba(0, 186, 136, 0.2)' : 'rgba(255, 0, 92, 0.1)',
-                  color: s.action === 'LONG' || s.action === 'BUY' ? 'var(--color-buy)' : 'var(--text-secondary)',
+                  color: s.action === 'LONG' || s.action === 'BUY' ? 'var(--color-buy)' : '#ff005c',
                   fontWeight: '600'
                 }}>
                   {s.action}
@@ -693,14 +739,17 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
                 <div style={{ width: s.conf, height: '100%', background: 'var(--primary)', borderRadius: '3px' }}></div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>{t.signals.vol}: High</span>
+                <span style={{ color: 'var(--text-muted)' }}>Status: {s.status}</span>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   Confidence: {s.conf}
-                  <TooltipIcon text="Probability based on multi-model quantitative consensus (v1.5 Core)." />
                 </span>
               </div>
             </div>
-          ))}
+          )) : (
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+              {loading ? "Establishing handshake with AI Core..." : "No recent signals in last 48h."}
+            </div>
+          )}
         </div>
       </div>
     </div>
