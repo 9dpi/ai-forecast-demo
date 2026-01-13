@@ -292,5 +292,9 @@ export async function healthCheck() {
     };
 }
 
-// Auto-run health check on module load
-console.log('[Signal Genius V1.8] Multi-Agent Integration Wrapper loaded ✅');
+// Final Initialization Signature
+console.log('\n============================================================');
+console.log('🚀 [BRAIN_INIT] Quantix Elite v2.5.3 - Sniper Mode Active');
+console.log('🛡️  Isolation: DISABLE_MOCK | Filter: SNIPER_ELITE');
+console.log('============================================================\n');
+export const version = "2.5.3-SNIPER";
