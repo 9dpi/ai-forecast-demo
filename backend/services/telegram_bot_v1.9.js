@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import pg from 'pg';
 import YahooFinance from 'yahoo-finance2';
-import fetch from 'node-fetch';
+// Native fetch used
 
 dotenv.config();
 
@@ -76,9 +76,6 @@ async function botAction(method, body) {
         const data = await response.json();
         if (!data.ok) {
             console.error(`[BOT API Error] ${method} failed:`, data.description);
-            if (data.description && data.description.includes('conflict')) {
-                console.warn('⚠️ Conflict detected. Another bot might be running.');
-            }
         }
         return data;
     } catch (e) {
@@ -266,13 +263,22 @@ ${activeText}
 let lastUpdateId = 0;
 
 async function initBot() {
-    console.log('🛡️ [INIT] Deleting existing webhooks to enable Polling...');
-    await botAction('deleteWebhook', { drop_pending_updates: true });
+    console.log('🛡️ [INIT] Bot startup sequence initiated...');
+    console.log(`🛡️ [INIT] Using Token starting with: ${TOKEN.substring(0, 5)}... (Length: ${TOKEN.length})`);
+
+    try {
+        console.log('🛡️ [INIT] Attempting to clear Telegram Webhook...');
+        const delRes = await botAction('deleteWebhook', { drop_pending_updates: true });
+        console.log('🛡️ [INIT] Webhook deletion result:', JSON.stringify(delRes));
+    } catch (err) {
+        console.error('🛡️ [INIT] Webhook deletion FAILED (non-critical):', err.message);
+    }
+
+    console.log('🚀 [INIT] Polling loop STARTING NOW...');
     pollUpdates();
 
-    // Heartbeat for Railway Health
     setInterval(() => {
-        console.log(`💓 [HEARTBEAT] Bot v1.9.1 is active. Last Update ID: ${lastUpdateId}`);
+        console.log(`💓 [HEARTBEAT] Bot v1.9.3 is active. Last Update ID: ${lastUpdateId}`);
     }, 60000);
 }
 
@@ -299,7 +305,7 @@ async function pollUpdates() {
 }
 
 initBot();
-console.log(`🚀 [PRODUCTION] Telegram Bot v1.9.1 running in context-aware mode.`);
+console.log(`🚀 [PRODUCTION] Telegram Bot v1.9.3 running in context-aware mode.`);
 console.log(`- Community Group: ${COMMUNITY_GROUP}`);
 console.log(`- VIP Group: ${VIP_GROUP}`);
 console.log(`- Official Group: ${OFFICIAL_GROUP}`);
