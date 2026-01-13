@@ -38,20 +38,30 @@ async function fetchFromAlphaVantage(symbol) {
     try {
         // Map symbol to AV format
         let avSymbol = symbol.replace('=X', '');
-        let functionName = 'TIME_SERIES_INTRADAY';
+        let functionName = 'FX_INTRADAY';
         let interval = '60min';
 
+        let url = '';
         if (symbol.includes('BTC')) {
             functionName = 'DIGITAL_CURRENCY_DAILY';
             avSymbol = 'BTC';
+            url = `https://www.alphavantage.co/query?function=${functionName}&symbol=${avSymbol}&market=USD&apikey=${apiKey}`;
+        } else {
+            // For Forex: From_Symbol & To_Symbol
+            const base = avSymbol.substring(0, 3);
+            const quote = avSymbol.substring(3, 6);
+            url = `https://www.alphavantage.co/query?function=${functionName}&from_symbol=${base}&to_symbol=${quote}&interval=${interval}&apikey=${apiKey}`;
         }
 
-        const url = `https://www.alphavantage.co/query?function=${functionName}&symbol=${avSymbol}&interval=${interval}&apikey=${apiKey}`;
         const response = await fetch(url);
         const data = await response.json();
 
-        // Basic parsing for AV response
-        const timeSeriesKey = Object.keys(data).find(k => k.includes('Time Series') || k.includes('Time Series (Digital Currency Daily)'));
+        // Detect API Limit or Premium Error
+        if (data['Note'] || data['Information']) {
+            throw new Error(`AV_LIMIT: ${data['Note'] || data['Information']}`);
+        }
+
+        const timeSeriesKey = Object.keys(data).find(k => k.includes('Time Series') || k.includes('FX Intraday'));
         if (!timeSeriesKey) throw new Error("Alpha Vantage Invalid Response");
 
         const timeSeries = data[timeSeriesKey];
