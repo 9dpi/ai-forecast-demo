@@ -16,8 +16,8 @@ const supabase = createClient(
 );
 
 // --- CONFIGURATION ---
-const ASSETS = ['EURUSD=X', 'BTC-USD', 'AAPL', 'VN30F1M'];
-const SCAN_INTERVAL = 60000; // 60 seconds
+const ASSETS = ['EURUSD=X'];
+const SCAN_INTERVAL = 30000; // 30 seconds for Demo
 
 const pool = new pg.Pool({
     host: process.env.DB_HOST,
@@ -240,10 +240,14 @@ async function scanAll() {
         const marketData = await fetchInstitutionalData(symbol);
         if (!marketData) continue;
 
-        // Perform Multi-Agent Analysis
+        // 🔥 CRITICAL FIX: Update SSOT price IMMEDIATELY after fetch (Latency Killer)
+        console.log(`⚡ [SSOT_FAST_TRACK] Updating price for ${symbol}...`);
+        await updateSSOT(symbol, marketData, { action: 'WAVE_SYNC', confidence: 0 });
+
+        // Perform Multi-Agent Analysis (Can take time)
         const decision = await analyzeSignalWithAgents(marketData);
 
-        // 🔥 SSOT UPDATE: Always update market_snapshot, regardless of signal
+        // Update SSOT again with AI Decision result
         await updateSSOT(symbol, marketData, decision);
 
         if (decision.shouldEmitSignal || decision.isGhostSignal) {
