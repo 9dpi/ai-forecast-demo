@@ -29,12 +29,56 @@ const pool = new pg.Pool({
 });
 
 /**
+ * FALLBACK ENGINE: Fetch data from Alpha Vantage when Yahoo fails
+ */
+async function fetchFromAlphaVantage(symbol) {
+    const apiKey = process.env.ALPHA_VANTAGE_API_KEY;
+    if (!apiKey) return null;
+
+    try {
+        // Map symbol to AV format
+        let avSymbol = symbol.replace('=X', '');
+        let functionName = 'TIME_SERIES_INTRADAY';
+        let interval = '60min';
+
+        if (symbol.includes('BTC')) {
+            functionName = 'DIGITAL_CURRENCY_DAILY';
+            avSymbol = 'BTC';
+        }
+
+        const url = `https://www.alphavantage.co/query?function=${functionName}&symbol=${avSymbol}&interval=${interval}&apikey=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Basic parsing for AV response
+        const timeSeriesKey = Object.keys(data).find(k => k.includes('Time Series') || k.includes('Time Series (Digital Currency Daily)'));
+        if (!timeSeriesKey) throw new Error("Alpha Vantage Invalid Response");
+
+        const timeSeries = data[timeSeriesKey];
+        const dates = Object.keys(timeSeries).slice(0, 50);
+        const prices = dates.map(d => parseFloat(timeSeries[d]['4. close'] || timeSeries[d]['4a. close (USD)']));
+
+        console.log(`📡 [${symbol}] Alpha Vantage Fallback Success: $${prices[0]}`);
+
+        return {
+            symbol,
+            currentPrice: prices[0],
+            prices: prices.reverse(),
+            dataQuality: 'DEGRADED'
+        };
+    } catch (err) {
+        console.error(`🚨 [${symbol}] Alpha Vantage also failed:`, err.message);
+        return null;
+    }
+}
+
+/**
  * Fetch historical data + LIVE quote to ensure analysis is on the 'tip' of the market
  */
 async function fetchInstitutionalData(symbol) {
     try {
         const period1 = new Date();
-        period1.setDate(period1.getDate() - 60); // Extended to 60 days for robust indicators
+        period1.setDate(period1.getDate() - 60); // Extended to 60 days
         const period2 = new Date();
 
         const chartResult = await yahooFinance.chart(symbol, {
@@ -43,70 +87,50 @@ async function fetchInstitutionalData(symbol) {
             interval: '1h'
         });
         const history = chartResult.quotes;
-
-        // FAST TRACK: Fetch LIVE quote to override the last candle (Latency Reduction)
         const quote = await yahooFinance.quote(symbol);
         const livePrice = quote.regularMarketPrice;
 
-        if (!history || history.length < 50) {
-            throw new Error(`Insufficient historical data: ${history?.length || 0} candles`);
-        }
+        if (!history || history.length < 10) throw new Error("Yahoo Insufficient Data");
 
-        // Filter out invalid candles
-        const validHistory = history.filter(h =>
-            h.open && h.high && h.low && h.close
-        );
+        const validHistory = history.filter(h => h.open && h.high && h.low && h.close);
 
-        // SYNC: Replace the latest historical close with the LIVE market price
+        // Update latest candle with LIVE price
         if (validHistory.length > 0) {
-            const lastIndex = validHistory.length - 1;
-            validHistory[lastIndex].close = livePrice;
-            validHistory[lastIndex].high = Math.max(validHistory[lastIndex].high, livePrice);
-            validHistory[lastIndex].low = Math.min(validHistory[lastIndex].low, livePrice);
+            const lastIdx = validHistory.length - 1;
+            validHistory[lastIdx].close = livePrice;
+            validHistory[lastIdx].high = Math.max(validHistory[lastIdx].high, livePrice);
+            validHistory[lastIdx].low = Math.min(validHistory[lastIdx].low, livePrice);
         }
 
-        const currentPrice = livePrice;
         const prices = validHistory.map(h => h.close);
-        const volumes = validHistory.map(h => h.volume || 0);
         const lastCandle = validHistory[validHistory.length - 1];
 
-        // LATENCY DETECTION
-        const candleAgeMinutes = (new Date() - new Date(lastCandle.date)) / (1000 * 60);
-        if (candleAgeMinutes > 120) {
-            console.warn(`⚠️ [${symbol}] DATA LATENCY DETECTED: Last candle is ${Math.round(candleAgeMinutes)}m old.`);
-        }
-
-        const momentum = prices.length >= 10
-            ? (prices[prices.length - 1] - prices[prices.length - 10]) / prices[prices.length - 10]
-            : 0;
-
-        const avgVolume = (volumes.reduce((a, b) => a + b, 0) / volumes.length) || 1;
-        const volumeRatio = lastCandle.volume / avgVolume;
-
-        console.log(`📊 [${symbol}] Quality: ${validHistory.length} candles | Momentum: ${(momentum * 100).toFixed(2)}% | Vol: ${(volumeRatio || 0).toFixed(2)}x`);
+        console.log(`📊 [${symbol}] Yahoo Sync Success: $${livePrice}`);
 
         return {
             symbol,
-            currentPrice,
+            currentPrice: livePrice,
             prices,
-            volume: volumes,
+            volume: validHistory.map(h => h.volume || 0),
             currentCandle: {
-                open: lastCandle.open,
-                high: lastCandle.high,
-                low: lastCandle.low,
-                close: lastCandle.close
+                open: lastCandle.open, high: lastCandle.high, low: lastCandle.low, close: lastCandle.close
             },
-            direction: prices[prices.length - 1] > prices[prices.length - 2] ? 'LONG' : 'SHORT',
+            dataQuality: 'GOOD',
             metadata: {
-                momentum,
-                volumeRatio,
-                candleCount: validHistory.length,
-                dataQuality: validHistory.length / history.length
+                momentum: ((prices[prices.length - 1] - prices[prices.length - 10]) / prices[prices.length - 10]) || 0,
+                volumeRatio: 1.0, // Placeholder
+                candleCount: validHistory.length
             }
         };
-    } catch (error) {
-        console.error(`❌ Data Fetch Fail [${symbol}]:`, error.message);
-        return null;
+    } catch (err) {
+        console.warn(`⚠️ [${symbol}] Yahoo Engine FAILED (429/Timeout). Switching to Alpha Vantage...`);
+        const fallbackData = await fetchFromAlphaVantage(symbol);
+        if (fallbackData) {
+            // Add required metadata to fallback
+            fallbackData.metadata = { momentum: 0, volumeRatio: 1.0, candleCount: 0 };
+            return fallbackData;
+        }
+        throw err;
     }
 }
 
