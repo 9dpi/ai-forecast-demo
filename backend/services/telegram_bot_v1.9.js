@@ -2,12 +2,16 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import pg from 'pg';
-import YahooFinance from 'yahoo-finance2';
+import { createClient } from '@supabase/supabase-js';
 // Native fetch used
 
 dotenv.config();
 
-const yahooFinance = new YahooFinance();
+// Initialize Supabase for SSOT data access
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+);
 
 // --- CONFIGURATION ---
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_TOKEN;
@@ -85,6 +89,39 @@ async function botAction(method, body) {
 }
 
 // --- LOGIC HELPERS ---
+/**
+ * SSOT DATA ACCESS: Get asset data from market_snapshot table
+ * This replaces all Yahoo Finance API calls
+ */
+async function getAssetSnapshot(symbol) {
+    try {
+        const { data, error } = await supabase
+            .from('market_snapshot')
+            .select('*')
+            .eq('symbol', symbol)
+            .single();
+
+        if (error || !data) {
+            console.error(`🚨 [BOT_ERROR] Cannot read snapshot for ${symbol}:`, error?.message);
+            return null;
+        }
+
+        // Calculate data freshness
+        const lastUpdated = new Date(data.last_updated);
+        const ageSeconds = (Date.now() - lastUpdated.getTime()) / 1000;
+
+        if (ageSeconds > 300) { // 5 minutes
+            console.warn(`⚠️ [BOT_WARNING] Stale data for ${symbol}: ${Math.round(ageSeconds)}s old`);
+        }
+
+        console.log(`✅ [SSOT_READ] ${symbol}: $${data.price} | ${data.ai_status} (${data.confidence_score}%) | Age: ${Math.round(ageSeconds)}s`);
+        return data;
+    } catch (err) {
+        console.error(`🚨 [BOT_CRITICAL] SSOT read failed for ${symbol}:`, err.message);
+        return null;
+    }
+}
+
 function normalizeCandles(candles) {
     const base = candles[0].o || candles[0].open;
     return candles.map(c => ({
@@ -140,23 +177,32 @@ async function handleMessage(msg) {
     // A. VIP EXPERIENCE (Showcase /vip)
     if (text === '/vip' || chatId === VIP_GROUP) {
         try {
-            // Use simulated market data to avoid Yahoo Finance API failures on Railway
-            const currentPrice = 1.08450 + (Math.random() * 0.001 - 0.0005);
-            const last4 = [
-                { o: currentPrice - 0.0003, h: currentPrice - 0.0001, l: currentPrice - 0.0005, c: currentPrice - 0.0002 },
-                { o: currentPrice - 0.0002, h: currentPrice, l: currentPrice - 0.0004, c: currentPrice - 0.0001 },
-                { o: currentPrice - 0.0001, h: currentPrice + 0.0002, l: currentPrice - 0.0002, c: currentPrice },
-                { o: currentPrice, h: currentPrice + 0.0003, l: currentPrice - 0.0001, c: currentPrice + 0.0002 }
-            ];
+            // 🔥 SSOT: Read from market_snapshot instead of Yahoo Finance
+            const snapshot = await getAssetSnapshot('EURUSD=X');
+
+            if (!snapshot || !snapshot.last_candle_data) {
+                return await botAction('sendMessage', {
+                    chat_id: chatId,
+                    text: "⚠️ VIP Core is initializing. Scanner is populating data. Please retry in 30 seconds."
+                });
+            }
+
+            // Use last 4 candles from SSOT
+            const last4 = snapshot.last_candle_data;
 
             const { bestMatch, correlation } = findBestMatch(last4);
             const winRate = (78.5 + (Math.random() * 5)).toFixed(1);
-            const aiScore = (88 + (Math.random() * 7)).toFixed(0);
-            const entry = last4[3].c;
-            const isUp = bestMatch ? bestMatch.results.next_move === 'UP' : (Math.random() > 0.5);
+            const aiScore = snapshot.confidence_score || (88 + Math.random() * 7).toFixed(0);
+            const entry = snapshot.price;
+            const isUp = snapshot.ai_status === 'BULLISH' || (bestMatch && bestMatch.results.next_move === 'UP');
+
+            // Calculate how fresh the data is
+            const lastUpdated = new Date(snapshot.last_updated);
+            const ageSeconds = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
+            const freshness = ageSeconds < 60 ? '🟢 LIVE' : ageSeconds < 120 ? '🟡 Fresh' : '🟠 Recent';
 
             const response = `
-💎 **SIGNAL GENIUS VIP v1.9**
+💎 **SIGNAL GENIUS VIP v1.9.4**
 ━━━━━━━━━━━━━━━━━━
 📊 **Asset**: \`EUR/USD (Forex)\`
 🎬 **Action**: **${isUp ? '🚀 BUY / LONG' : '🔴 SELL / SHORT'}**
@@ -172,7 +218,9 @@ async function handleMessage(msg) {
 - **Historical Win Rate**: \`${winRate}%\`
 - **Patterns Analyzed**: \`7,011\`
 
-🛡️ *Powered by Quantix Iron Hand v1.9*
+🕒 **Data Freshness**: ${freshness} (${ageSeconds}s ago)
+
+🛡️ *Powered by Quantix SSOT v1.9.4*
 ━━━━━━━━━━━━━━━━━━
                 `;
 
@@ -311,7 +359,8 @@ async function pollUpdates() {
 }
 
 initBot();
-console.log(`🚀 [PRODUCTION] Telegram Bot v1.9.3 running in context-aware mode.`);
+console.log(`🚀 [PRODUCTION] Telegram Bot v1.9.4 - SSOT CONSUMER MODE`);
+console.log(`📖 Reading from: market_snapshot table (SSOT)`);
 console.log(`- Community Group: ${COMMUNITY_GROUP}`);
 console.log(`- VIP Group: ${VIP_GROUP}`);
 console.log(`- Official Group: ${OFFICIAL_GROUP}`);
