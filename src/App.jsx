@@ -1042,8 +1042,8 @@ function App() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
-                <Activity className="logo-svg" color="var(--primary)" size={24} />
-                <span style={{ fontWeight: '800', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', letterSpacing: '-1px' }}>Signal Genius AI CORE</span>
+                <Zap className="logo-svg" color="var(--primary)" size={24} />
+                <span style={{ fontWeight: '800', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', letterSpacing: '-1px' }}>QUANTIX ELITE AI CORE</span>
               </div>
               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.9rem', maxWidth: '400px' }}>
                 Precision-engineered quantitative infrastructure for strategic alpha generation.
@@ -1052,7 +1052,7 @@ function App() {
 
             <div style={{ textAlign: 'right', gridColumn: 'span 2' }}>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-                © 2026 Signal Genius AI Core. Institutional Division.
+                © 2026 Quantix Elite AI. Institutional Division.
               </p>
               <p style={{ color: 'var(--primary)', fontSize: '0.75rem', marginTop: '4px', fontWeight: '900', letterSpacing: '1px' }}>
                 DATA INTEGRITY VERIFIED: 100/100 HEALTH SCORE

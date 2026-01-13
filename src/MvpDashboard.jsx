@@ -1,4 +1,4 @@
-// Signal Genius AI Dashboard - V1.9.0 Premium (UI Enforcement)
+// Quantix Elite AI Dashboard - v2.5.3 (UI Enforcement)
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
     Activity, Shield, Cpu, Terminal,
@@ -56,7 +56,7 @@ export default function MvpDashboard() {
         lastUpdate: getLondonTime()
     });
     const [logs, setLogs] = useState([
-        { time: getLondonTime(), type: 'CORE', msg: 'SIGNAL GENIUS Node Active' },
+        { time: getLondonTime(), type: 'CORE', msg: 'QUANTIX ELITE Node Active' },
         { time: getLondonTime(), type: 'INFO', msg: 'Neural Pipeline Initialized: [Sources >> Core >> Output]' },
         { time: getLondonTime(), type: 'SHIELD', msg: 'Multi-Source Data Ingestion: ONLINE (LDN UPLINK)' }
     ]);
@@ -86,7 +86,7 @@ export default function MvpDashboard() {
         if (btoa(value) === 'OTExOQ==') {
             setIsAuthorized(true);
             setLockError(false);
-            addLog('SUCCESS', 'Neural Node Authorized. Initializing SIGNAL GENIUS pipeline...');
+            addLog('SUCCESS', 'Neural Node Authorized. Initializing QUANTIX ELITE pipeline...');
         } else if (value.length >= 4) {
             setLockError(true);
             setTimeout(() => { setPasscodeInput(''); setLockError(false); }, 1000);
@@ -196,7 +196,7 @@ export default function MvpDashboard() {
             <div style={{ minHeight: '100vh', background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Outfit', sans-serif" }}>
                 <div style={{ padding: '2.5rem', background: 'rgba(10, 15, 30, 0.8)', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.2)', textAlign: 'center', backdropFilter: 'blur(20px)', maxWidth: '400px', width: '90%' }}>
                     <Zap size={64} color="#38bdf8" style={{ marginBottom: '1.5rem' }} />
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '0.5rem' }}>SIGNAL GENIUS AI</h1>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '0.5rem' }}>QUANTIX ELITE AI</h1>
                     <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '2rem' }}>Institutional Intelligence Pipeline Access</p>
                     <input type="password" maxLength={4} value={passcodeInput} onChange={handlePasscode} placeholder="••••" style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: lockError ? '1px solid #f87171' : '1px solid #1e293b', borderRadius: '12px', padding: '1rem', fontSize: '1.5rem', color: '#f1f5f9', textAlign: 'center', letterSpacing: '1rem', outline: 'none' }} />
                 </div>
@@ -222,7 +222,7 @@ export default function MvpDashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '12px' }}>
                     <Zap size={isMobile ? 24 : 36} color="#38bdf8" />
                     <div>
-                        <h1 style={{ fontSize: isMobile ? '1.1rem' : '1.75rem', fontWeight: 900, background: 'linear-gradient(90deg, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>SIGNAL GENIUS AI</h1>
+                        <h1 style={{ fontSize: isMobile ? '1.1rem' : '1.75rem', fontWeight: 900, background: 'linear-gradient(90deg, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>QUANTIX ELITE AI</h1>
                         <div style={{ fontSize: '0.65rem', color: '#64748b', display: 'flex', gap: '8px' }}>
                             <span style={{ color: '#4ade80' }}>ACTIVE</span>
                             <span>|</span>
@@ -321,7 +321,7 @@ export default function MvpDashboard() {
                 </div>
 
                 <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#475569', fontSize: '0.65rem', marginTop: '0.5rem' }}>
-                    LAST_SYNC: {realMetrics.lastUpdate} (LDN) | NODE: SG_01_SECURE
+                    LAST_SYNC: {realMetrics.lastUpdate} (LDN) | NODE: QE_01_SECURE
                 </div>
             </div>
         </div>

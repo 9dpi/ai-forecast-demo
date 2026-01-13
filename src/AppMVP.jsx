@@ -247,7 +247,7 @@ const SignalList = memo(({ signals, loadingState, totalSignalsCount }) => {
                     </div>
                     <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>SYNCHRONIZING CORE...</div>
                     <p className="empty-state-msg">
-                        Signal Genius AI is establishing a secure tunnel to 10-year data clusters.<br />
+                        Quantix Elite AI is establishing a secure tunnel to 10-year data clusters.<br />
                         Integrity verification in progress.
                     </p>
                 </div>
@@ -257,8 +257,8 @@ const SignalList = memo(({ signals, loadingState, totalSignalsCount }) => {
                     <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>WAITING FOR ALIGNMENT...</div>
                     <p className="empty-state-msg">
                         {totalSignalsCount > 0
-                            ? "Signal Genius AI is filtering for the best entries. Currently, no signals meet the strict validation threshold. Stay tuned!"
-                            : "Signal Genius AI is scanning 6,758+ data points across EUR/USD pairs. Market volatility is currently low. Precision is our priority."}
+                            ? "Quantix Elite AI is filtering for the best entries. Currently, no signals meet the strict validation threshold. Stay tuned!"
+                            : "Quantix Elite AI is scanning 6,758+ data points across EUR/USD pairs. Market volatility is currently low. Precision is our priority."}
                     </p>
                 </div>
             ) : (
@@ -286,8 +286,8 @@ export default function AppMVP() {
     const [isSmartMode, setIsSmartMode] = useState(true);
 
     useEffect(() => {
-        document.title = "Quantix Elite AI";
-        const savedTheme = localStorage.getItem('Signal Genius_theme') || 'dark';
+        document.title = "Quantix Elite AI Forecast";
+        const savedTheme = localStorage.getItem('quantix_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
         setTheme(savedTheme);
 
@@ -405,6 +405,8 @@ export default function AppMVP() {
                 setTimeout(() => setLoadingState('READY'), 800);
             } catch (err) {
                 console.error("SSOT Fetch Error:", err);
+                // Fail-safe: transition out of loading even on error
+                setLoadingState('READY');
             }
         };
 
