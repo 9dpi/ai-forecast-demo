@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Lucide from 'lucide-react';
 import { supabase } from './supabaseClient';
 
-// Use standard names to avoid import issues
 const {
     Activity, Server, Database, Shield, Cpu, Terminal,
-    RefreshCw, CheckCircle, XCircle, AlertTriangle, MessageSquare, Lock
+    RefreshCw, CheckCircle, XCircle, AlertTriangle, MessageSquare, Lock, Zap
 } = Lucide;
+
+import dataMonitor from './utils/DataComplianceMonitor';
+import PRODUCTION_CONFIG from './config/production';
 
 export default function AdminDashboard() {
     // 0. Security Layer
@@ -85,9 +87,9 @@ export default function AdminDashboard() {
     });
 
     const [logs, setLogs] = useState([
-        { time: new Date().toLocaleTimeString(), type: 'CORE', msg: 'Quantix Core V1.8 Evolution Active' },
-        { time: new Date().toLocaleTimeString(), type: 'INFO', msg: 'Multi-Agent Council Initialized: [Tech, Sentinel, Critic]' },
-        { time: new Date().toLocaleTimeString(), type: 'SHIELD', msg: 'Shadow Mode ENABLED: Threshold set to 85%' }
+        { time: new Date().toLocaleTimeString(), type: 'CORE', msg: 'Quantix Elite V2.5.3 Sniper Mode Active' },
+        { time: new Date().toLocaleTimeString(), type: 'INFO', msg: 'Multi-Agent Council Upgraded: [Tech Convergence v2.5]' },
+        { time: new Date().toLocaleTimeString(), type: 'SHIELD', msg: 'Sniper Filter ENABLED: Threshold set to 95%' }
     ]);
 
     const logEndRef = useRef(null);
@@ -310,26 +312,30 @@ export default function AdminDashboard() {
                     <div style={{
                         width: '12px',
                         height: '12px',
-                        background: '#4ade80',
+                        background: dataMonitor.getStatus().isCompliant ? '#4ade80' : '#f87171',
                         borderRadius: '50%',
                         animation: 'neuralPulse 2s infinite ease-in-out'
                     }} />
                     <Shield size={isMobile ? 28 : 36} color="#38bdf8" />
                     <div>
                         <h1 style={{ fontSize: isMobile ? '1.25rem' : '1.75rem', fontWeight: 800, letterSpacing: '-0.5px', background: 'linear-gradient(90deg, #facc15, #f87171, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>
-                            QUANTIX V1.8 EVOLUTION
+                            QUANTIX ELITE v2.5.3
                         </h1>
                         <div style={{ fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ color: '#4ade80' }}>OPERATIONAL_CONTROL</span>
+                            <span style={{ color: dataMonitor.getStatus().isCompliant ? '#4ade80' : '#f87171' }}>
+                                {dataMonitor.getStatus().isCompliant ? 'OPERATIONAL_CONTROL' : 'MARKET_DATA_DELAYED'}
+                            </span>
                             <span style={{ width: '1px', height: '10px', background: '#1e293b' }} />
-                            <span style={{ color: pingPulse ? '#4ade80' : '#38bdf8', fontWeight: 700, transition: 'color 0.3s' }}>{pingPulse ? 'SYNCING_REAL_DATA' : 'LIVE_DATA_FEED'}</span>
+                            <span style={{ color: pingPulse ? '#4ade80' : '#38bdf8', fontWeight: 700, transition: 'color 0.3s' }}>
+                                {dataMonitor.getStatus().delaySeconds}s LATENCY
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-end' }}>
                     <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
                         <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Protection Level</div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#facc15' }}>🛡️ SHADOW MODE (85%)</div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#facc15' }}>🎯 SNIPER MODE (95%)</div>
                     </div>
                     <button onClick={() => window.location.reload()} style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', color: '#38bdf8', padding: '0.6rem 1.2rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontWeight: 600 }}>
                         <RefreshCw size={16} /> SYNC

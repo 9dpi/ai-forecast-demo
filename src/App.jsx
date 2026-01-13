@@ -4,6 +4,10 @@ import { Shield, Globe, Zap, Lock, ChevronRight, Activity, TrendingUp, X, User, 
 import InvestorConcierge from './components/InvestorConcierge';
 import AdminDashboard from './AdminDashboard'; // Import Dashboard
 import { supabase } from './supabaseClient';
+import dataMonitor from './utils/DataComplianceMonitor';
+import SniperFilter from './utils/SniperExecutionFilter';
+import ConflictManager from './utils/AntiConflictManager';
+import PRODUCTION_CONFIG from './config/production';
 
 const TRANSLATIONS = {
   en: {
@@ -562,6 +566,9 @@ function Dashboard({ t }) {
         }
       }
       setLoading(false);
+
+      // Chế độ 1: Tight Data Compliance
+      dataMonitor.recordDataUpdate(new Date().toISOString());
     } catch (err) {
       console.error("SSOT Fetch Error:", err);
     }
@@ -569,7 +576,7 @@ function Dashboard({ t }) {
 
   useEffect(() => {
     fetchSSOTData();
-    const interval = setInterval(fetchSSOTData, 10000); // Poll every 10s
+    const interval = setInterval(fetchSSOTData, PRODUCTION_CONFIG.PRICE_POLLING_INTERVAL_MS); // Rút ngắn xuống 3s
     return () => clearInterval(interval);
   }, []);
 
@@ -579,8 +586,15 @@ function Dashboard({ t }) {
         <div>
           <h2 style={{ fontSize: '2rem' }}>{t.dashboard.welcome}</h2>
           <p style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="live-dot" style={{ width: '8px', height: '8px', background: '#00BA88', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 10px #00BA88' }}></span>
-            Connected to Quantix SSOT v1.9.4
+            <span className="live-dot" style={{
+              width: '8px',
+              height: '8px',
+              background: dataMonitor.getStatus().isCompliant ? '#00BA88' : '#f87171',
+              borderRadius: '50%',
+              display: 'inline-block',
+              boxShadow: `0 0 10px ${dataMonitor.getStatus().isCompliant ? '#00BA88' : '#f87171'}`
+            }}></span>
+            {dataMonitor.getStatus().isCompliant ? 'Connected to Quantix Elite v2.5.3' : 'MARKET CONNECTION DELAYED'}
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -658,11 +672,16 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
         if (error) throw error;
 
         if (data) {
-          const processedSignals = data.map(s => {
+          // Chế độ 3: Anti-Conflict Logic
+          const { signals: conflictFree } = ConflictManager.getCleanSignals(data);
+
+          // Chế độ 2: Sniper Execution Filter
+          const eliteSignals = SniperFilter.filterSignals(conflictFree);
+
+          const processedSignals = eliteSignals.map(s => {
             const entry = s.entry_price || 0;
             const exit = s.current_price || s.tp1_price || 0;
 
-            // Correct PIP Calculation for Gold vs Forex
             const pips = (s.symbol.includes('XAU') || s.symbol.includes('GOLD'))
               ? (Math.abs(exit - entry) * 10).toFixed(1)
               : (Math.abs(exit - entry) / 0.0001).toFixed(1);
@@ -673,7 +692,9 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
               pips: pips,
               action: s.ai_analysis === 'BULLISH' ? 'LONG' : s.ai_analysis === 'BEARISH' ? 'SHORT' : 'WATCH',
               conf: s.confidence_score + '%',
-              status: s.signal_status
+              status: s.signal_status,
+              age: ConflictManager.getSignalAge(s),
+              isSniper: true
             };
           });
           setSignals(processedSignals);
@@ -739,7 +760,7 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
                 <div style={{ width: s.conf, height: '100%', background: 'var(--primary)', borderRadius: '3px' }}></div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Status: {s.status}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{s.age} | 🎯 ELITE</span>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   Confidence: {s.conf}
                 </span>
