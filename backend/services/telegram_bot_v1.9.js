@@ -257,6 +257,18 @@ ${activeText}
 
 // --- POLLING ---
 let lastUpdateId = 0;
+
+async function initBot() {
+    console.log('🛡️ [INIT] Deleting existing webhooks to enable Polling...');
+    await botAction('deleteWebhook', { drop_pending_updates: true });
+    pollUpdates();
+
+    // Heartbeat for Railway Health
+    setInterval(() => {
+        console.log(`💓 [HEARTBEAT] Bot v1.9.1 is active. Last Update ID: ${lastUpdateId}`);
+    }, 60000);
+}
+
 async function pollUpdates() {
     try {
         const data = await botAction('getUpdates', { offset: lastUpdateId + 1, timeout: 30 });
@@ -265,15 +277,17 @@ async function pollUpdates() {
                 lastUpdateId = update.update_id;
                 if (update.message) handleMessage(update.message);
             }
+        } else if (data && !data.ok) {
+            console.error('[POLLING] Telegram Error:', data.description);
         }
     } catch (e) {
-        console.error('[POLLING] Error:', e.message);
+        console.error('[POLLING] System Error:', e.message);
     }
     setTimeout(pollUpdates, 1000);
 }
 
-pollUpdates();
-console.log(`🚀 [PRODUCTION] Telegram Bot v1.9 running in context-aware mode.`);
+initBot();
+console.log(`🚀 [PRODUCTION] Telegram Bot v1.9.1 running in context-aware mode.`);
 console.log(`- Community Group: ${COMMUNITY_GROUP}`);
 console.log(`- VIP Group: ${VIP_GROUP}`);
 console.log(`- Official Group: ${OFFICIAL_GROUP}`);
