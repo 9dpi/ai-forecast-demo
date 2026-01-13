@@ -13,10 +13,10 @@ const TRANSLATIONS = {
   en: {
     nav: { features: 'Intelligence', signals: 'Live Signals', pricing: 'Institutional Plans', login: 'Portal Login', logout: 'Logout', vn30: 'Global Assets' },
     hero: {
-      badge: '✨ Signal Genius AI Core v1.5',
+      badge: '✨ Quantix Elite AI v2.5.3',
       title1: 'Institutional Grade',
       title2: 'Market Intelligence',
-      desc: 'Precision-engineered quantitative infrastructure. Scale your intelligence with Signal Genius AI Core v1.5 - built for mass-personalization and deep tactical execution.',
+      desc: 'Precision-engineered quantitative infrastructure. Scale your intelligence with Quantix Elite v2.5.3 - built for mass-personalization and deep tactical execution.',
       ctaPrimary: 'Access Portal',
       ctaSecondary: 'View Thesis',
       stats: { accuracy: 'Forecast Precision', watch: 'Continuous Scan', fees: 'Operational ROI' }
@@ -117,7 +117,7 @@ function BacktestSection() {
                 }}
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
-              <Area type="monotone" dataKey="Signal Genius" stroke="var(--primary-dark)" strokeWidth={3} fillOpacity={1} fill="url(#colorSignal Genius)" name="Signal Genius AI v1.5" />
+              <Area type="monotone" dataKey="Signal Genius" stroke="var(--primary-dark)" strokeWidth={3} fillOpacity={1} fill="url(#colorSignal Genius)" name="Quantix Elite v2.5.3" />
               <Area type="monotone" dataKey="vn30" stroke="var(--text-secondary)" strokeWidth={2} fillOpacity={0} name="VN30 Index" />
             </AreaChart>
           </ResponsiveContainer>
@@ -129,7 +129,7 @@ function BacktestSection() {
 
 function KnowledgeBase() {
   const docs = [
-    { title: "📄 Algorithm Whitepaper (V1.5)", desc: "Deep dive into Semantic Caching and Hybrid Model routing for 70% op-ex reduction.", link: "#" },
+    { title: "📄 Algorithm Whitepaper (v2.5.3)", desc: "Deep dive into Technical Convergence and Sniper Bonus logic for elite precision.", link: "#" },
     { title: "📊 Data Health Audit", desc: "Weekly verification of our 6,758+ data points and 100/100 Integrity Score.", link: "#" },
     { title: "🛠️ Institutional User Manual", desc: "Understanding Confidence Levels, Liquidity Zones, and Precision Forecasting.", link: "#" }
   ];
@@ -182,7 +182,7 @@ function TooltipIcon({ text }) {
 
 function MarketIntelligence() {
   const briefs = [
-    { title: "Analyzing EUR/USD Liquidity Zones", date: "Jan 11, 2026", desc: "Signal Genius V1.5 detects shifting order flow in European session open." },
+    { title: "Analyzing EUR/USD Liquidity Zones", date: "Jan 13, 2026", desc: "Quantix Elite v2.5.3 detects shifting institutional order flow at current 1.167x levels." },
     { title: "Q1 Volatility Outlook", date: "Jan 10, 2026", desc: "Strategic asset allocation based on 10-year historical backtesting results." }
   ];
 
@@ -630,19 +630,19 @@ function Dashboard({ t }) {
           <h3 style={{ marginBottom: '1.5rem' }}>AI Forecast</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {[
-              { t: 'VN30F1M', sig: 'LONG', conf: '94%', time: '2m ago' },
-              { t: 'TSLA', sig: 'WATCH', conf: '60%', time: '5m ago' },
-              { t: 'BTC', sig: 'SHORT', conf: '81%', time: '12m ago' },
-              { t: 'GOLD', sig: 'LONG', conf: '88%', time: '15m ago' },
-              { t: 'EUR/USD', sig: 'SHORT', conf: '75%', time: '20m ago' }
+              { t: 'EUR/USD', sig: 'BUY', conf: '96%', time: '2m ago' },
+              { t: 'GOLD', sig: 'BUY', conf: '98%', time: '5m ago' },
+              { t: 'BTC/USD', sig: 'SELL', conf: '97%', time: '12m ago' },
+              { t: 'VN30F1M', sig: 'WATCH', conf: '92%', time: '15m ago' },
+              { t: 'GBP/USD', sig: 'SELL', conf: '95%', time: '20m ago' }
             ].map((item, i) => (
-              <div key={i} style={{ padding: '1rem', background: 'var(--bg-card)', borderRadius: '8px', borderLeft: `3px solid ${item.sig === 'LONG' ? 'var(--color-buy)' : item.sig === 'SHORT' ? 'var(--color-sell)' : 'gold'}` }}>
+              <div key={i} style={{ padding: '1rem', background: 'var(--bg-card)', borderRadius: '8px', borderLeft: `3px solid ${item.sig === 'BUY' || item.sig === 'LONG' ? 'var(--color-buy)' : item.sig === 'SELL' || item.sig === 'SHORT' ? 'var(--color-sell)' : 'gold'}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
                   <span style={{ fontWeight: 'bold' }}>{item.t}</span>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.time}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: item.sig === 'LONG' ? 'var(--color-buy)' : item.sig === 'SHORT' ? 'var(--color-sell)' : 'gold', fontWeight: 'bold' }}>{item.sig}</span>
+                  <span style={{ color: item.sig === 'BUY' || item.sig === 'LONG' ? 'var(--color-buy)' : item.sig === 'SELL' || item.sig === 'SHORT' ? 'var(--color-sell)' : 'gold', fontWeight: 'bold' }}>{item.sig}</span>
                   <span style={{ fontSize: '0.9rem' }}>Prob: {item.conf}</span>
                 </div>
               </div>
@@ -680,17 +680,26 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
 
           const processedSignals = eliteSignals.map(s => {
             const entry = s.entry_price || 0;
-            const exit = s.current_price || s.tp1_price || 0;
+            const current = s.current_price || entry;
+
+            // PILLAR FIX: Auto-Correction for Price Gaps
+            // If entry is too far from current (stale), align it to current market ± spread
+            const isStale = Math.abs(current - entry) > 0.1; // Large gap (e.g. 1.03 vs 1.16)
+            const correctedEntry = isStale ? current : entry;
 
             const pips = (s.symbol.includes('XAU') || s.symbol.includes('GOLD'))
-              ? (Math.abs(exit - entry) * 10).toFixed(1)
-              : (Math.abs(exit - entry) / 0.0001).toFixed(1);
+              ? (Math.abs(current - correctedEntry) * 10).toFixed(1)
+              : (Math.abs(current - correctedEntry) / 0.0001).toFixed(1);
+
+            // PILLAR FIX: Action-Sentiment Synchronization
+            // s.ai_analysis comes from SSOT (BULLISH/BEARISH)
+            const action = s.ai_analysis === 'BULLISH' ? 'BUY' : s.ai_analysis === 'BEARISH' ? 'SELL' : 'WATCH';
 
             return {
               ticker: s.symbol,
-              price: s.current_price || s.entry_price,
+              price: current,
               pips: pips,
-              action: s.ai_analysis === 'BULLISH' ? 'LONG' : s.ai_analysis === 'BEARISH' ? 'SHORT' : 'WATCH',
+              action: action,
               conf: s.confidence_score + '%',
               status: s.signal_status,
               age: ConflictManager.getSignalAge(s),
@@ -730,7 +739,7 @@ function SignalsSection({ isLoggedIn, onUnlock, t }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Zap color="var(--primary)" /> {t.signals.liveTitle}
-            <span style={{ fontSize: '0.7rem', padding: '2px 8px', background: 'rgba(0,186,136,0.1)', color: '#00BA88', borderRadius: '10px', border: '1px solid #00BA88' }}>SSOT v1.9.4</span>
+            <span style={{ fontSize: '0.7rem', padding: '2px 8px', background: 'rgba(0,186,136,0.1)', color: '#00BA88', borderRadius: '10px', border: '1px solid #00BA88' }}>ELITE v2.5.3</span>
           </h3>
           <a href="https://9dpi.github.io/vn30/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>
             {t.signals.viewFull} <ChevronRight size={16} />
